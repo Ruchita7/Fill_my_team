@@ -1,15 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditProfileFragment">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:columnCount="2"
+        tools:context=".EditProfileFragment">
 
-        <LinearLayout
+
+        <!--LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -26,12 +29,32 @@
                 android:focusableInTouchMode="false"/>
 
 
-            <!--Button
-                android:id="@+id/change_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change" /-->
-        </LinearLayout>
+        </LinearLayout-->
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time" />
+
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false" />
+
+
+        <!--Button
+            android:id="@+id/change_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change" /-->
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,48 +62,44 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/place_text_view"
+                android:layout_width="0dp"
+                android:paddingLeft="8dp"
                 android:layout_height="wrap_content"
-                android:text="Time" />
+                android:layout_weight="2"
+                android:lines="5" />
 
-            <EditText
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/picker_image_view"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:focusableInTouchMode="false"/>
+                android:layout_weight="1"
+                android:src="@drawable/ic_marker" />
 
-
-
-            <!--Button
-                android:id="@+id/change_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change" /-->
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Where"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/place"
-                />
-
-
-        </LinearLayout>
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save user"
-            android:id="@+id/saveUserButton"/>
+            android:text="Sport" />
+
+        <Spinner
+            android:id="@+id/sports_list_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+       />
 
 
-    </LinearLayout>
-</FrameLayout>
+    </android.support.v7.widget.GridLayout>
+
+    <Button
+        android:id="@+id/saveUserButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:layout_gravity="center_horizontal"/>
+
+
+</LinearLayout>
+

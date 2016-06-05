@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.util.StoreDataReceivedListener;
+import com.android.fillmyteam.api.StoreDataReceivedListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

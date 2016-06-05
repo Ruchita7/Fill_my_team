@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.util.StoreDataReceivedListener;
+import com.android.fillmyteam.api.StoreDataReceivedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -68,8 +68,7 @@ public class Utility {
                     break;
                 case Constants.LONGITUDE: user.setLongitude((Double) userValues.getValue());
                     break;
-                case Constants.PLAYING_EVERYDAY: user.setPlayingEveryDay((Boolean)userValues.getValue());
-                    break;
+
                 case Constants.PLAYINGTIME: user.setPlayingTime((String)userValues.getValue());
                     break;
                 case Constants.SPORT: user.setSport((String) userValues.getValue());

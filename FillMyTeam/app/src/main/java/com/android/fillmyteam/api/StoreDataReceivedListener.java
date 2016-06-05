@@ -1,4 +1,4 @@
-package com.android.fillmyteam.util;
+package com.android.fillmyteam.api;
 
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 

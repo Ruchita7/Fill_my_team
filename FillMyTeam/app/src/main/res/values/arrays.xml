@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sports_list">
+        <item>Football</item>
+        <item>Cricket</item>
+        <item>Basketball</item>
+        <item>Hockey</item>
+        <item>Tennis</item>
+        <item>Badminton</item>
+        <item>Baseball</item>
+        <item>Rugby</item>
+        <item>Volleyball</item>
+        <item>Table Tennis</item>
+        <item>Basketball</item>
+
+    </string-array>
+
+</resources>

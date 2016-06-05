@@ -18,6 +18,10 @@
             android:id="@+id/sports_store_locator"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Sports Store Locator" />
+        <item android:id="@+id/logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"
+            />
         <!--item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"

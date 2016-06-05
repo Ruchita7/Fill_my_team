@@ -60,7 +60,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class FindPlaymatesFragment extends Fragment implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, OnMarkerClickListener,
-        InfoWindowAdapter, OnInfoWindowClickListener,GoogleMap.OnInfoWindowLongClickListener {
+        InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -85,29 +85,31 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     ArrayList<PlayerParcelable> mPlayerParcelables;
     private GoogleMap mMap;
     MarkerOptions markerOptions;
-    Map<LatLng,PlayerParcelable> userLatLngMap;
+    Map<LatLng, PlayerParcelable> userLatLngMap;
     private View mWindow;
-//    CoordinatorLayout coordinatorLayout;
+    //    CoordinatorLayout coordinatorLayout;
     FrameLayout frameLayout;
     private View mContents;
     int playerFoundCount;
-   LatLng latLngCenter = new LatLng(28.6988839, 77.1082443);
- //   LatLng latLngCenter = new LatLng(28.7514586,77.0994467);
-    final CameraPosition cameraPosition = CameraPosition.builder()
+    LatLng latLngCenter;
+    //   LatLng latLngCenter = new LatLng(28.7514586,77.0994467);
+ /*   final CameraPosition cameraPosition = CameraPosition.builder()
             .target(latLngCenter)
             .zoom(15)
             //  .bearing(0)
             //  .tilt(45)
-            .build();
+            .build();*/
+    CameraPosition cameraPosition;
     Map<String, MarkerOptions> markerMap;
     boolean mToken;
     boolean mGooglePlayServicesAvbl;
-   // Firebase mNotificationRef;
-   DatabaseReference mNotificationRef;
+    // Firebase mNotificationRef;
+    DatabaseReference mNotificationRef;
+    User mUser;
+
     public FindPlaymatesFragment() {
         // Required empty public constructor
     }
-
 
 
     // TODO: Rename and change types and number of parameters
@@ -121,12 +123,13 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     }*/
 
 
-    public static FindPlaymatesFragment newInstance(double latitude, double longitude) {
+    public static FindPlaymatesFragment newInstance(User user) {
         FindPlaymatesFragment fragment = new FindPlaymatesFragment();
         Bundle args = new Bundle();
-        args.putDouble(Constants.LATITUDE, latitude);
-        args.putDouble(Constants.LONGITUDE, longitude);
-     //   args.putBoolean("GOOGLE_PLAY_SERVICES",isGooglePlayServices);
+        /*args.putDouble(Constants.LATITUDE, latitude);
+        args.putDouble(Constants.LONGITUDE, longitude);*/
+        args.putSerializable("user", user);
+        //   args.putBoolean("GOOGLE_PLAY_SERVICES",isGooglePlayServices);
         fragment.setArguments(args);
 
         return fragment;
@@ -140,20 +143,28 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         mContext = getActivity();
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
         mUrlRef = new Firebase(Constants.APP_URL_USERS);
-        userLatLngMap= new HashMap<>();
+        userLatLngMap = new HashMap<>();
         //mNotificationRef = new Firebase(Constants.PLAYERS_NOTIFICATIONS);
         mNotificationRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Constants.PLAYERS_NOTIFICATIONS);
         mPlayerParcelables = new ArrayList<>();
         markerMap = new HashMap<>();
         if (getArguments() != null) {
-            mLatitude = getArguments().getDouble(Constants.LATITUDE);
-            mLongitude = getArguments().getDouble(Constants.LONGITUDE);
-            mGooglePlayServicesAvbl=getArguments().getBoolean("GOOGLE_PLAY_SERVICES");
+         /*   mLatitude = getArguments().getDouble(Constants.LATITUDE);
+            mLongitude = getArguments().getDouble(Constants.LONGITUDE);*/
+            mUser=(User)getArguments().getSerializable("user");
+            mGooglePlayServicesAvbl = getArguments().getBoolean("GOOGLE_PLAY_SERVICES");
             //   mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        latLngCenter = new LatLng(mUser.getLatitude(), mUser.getLongitude());
+        cameraPosition = CameraPosition.builder()
+                .target(latLngCenter)
+                .zoom(15)
+                //  .bearing(0)
+                //  .tilt(45)
+                .build();
         if (mGooglePlayServicesAvbl) {
-                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             mToken = sharedPreferences.getBoolean(MainActivity.SENT_TOKEN_TO_SERVER, false);
         }
@@ -166,11 +177,11 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_find_playmates, container, false);
-      //  GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(28.6988839, 77.1082443), 1);
+        //  GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(28.6988839, 77.1082443), 1);
 
       /*  coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id
                 .coordinatorLayout);*/
-        frameLayout=(FrameLayout) view.findViewById(R.id.map);
+        frameLayout = (FrameLayout) view.findViewById(R.id.map);
         FragmentManager fragmentManager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager.findFragmentById(R.id.map);
 
@@ -298,8 +309,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onGeoQueryReady() {
         Log.d(LOG_TAG, "All initial com.android.fillmyteam.data has been loaded and events have been fired!");
-        if(playerFoundCount<=0) {
-            Toast.makeText(getContext(),"No players found nearby",Toast.LENGTH_SHORT).show();
+        if (playerFoundCount <= 0) {
+            Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -321,18 +332,19 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        HashMap<String, Object> values = (HashMap<String, Object>) dataSnapshot.getValue();
-        User userObj = Utility.retrieveUserObject(values);
+        //  HashMap<String, Object> values = (HashMap<String, Object>) dataSnapshot.getValue();
+        //   User userObj = Utility.retrieveUserObject(values);
+        User userObj = dataSnapshot.getValue(User.class);
         PlayerParcelable playerParcelable = new PlayerParcelable(userObj);
         mPlayerParcelables.add(playerParcelable);
-        String[] dateTime = userObj.getPlayingTime().split(" ");
+        String time = userObj.getPlayingTime();
         markerOptions = new MarkerOptions()
                 .position(new LatLng(userObj.getLatitude(), userObj.getLongitude()))
                 .title(userObj.getName())
-                .snippet(Utility.getPlayingTimeInfo(dateTime[1]));
+                .snippet(time);
         markerMap.put(userObj.getEmail(), markerOptions);
         mMap.addMarker(markerOptions);
-        userLatLngMap.put(new LatLng(userObj.getLatitude(),userObj.getLongitude()),playerParcelable);
+        userLatLngMap.put(new LatLng(userObj.getLatitude(), userObj.getLongitude()), playerParcelable);
     }
 
     @Override
@@ -440,22 +452,22 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onInfoWindowClick(final Marker marker) {
-        Log.e(LOG_TAG,"onInfoWindowClick");
+        Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
-                .make(frameLayout, "Invite "+marker.getTitle()+" to play", Snackbar.LENGTH_LONG)
-              .setAction("SEND NOTIFICATION", new View.OnClickListener() {
+                .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
+                .setAction("SEND NOTIFICATION", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e(LOG_TAG,"onClick of onInfoWindowClick");
-                        LatLng markerLatLng=marker.getPosition();
-                        PlayerParcelable playerParcelable=userLatLngMap.get(markerLatLng);
+                        Log.e(LOG_TAG, "onClick of onInfoWindowClick");
+                        LatLng markerLatLng = marker.getPosition();
+                        PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
                         User user = playerParcelable.getUser();
-                        List<String> msg=new ArrayList<String>();
-                        msg.add(user.getEmail()+" wants to play with you");
-                        Log.v(LOG_TAG,"User's mail::"+user.getEmail());
+                        List<String> msg = new ArrayList<String>();
+                        msg.add(user.getEmail() + " wants to play with you");
+                        Log.v(LOG_TAG, "User's mail::" + user.getEmail());
                         mNotificationRef.child(Utility.encodeEmail(user.getEmail())).child("msg").setValue(msg);
-                       Intent intent = new Intent(getActivity(), NotificationService.class);
-                        intent.putExtra(Constants.NOTIFY_USER,playerParcelable);
+                        Intent intent = new Intent(getActivity(), NotificationService.class);
+                        intent.putExtra(Constants.NOTIFY_USER, playerParcelable);
                         getActivity().startService(intent);
                     }
                 });
@@ -465,13 +477,13 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onInfoWindowLongClick(final Marker marker) {
-        Log.e(LOG_TAG,"onInfoWindowClick");
+        Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
-                .make(frameLayout, "Invite "+marker.getTitle()+" to play", Snackbar.LENGTH_LONG)
+                .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
                 .setAction("SEND NOTIFICATION", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e(LOG_TAG,"onClick of onInfoWindowClick");
+                        Log.e(LOG_TAG, "onClick of onInfoWindowClick");
                     }
                 });
         snackbar.show();

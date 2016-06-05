@@ -50,5 +50,5 @@ public class Constants {
     public static final String LOCATION="location";
     public static final String RADIUS="radius";
     public static final String TEN_KM_RADIUS="10000";
-
+    public static final String LOCATION_BASE_URL = "https://maps.googleapis.com/maps/api/place/";
 }

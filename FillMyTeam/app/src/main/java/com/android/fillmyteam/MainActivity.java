@@ -2,12 +2,8 @@ package com.android.fillmyteam;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,34 +12,34 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         SportsInfoFragment.Callback {
 
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
-    Location mLastLocation;
+
 
     // AddressResultReceiver mResultReceiver;
-    GoogleApiClient mGoogleApiClient;
+    // GoogleApiClient mGoogleApiClient;
     String mAddressOutput = "";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-
-    double mLongitude;
-    double mLatitude;
+    User mUser;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    //  FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +47,31 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // mAuth = FirebaseAuth.getInstance();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        if (getIntent().hasExtra("User Credentials")) {
+            mUser = (User) getIntent().getSerializableExtra("User Credentials");
+            Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
+
+        }
+    /*    mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this *//* FragmentActivity *//*, this *//* OnConnectionFailedListener *//*)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();*/
+
+     /*   mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
+          //      .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .build();
+                .build();*/
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        // editor.putString("email", "ruchita,maheshwary@gmail,com");
+         editor.putString("email", mUser.getEmail());
         //  editor.putString("email", "poomah29@gmail,com");
-        editor.putString("email", "ruchita,maheshwary@gmail,com");
+       // editor.putString("email", "ruchita,maheshwary@gmail,com");
         editor.commit();
         //mResultReceiver = new AddressResultReceiver(new Handler());
 
@@ -93,8 +101,15 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+       NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
+        TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
+        ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
+        userTextView.setText(mUser.getName());
+        emailTextView.setText(mUser.getEmail());
+        Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
         //   setupDrawerContent(navigationView);
         //   new GcmRegistrationAsyncTask(this).execute();
 
@@ -191,20 +206,27 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
 
             case R.id.learn_play:
-                fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mLatitude, mLongitude);
-                ;
+              //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
+                fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.find_playmates:
-                fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mLatitude, mLongitude);
+                fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mUser);
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.edit_profile:
-                fragment = (EditProfileFragment) EditProfileFragment.newInstance(mLatitude, mLongitude);
+                fragment = (EditProfileFragment) EditProfileFragment.newInstance(mUser);
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.sports_store_locator:
-                fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mLatitude, mLongitude);
+                fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                break;
+            case R.id.logout:
+                logoutUser();
                 break;
         }
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
      /*   try {
             fragment = (Fragment) fragmentClass.newInstance(mAddressOutput);
         } catch (Exception e) {
@@ -224,42 +246,35 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        try {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-
-            if (mLastLocation != null) {
-                // Determine whether a Geocoder is available.
-                if (!Geocoder.isPresent()) {
-                   /* Toast.makeText(this, R.string.no_geocoder_available,
-                            Toast.LENGTH_LONG).show();*/
-                    Toast.makeText(this, "no geocoder available",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                mLatitude = mLastLocation.getLatitude();
-                mLongitude = mLastLocation.getLongitude();
-
-                //    startIntentService();
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        //mGoogleApiClient.disconnect();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+//        mGoogleApiClient.connect();
+    }
+
+    private void logoutUser() {
+     /*   mAuth.signOut();
+
+        // Google sign out
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                       // updateUI(null);
+                        Intent intent = new Intent(getApplicationContext(),GoogleSignInActivity.class);
+                        startActivity(intent);
+                    }
+                });*/
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+        startActivity(intent);
     }
 
  /*   protected void startIntentService() {
@@ -269,16 +284,7 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
     }*/
 
-    @Override
-    public void onConnectionSuspended(int i) {
 
-    }
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
  /*   class AddressResultReceiver extends ResultReceiver {
         public AddressResultReceiver(Handler handler) {
