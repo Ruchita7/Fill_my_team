@@ -15,4 +15,15 @@
 
     </string-array>
 
+    <string-array name="all_sports">
+        <item>All</item>
+        <item>Football</item>
+        <item>Cricket</item>
+        <item>Basketball</item>
+        <item>Tennis</item>
+        <item>Badminton</item>
+        <item>Baseball</item>
+        <item>Basketball</item>
+
+    </string-array>
 </resources>

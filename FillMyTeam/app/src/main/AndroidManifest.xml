@@ -14,6 +14,17 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:name=".MainActivity"
+
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter-->
+        </activity>
+
+        <activity
             android:name=".GoogleSignInActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
@@ -25,26 +36,19 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
 
-            android:theme="@style/AppTheme.NoActionBar">
-            <!--intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter-->
-        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="Your Google Maps Key" />
+            android:value="GEO_API_KEY" />
 
-        <service android:name=".NotificationService" />
+        <!--service android:name=".NotificationService" /-->
+        <receiver android:name=".DailyAlarmReceiver"></receiver>
 
+        <service android:name=".ScheduleDailyAlarmService"/>
 
         <provider
             android:name=".provider.SportsProvider"

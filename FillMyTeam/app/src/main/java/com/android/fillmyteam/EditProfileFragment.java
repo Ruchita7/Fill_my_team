@@ -48,7 +48,7 @@ import retrofit.Retrofit;
  * Use the {@link EditProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditProfileFragment extends Fragment implements View.OnClickListener,AdapterView.OnItemSelectedListener {
+public class EditProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -78,6 +78,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     private static final int REQUEST_PLACE_PICKER = 1;
     Spinner mSportsListSpinner;
     ArrayAdapter<CharSequence> mAdapter;
+    DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -155,7 +156,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         submitButton = (Button) view.findViewById(R.id.saveUserButton);
         submitButton.setOnClickListener(this);
         mSportsListSpinner = (Spinner) view.findViewById(R.id.sports_list_spinner);
-        mAdapter   = ArrayAdapter.createFromResource(getContext(),R.array.sports_list,android.R.layout.simple_spinner_item);
+        mAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setOnItemSelectedListener(this);
@@ -195,14 +196,17 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 Log.e(LOG_TAG, t.getMessage());
             }
         });*/
+
         return view;
     }
 
+
+
     private void updateViews() {
         mTime.setText(mUser.getPlayingTime());
-       // LatLng latLng =new LatLng(mUser.getLatitude(),mUser.getLongitude());
+        // LatLng latLng =new LatLng(mUser.getLatitude(),mUser.getLongitude());
         mPlaceTextView.setText(mUser.getPlayingPlace());
-      //  mAdapter=(ArrayAdapter)mSportsListSpinner.getAdapter();
+        //  mAdapter=(ArrayAdapter)mSportsListSpinner.getAdapter();
         mSportsListSpinner.setSelection(mAdapter.getPosition(mUser.getSport()));
     }
 
@@ -228,7 +232,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;*/
 
             case R.id.saveUserButton:
-               // mPlayingTime = Utility.getPlayingTimeInfo(mTime.getText().toString());
+                // mPlayingTime = Utility.getPlayingTimeInfo(mTime.getText().toString());
                 mPlayingTime = mTime.getText().toString();
                 //    Log.v(LOG_TAG,"playing date is"+date);
                 saveUserData();
@@ -283,14 +287,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         String time = gregorianCalendar.get(Calendar.HOUR) + ":" + gregorianCalendar.get(Calendar.MINUTE);
         String playingTime;
         if (hourOfDay > 12) {
-            playingTime=time + " PM";
+            playingTime = time + " PM";
 
         } else {
-            playingTime=time + " AM";
+            playingTime = time + " AM";
         }
 
         mTime.setText(playingTime);
-      //  mUser.setPlayingTime(playingTime);
+        //  mUser.setPlayingTime(playingTime);
     }
 
     @Override
@@ -307,10 +311,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                  */
                 final Place place = PlacePicker.getPlace(data, getActivity());
                 mParkLocation = place.getAddress().toString();
-                Log.v(LOG_TAG,"location chosen"+mParkLocation);
+                Log.v(LOG_TAG, "location chosen" + mParkLocation);
                 mPlaceTextView.setText(mParkLocation);
                 LatLng latLng = place.getLatLng();
-                Log.v(LOG_TAG,"lat lng"+latLng.latitude+","+latLng.longitude);
+                Log.v(LOG_TAG, "lat lng" + latLng.latitude + "," + latLng.longitude);
                 mUser.setPlayingPlace(mParkLocation);
                 mUser.setLatitude(latLng.latitude);
                 mUser.setLongitude(latLng.longitude);
@@ -355,7 +359,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     private void saveUserData() {
 
-     //   mUser.setPlayingTime(mPlayingTime);
+        //   mUser.setPlayingTime(mPlayingTime);
         /*User user1 = new User("Ruchita", "ruchita.maheshwary@gmail.com", "tennis", 28.6948631, 77.11113064, false, mPlayingTime);
         DatabaseReference pushRef =    mUrlRef.push();
         pushRef.setValue(user1);
@@ -370,6 +374,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         pushRef =    mUrlRef.push();
         pushRef.setValue(user3);
         mGeoFire.setLocation(Utility.encodeEmail(user3.getEmail()), new GeoLocation(user3.getLatitude(), user3.getLongitude()));*/
+        alarmReceiver.cancelAlarm();
         DatabaseReference ref = mUrlRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
         //  mUser.setPlayingTime(mTime.getText().toString());
         ref.child("playingTime").setValue(mPlayingTime);
@@ -378,12 +383,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         ref.child("playingPlace").setValue(mUser.getPlayingPlace());
         ref.child("sport").setValue(mUser.getSport());
         Toast.makeText(getContext(), "Profile has been updated successfully!", Toast.LENGTH_LONG).show();
+
+        alarmReceiver.setAlarmTime(getActivity(),mUser.getPlayingTime(),mUser.getPlayingPlace());
+
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String sport = (String)parent.getItemAtPosition(position);
-        Log.v(LOG_TAG,"selected item"+sport);
+        String sport = (String) parent.getItemAtPosition(position);
+        Log.v(LOG_TAG, "selected item" + sport);
         mUser.setSport(sport);
     }
 

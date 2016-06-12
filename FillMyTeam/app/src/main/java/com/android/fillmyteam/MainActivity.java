@@ -2,6 +2,7 @@ package com.android.fillmyteam;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -40,19 +41,24 @@ public class MainActivity extends AppCompatActivity
     User mUser;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     //  FirebaseAuth mAuth;
+    boolean isDrawerLocked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // mAuth = FirebaseAuth.getInstance();
 
         if (getIntent().hasExtra("User Credentials")) {
             mUser = (User) getIntent().getSerializableExtra("User Credentials");
             Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
-
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("email", mUser.getEmail());
+            editor.commit();
         }
     /*    mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this *//* FragmentActivity *//*, this *//* OnConnectionFailedListener *//*)
@@ -66,13 +72,10 @@ public class MainActivity extends AppCompatActivity
                 .addOnConnectionFailedListener(this)
                 .build();*/
 
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-         editor.putString("email", mUser.getEmail());
+
         //  editor.putString("email", "poomah29@gmail,com");
-       // editor.putString("email", "ruchita,maheshwary@gmail,com");
-        editor.commit();
+        // editor.putString("email", "ruchita,maheshwary@gmail,com");
+
         //mResultReceiver = new AddressResultReceiver(new Handler());
 
         //   mResultReceiver.setReceiver(this);
@@ -86,6 +89,18 @@ public class MainActivity extends AppCompatActivity
         });
 */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+     /*   if (isTablet()) {
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            drawer.setScrimColor(Color.TRANSPARENT);
+            isDrawerLocked = true;
+        }
+*/
+ /*       mUser = new User();
+        mUser.setLongitude(28.7514586);
+        mUser.setLatitude(77.0994467);
+        mUser.setEmail("android.studio@android.com");
+        mUser.setName("Android Studio");*/
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
@@ -101,15 +116,20 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-       NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
-        TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
-        ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
-        userTextView.setText(mUser.getName());
-        emailTextView.setText(mUser.getEmail());
-        Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
+        if (mUser != null) {
+            View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
+            TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
+            ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
+            userTextView.setText(mUser.getName());
+            emailTextView.setText(mUser.getEmail());
+            if(mUser.getPhotoUrl()!=null &&!mUser.getPhotoUrl().isEmpty())
+            {
+                Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
+            }
+        }
         //   setupDrawerContent(navigationView);
         //   new GcmRegistrationAsyncTask(this).execute();
 
@@ -148,6 +168,11 @@ public class MainActivity extends AppCompatActivity
     }
 */
 
+    private boolean isTablet() {
+        return (getApplicationContext().getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 
     @Override
     public void onBackPressed() {
@@ -203,10 +228,11 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.content_frame, editProfileFragmentFragment).commit();
         }*/
 
+
         switch (id) {
 
             case R.id.learn_play:
-              //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
+                //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 break;

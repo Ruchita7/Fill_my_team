@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by dgnc on 5/31/2016.
  */
-public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable> {
+public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
 
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
     Context mContext;
@@ -41,7 +41,7 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable> {
             //  super(v);
             addressTextView = (TextView) v.findViewById(R.id.address);
             nameTextView = (TextView) v.findViewById(R.id.name);
-            locatorImageView = (ImageView) v.findViewById(R.id.locator_imageView);
+          locatorImageView = (ImageView) v.findViewById(R.id.locator_imageView);
         }
     }
 
@@ -56,7 +56,7 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable> {
             convertView = inflater.inflate(R.layout.store_locator_list_item, parent, false);
             viewHolder.addressTextView = (TextView) convertView.findViewById(R.id.address);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.name);
-            viewHolder.locatorImageView = (ImageView) convertView.findViewById(R.id.locator_imageView);
+             viewHolder.locatorImageView = (ImageView) convertView.findViewById(R.id.locator_imageView);
             // viewHolder.home = (TextView) convertView.findViewById(R.id.tvHome);
             convertView.setTag(viewHolder);
         } else {
@@ -64,16 +64,17 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable> {
         }
         viewHolder.addressTextView.setText(storeLocatorParcelable.getAddress());
         viewHolder.nameTextView.setText(storeLocatorParcelable.getName());
-        final double latitude = storeLocatorParcelable.getLatitude();
+       /* final double latitude = storeLocatorParcelable.getLatitude();
         final double longitude = storeLocatorParcelable.getLongitude();
         final String storeName = storeLocatorParcelable.getName();
         final String address = storeLocatorParcelable.getAddress();
-        viewHolder.locatorImageView.setOnClickListener(new View.OnClickListener() {
+*/
+      /*  viewHolder.locatorImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClick(v, latitude, longitude, storeName, address);
             }
-        });
+        });*/
         return convertView;
     }
 

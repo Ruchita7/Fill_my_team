@@ -13,7 +13,7 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
-    <string name="map_key">Your Google Location API key</string>
+    <string name="map_key">Maps Key</string>
     <string name="sport_goods_query">sports+goods</string>
 
     <string name="loading">Loading…</string>
@@ -21,4 +21,8 @@
     <string name="google_status_fmt">Google User: %s</string>
     <!--string name="desc_firebase_lockup">Firebase logo and name</string-->
     <string name="log_error_the_read_failed">The read failed: </string>
+
+    <string name="map_not_ready">Map is not ready yet</string>
+    <string name="clear_map">Clear</string>
+    <string name="reset_map">Reset</string>
 </resources>

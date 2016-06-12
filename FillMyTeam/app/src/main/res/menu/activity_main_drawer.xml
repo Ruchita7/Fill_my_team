@@ -8,15 +8,15 @@
             android:title="Learn to Play" />
         <item
             android:id="@+id/find_playmates"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_search"
             android:title="Find Playmates" />
         <item
             android:id="@+id/edit_profile"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_create"
             android:title="Edit Profile" />
         <item
             android:id="@+id/sports_store_locator"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_store_mall_directory"
             android:title="Sports Store Locator" />
         <item android:id="@+id/logout"
             android:icon="@drawable/ic_logout"

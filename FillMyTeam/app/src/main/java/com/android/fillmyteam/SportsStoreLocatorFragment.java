@@ -1,6 +1,7 @@
 package com.android.fillmyteam;
 
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,8 +41,8 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SportsStoreLocatorFragment extends Fragment implements StoreDataReceivedListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class SportsStoreLocatorFragment extends Fragment implements StoreDataReceivedListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemClickListener {
 
     double mLatitude;
     double mLongitude;
@@ -51,7 +52,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     private PlaceAutocompleteAdapter mAdapter;
     private TextView mPlaceDetailsText;
     SportsStoreLocatorFragment mFragment;
-   // private TextView mPlaceDetailsAttribution;
+    // private TextView mPlaceDetailsAttribution;
 
     ListView mListView;
     private RecyclerView.Adapter mRecyclerViewAdapter;
@@ -100,7 +101,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         }
         View view = inflater.inflate(R.layout.fragment_sports_store_locator, container, false);
         mPlaceDetailsText = (TextView) view.findViewById(R.id.place_details);
-     //   mPlaceDetailsAttribution = (TextView) view.findViewById(R.id.place_attribution);
+        //   mPlaceDetailsAttribution = (TextView) view.findViewById(R.id.place_attribution);
         mAutocompleteView = (AutoCompleteTextView) view.
                 findViewById(R.id.autocomplete_places);
 
@@ -113,20 +114,20 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 null);
         mAutocompleteView.setAdapter(mAdapter);
         mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
-    //    mRecyclerView.setHasFixedSize(true);
+        //    mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
-        mStoreLocatorParcelables=new ArrayList<StoreLocatorParcelable>();
-      //  mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mFragment=this;
+        mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
+        //  mRecyclerView.setLayoutManager(mLayoutManager);
+        mListView.setOnItemClickListener(this);
+        mFragment = this;
         return view;
     }
 
     @Override
     public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables) {
-        Log.v(LOG_TAG,"sports list size"+storeLocatorParcelables.size());
-        mStoreLocatorParcelables=storeLocatorParcelables;
-        mStoreLocatorAdapter = new StoreLocatorAdapter(getContext(),0,mStoreLocatorParcelables);
+        Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
+        mStoreLocatorParcelables = storeLocatorParcelables;
+        mStoreLocatorAdapter = new StoreLocatorAdapter(getContext(), 0, mStoreLocatorParcelables);
         mListView.setAdapter(mStoreLocatorAdapter);
         mStoreLocatorAdapter.notifyDataSetChanged();
 
@@ -202,15 +203,15 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
-            String latitude=placeLatLng.latitude+","+placeLatLng.longitude;
+            String latitude = placeLatLng.latitude + "," + placeLatLng.longitude;
            /* Uri.Builder builder = Uri.parse(Constants.STORE_LOCATOR_BASE_URL).buildUpon().appendQueryParameter(Constants.QUERY, getString(R.string.store_locator_query, placeName)).appendQueryParameter(Constants.LOCATION_KEY, getString(R.string.map_key));
            Uri uri= builder.build();
 
             Log.v(LOG_TAG,"Uri is::"+uri.toString());*/
-            StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getContext(),mFragment);
-          //  storeLocatorAsyncTask.setStoreDataReceivedListener(SportsStoreLocatorFragment.this);
+            StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getContext(), mFragment);
+            //  storeLocatorAsyncTask.setStoreDataReceivedListener(SportsStoreLocatorFragment.this);
             storeLocatorAsyncTask.execute(latitude);
-   //         Log.v(LOG_TAG,"Store locator list size"+storeLocatorParcelables);
+            //         Log.v(LOG_TAG,"Store locator list size"+storeLocatorParcelables);
             // Format details of the place for display and show it in a TextView.
          /*   mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
                     place.getId(), place.getAddress(), place.getPhoneNumber(),
@@ -271,5 +272,21 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        StoreLocatorParcelable storeLocatorParcelable = (StoreLocatorParcelable) parent.getItemAtPosition(position);
+        final double latitude = storeLocatorParcelable.getLatitude();
+        final double longitude = storeLocatorParcelable.getLongitude();
+        final String storeName = storeLocatorParcelable.getName();
+        final String address = storeLocatorParcelable.getAddress();
+        String geoLocation = "google.navigation:" + "q=" + storeName + address;
+
+        Uri geoIntentUri = Uri.parse(geoLocation);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            getContext().startActivity(mapIntent);
+        }
+    }
 
 }
