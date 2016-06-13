@@ -41,7 +41,7 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, DailyAlarmReceiver.class);
         intent.putExtra("time_place",playingLocation+" at "+mPlayingTime);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), (24*1000*60*60), alarmIntent);
     }
 
     @Override

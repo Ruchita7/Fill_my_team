@@ -114,6 +114,10 @@ public class GoogleSignInActivity extends BaseActivity implements
                 .requestEmail()
                 .build();
         // [END config_signin]
+     /*   DatabaseReference  urlRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Constants.APP_URL_USERS);
+        mGeoFire = new GeoFire(urlRef);*/
+        Firebase.setAndroidContext(this);
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)

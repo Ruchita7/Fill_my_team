@@ -13,7 +13,7 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
-    <string name="map_key">Maps Key</string>
+    <string name="map_key">YOUR MAP KEY</string>
     <string name="sport_goods_query">sports+goods</string>
 
     <string name="loading">Loading…</string>

@@ -29,11 +29,8 @@ import com.android.fillmyteam.model.PlayerParcelable;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -49,13 +46,21 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/*import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;*/
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +68,7 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class FindPlaymatesFragment extends Fragment implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, OnMarkerClickListener,
-        InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener,   AdapterView.OnItemSelectedListener,View.OnClickListener {
+        InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -83,7 +88,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     Context mContext;
     String mPlayingTime;
     GeoFire mGeoFire;
-    Firebase mUrlRef;
+    //  Firebase mUrlRef;
+    DatabaseReference mUrlRef;
     PlayerParcelable mPlayerParcelable;
     ArrayList<PlayerParcelable> mPlayerParcelables;
     private GoogleMap mMap;
@@ -109,14 +115,15 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     // Firebase mNotificationRef;
     DatabaseReference mNotificationRef;
     User mUser;
-   /* Button mClearButton;
-    Button mResetButton;*/
+    /* Button mClearButton;
+     Button mResetButton;*/
     private RadioGroup mOptions;
     String mSport;
     GeoQuery geoQuery;
-  Button searchSportsButton;
+    Button searchSportsButton;
 
     Spinner sportSpinner;
+
     public FindPlaymatesFragment() {
         // Required empty public constructor
     }
@@ -152,7 +159,9 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         super.onCreate(savedInstanceState);
         mContext = getActivity();
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
-        mUrlRef = new Firebase(Constants.APP_URL_USERS);
+        //  mUrlRef = new Firebase(Constants.APP_URL_USERS);
+        mUrlRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Constants.APP_URL_USERS);
         userLatLngMap = new HashMap<>();
         //mNotificationRef = new Firebase(Constants.PLAYERS_NOTIFICATIONS);
         mNotificationRef = FirebaseDatabase.getInstance()
@@ -236,7 +245,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         registerForContextMenu(searchSportsButton);*/
         searchSportsButton = (Button) view.findViewById(R.id.search_sports_button);
         searchSportsButton.setOnClickListener(this);
-         sportSpinner = (Spinner) view.findViewById(R.id.sports_spinner);
+        sportSpinner = (Spinner) view.findViewById(R.id.sports_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.all_sports, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
@@ -251,7 +260,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onClick(View v) {
         sportSpinner.performClick();
-      //  searchSportsButton.setVisibility(View.INVISIBLE);
+        //  searchSportsButton.setVisibility(View.INVISIBLE);
     }
 
     /*@Override
@@ -271,7 +280,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String sport = (String) parent.getItemAtPosition(position);
         Log.v(LOG_TAG, "selected item" + sport);
-     //   mUser.setSport(sport);
+        //   mUser.setSport(sport);
         switch (sport) {
             case "All":
                 mSport = "";
@@ -289,26 +298,26 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                 fireGeoQuery();
 
                 break;
-            case "Football" :
+            case "Football":
                 Log.v(LOG_TAG, "football clicked");
                 mSport = "football";
                 fireGeoQuery();
                 break;
 
-            case "Cricket" :
+            case "Cricket":
                 Log.v(LOG_TAG, "cricket clicked");
                 mSport = "cricket";
                 fireGeoQuery();
                 break;
 
-            case "Badminton" :
+            case "Badminton":
                 Log.v(LOG_TAG, "badminton clicked");
                 mSport = "badminton";
                 fireGeoQuery();
                 break;
 
 
-            case "Baseball" :
+            case "Baseball":
                 Log.v(LOG_TAG, "baseball clicked");
                 mSport = "baseball";
                 fireGeoQuery();
@@ -430,11 +439,11 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     private void fireGeoQuery() {
         geoQuery.removeAllListeners();
-     //   sportSpinner.setVisibility(View.INVISIBLE);
-       // searchSportsButton.setVisibility(View.VISIBLE);
+        //   sportSpinner.setVisibility(View.INVISIBLE);
+        // searchSportsButton.setVisibility(View.VISIBLE);
         clearMap();
-        playerFoundCount=0;
-      //  mSport = "basketball";
+        playerFoundCount = 0;
+        //  mSport = "basketball";
         geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLngCenter.latitude, latLngCenter.longitude), 1);
         geoQuery.addGeoQueryEventListener(this);
     }
@@ -578,16 +587,18 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onKeyEntered(String key, GeoLocation location) {
         String emailId = Utility.decodeEmail(key);
-        playerFoundCount++;
-        Log.d(LOG_TAG, String.format("Key %s entered the search area at [%f,%f]", emailId, location.latitude, location.longitude));
-        // Log.v(LOG_TAG,"onKeyEntered :" +mUrlRef.child(key).getKey());
-        //   mPlayerParcelable = new PlayerParcelable(Utility.decodeEmail(key),"",location.latitude,location.longitude);
-        //   mPlayerParcelables.add(mPlayerParcelable);
+        if (!Utility.decodeEmail(mUser.getEmail()).equals(emailId)) {
+            playerFoundCount++;
+            Log.d(LOG_TAG, String.format("Key %s entered the search area at [%f,%f]", emailId, location.latitude, location.longitude));
+            // Log.v(LOG_TAG,"onKeyEntered :" +mUrlRef.child(key).getKey());
+            //   mPlayerParcelable = new PlayerParcelable(Utility.decodeEmail(key),"",location.latitude,location.longitude);
+            //   mPlayerParcelables.add(mPlayerParcelable);
 
     /*    Firebase urlRef = new Firebase(Constants.APP_URL_USERS);
         urlRef.child("key")*/
-        ;
-        findUserByEmailId(emailId);
+            ;
+            findUserByEmailId(emailId);
+        }
     }
 
     @Override
@@ -624,6 +635,50 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     }
 
     @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        User userObj = dataSnapshot.getValue(User.class);
+        if (mSport != null && !mSport.isEmpty()) {
+            if (!mSport.equalsIgnoreCase(userObj.getSport())) {
+                playerFoundCount--;
+                if (playerFoundCount <= 0) {
+                    Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+        PlayerParcelable playerParcelable = new PlayerParcelable(userObj);
+        mPlayerParcelables.add(playerParcelable);
+        String time = userObj.getPlayingTime();
+        markerOptions = new MarkerOptions()
+                .position(new LatLng(userObj.getLatitude(), userObj.getLongitude()))
+                .title(userObj.getName())
+                .snippet(time);
+        markerMap.put(userObj.getEmail(), markerOptions);
+        mMap.addMarker(markerOptions);
+        userLatLngMap.put(new LatLng(userObj.getLatitude(), userObj.getLongitude()), playerParcelable);
+    }
+
+    @Override
+    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+    }
+
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
+  /*  @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
         //  HashMap<String, Object> values = (HashMap<String, Object>) dataSnapshot.getValue();
         //   User userObj = Utility.retrieveUserObject(values);
@@ -664,11 +719,11 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     }
 
-    @Override
+
     public void onCancelled(FirebaseError firebaseError) {
 
     }
-
+*/
 
 
 
