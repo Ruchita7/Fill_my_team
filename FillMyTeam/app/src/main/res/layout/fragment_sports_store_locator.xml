@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:hint="Hint"
+            android:hint="@string/autocomplete_hint"
             android:singleLine="true" />
 
         <TextView

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.fillmyteam.data.SportsColumns;
+import com.android.fillmyteam.util.Constants;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -47,7 +48,8 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
         String url = mCursor.getString(SportsInfoFragment.COL_SPORT_POSTER_IMAGE);
         Picasso.with(mContext).load(url).into(holder.sportsImage);
         holder.sportsName.setText(mCursor.getString(SportsInfoFragment.COL_SPORT_NAME));
-        ViewCompat.setTransitionName(holder.sportsImage, "iconView" + position);
+     //   ViewCompat.setTransitionName(holder.sportsImage, "iconView" + position);
+        ViewCompat.setTransitionName(holder.sportsImage, Constants.ICON_VIEW + position);
         mIcm.onBindViewHolder(holder, position);
     }
 

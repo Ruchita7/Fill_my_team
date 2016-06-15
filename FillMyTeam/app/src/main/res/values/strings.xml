@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Fill My Team</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -13,7 +13,7 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
-    <string name="map_key">YOUR MAP KEY</string>
+    <string name="map_key">MAP_KEY</string>
     <string name="sport_goods_query">sports+goods</string>
 
     <string name="loading">Loading…</string>
@@ -25,4 +25,32 @@
     <string name="map_not_ready">Map is not ready yet</string>
     <string name="clear_map">Clear</string>
     <string name="reset_map">Reset</string>
+    <string name="player_time_location"><xliff:g id="location">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="playing_message">You are scheduled to play in <xliff:g id="place">%1$s</xliff:g> </string>
+    <string name="google_services_unavailable">Google Play Services is not available.</string>
+    <string name="profile_updated">Profile has been updated successfully!</string>
+    <string name="user_found_latlng">Key <xliff:g id="key">%1$s</xliff:g> entered the search area at <xliff:g id="lat">%2$f</xliff:g>,<xliff:g id="lng">%3$f</xliff:g></string>
+    <string name="no_player_found">No players found nearby!</string>
+    <string name="no_key_found">Key <xliff:g id="key">%1$s</xliff:g> is no longer in the search area</string>
+    <string name="geo_query_error">"There was an error with this query: </string>
+    <string name="user_moved">Key <xliff:g id="key">%1$s</xliff:g> moved within the search area to <xliff:g id="lat">%2$f</xliff:g>,<xliff:g id="lng">%3$f</xliff:g></string>
+    <string name="invite_user">Invite  <xliff:g id="username">%1$s</xliff:g> to play</string>
+    <string name="no_geocoder">no geocoder available</string>
+    <string name="no_item_state">Unable to Set Item State</string>
+    <string name="place_autocomplete_error">Error contacting API: <xliff:g id="error">%1$s</xliff:g></string>
+    <string name="place_autocomplete_log_error"> Error getting autocomplete prediction API call:<xliff:g id="error">%1$s</xliff:g></string>
+    <string name="place_autocomplete_no_result">Query completed. Received <xliff:g id="error">%1$d</xliff:g> predictions.</string>
+    <string name="google_api_client_connect_error">Could not connect to Google API Client: Error  <xliff:g id="error">%1$s</xliff:g> </string>
+    <string name="geo_location">google.navigation:q=<xliff:g id="storeLocation">%1$s</xliff:g></string>
+    <string name="fill_my_team">Fill My Team</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign out</string>
+    <string name="where">Where</string>
+    <string name="sport">Sport</string>
+    <string name="update">Update</string>
+    <string name="locate_players">Locate players</string>
+    <string name="players">Players</string>
+    <string name="basic_rules">Basic Rules</string>
+    <string name="data_unavailable">Data unavailable</string>
+    <string name="autocomplete_hint">Search Sports Stores within 5KM Range</string>
 </resources>

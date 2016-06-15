@@ -179,8 +179,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            Toast.makeText(getActivity().getApplicationContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
+/*            Toast.makeText(getActivity().getApplicationContext(), "Clicked: " + primaryText,
+                    Toast.LENGTH_SHORT).show();*/
             Log.i(LOG_TAG, "Called getPlaceById to get Place details for " + placeId);
         }
     };
@@ -257,7 +257,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
 
         // TODO(Developer): Check error code and notify the user of error state and resolution.
         Toast.makeText(getContext(),
-                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+               // "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                getString(R.string.google_api_client_connect_error, connectionResult.getErrorCode()),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -279,11 +280,13 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         final double longitude = storeLocatorParcelable.getLongitude();
         final String storeName = storeLocatorParcelable.getName();
         final String address = storeLocatorParcelable.getAddress();
-        String geoLocation = "google.navigation:" + "q=" + storeName + address;
+      //  String geoLocation = "google.navigation:" + "q=" + storeName + address;
+        String geoLocation = getString(R.string.geo_location, storeName + address);
 
         Uri geoIntentUri = Uri.parse(geoLocation);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
+      //  mapIntent.setPackage("com.google.android.apps.maps");
+        mapIntent.setPackage(Constants.GOOGLE_MAPS_PACKAGE);
         if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
             getContext().startActivity(mapIntent);
         }

@@ -63,7 +63,8 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
             Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
+      //      urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod(Constants.GET_REQUEST);
             urlConnection.connect();
 
             // Read the input stream into a String
@@ -131,18 +132,25 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
         JSONObject jsonObject;
         try {
             JSONObject storeJson = new JSONObject(locationData);
-            JSONArray storeJsonArray = storeJson.getJSONArray("results");
+         //   JSONArray storeJsonArray = storeJson.getJSONArray("results");
+            JSONArray storeJsonArray = storeJson.getJSONArray(Constants.RESULTS);
             JSONObject latLng;
             JSONObject geometry;
             for(int i=0;i<storeJsonArray.length();i++) {
                 jsonObject =storeJsonArray.getJSONObject(i);
-                geometry=jsonObject.getJSONObject("geometry");
-                latLng= geometry.getJSONObject("location");
+                /*geometry=jsonObject.getJSONObject("geometry");
+                latLng= geometry.getJSONObject("location");*/
+                geometry=jsonObject.getJSONObject(Constants.GEOMETRY);
+                latLng= geometry.getJSONObject(Constants.LOCATION);
              //   latLngArray=geometry.getJSONArray("location");
-                address=jsonObject.getString("formatted_address");
+            /*    address=jsonObject.getString("formatted_address");
                 latitude=latLng.getDouble("lat");
                 longitude=latLng.getDouble("lng");
-                name=jsonObject.getString("name");
+                name=jsonObject.getString("name");     */
+                address=jsonObject.getString(Constants.FORMATTED_ADDRESS);
+                latitude=latLng.getDouble(Constants.LAT);
+                longitude=latLng.getDouble(Constants.LNG);
+                name=jsonObject.getString(Constants.PLACE_NAME);
                 storeLocatorParcelable = new StoreLocatorParcelable(name,address,latitude,longitude);
                 mStoreLocatorParcelables.add(storeLocatorParcelable);
             }

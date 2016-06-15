@@ -50,7 +50,8 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
+           // urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod(Constants.GET_REQUEST);
             urlConnection.connect();
 
             // Read the input stream into a String
@@ -121,13 +122,20 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             JSONArray sportsJsonArray = sportsJson.getJSONObject(Constants.SPORT).getJSONArray(Constants.LIST);
             for(int i=0;i<sportsJsonArray.length();i++) {
                 jsonObject =sportsJsonArray.getJSONObject(i);
-                sportName=jsonObject.getString("name");
+               /* sportName=jsonObject.getString("name");
                 objective=jsonObject.getString("objective");
                 players=jsonObject.getString("players");
                 rules=jsonObject.getString("rules");
                 thumbnail=jsonObject.getString("thumbnail");
                 image=jsonObject.getString("image");
-                video=jsonObject.getString("video");
+                video=jsonObject.getString("video");*/
+                sportName=jsonObject.getString(Constants.SPORTS_NAME);
+                objective=jsonObject.getString(Constants.OBJECTIVE);
+                players=jsonObject.getString(Constants.PLAYERS);
+                rules=jsonObject.getString(Constants.RULES);
+                thumbnail=jsonObject.getString(Constants.THUMBNAIL);
+                image=jsonObject.getString(Constants.IMAGE);
+                video=jsonObject.getString(Constants.VIDEO);
                 sportParcelable = new SportParcelable("",sportName,objective,players,rules,thumbnail,image,video);
                 mSportParcelables.add(sportParcelable);
 

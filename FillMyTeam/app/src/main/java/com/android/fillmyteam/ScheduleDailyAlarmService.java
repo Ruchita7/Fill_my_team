@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import com.android.fillmyteam.util.Constants;
+
 /**
  * Created by dgnc on 6/5/2016.
  */
@@ -19,8 +21,10 @@ public class ScheduleDailyAlarmService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent.hasExtra("MSG")) {
-            String msg = intent.getStringExtra("MSG");
+      //  if (intent.hasExtra("MSG")) {
+        if (intent.hasExtra(Constants.MESSAGE)) {
+        //    String msg = intent.getStringExtra("MSG");
+            String msg = intent.getStringExtra(Constants.MESSAGE);
             sendNotification(msg);
         }
         DailyAlarmReceiver.completeWakefulIntent(intent);
@@ -36,7 +40,8 @@ public class ScheduleDailyAlarmService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("match scheduled")
+                  //      .setContentTitle("match scheduled")
+                        .setContentTitle(Constants.MATCH_SCHEDULED)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(message))
                         .setContentText(message);

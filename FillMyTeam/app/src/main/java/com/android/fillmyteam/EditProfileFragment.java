@@ -88,7 +88,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public static EditProfileFragment newInstance(User user) {
         EditProfileFragment fragment = new EditProfileFragment();
         Bundle args = new Bundle();
-        args.putSerializable("user", user);
+        args.putSerializable(Constants.USER_DETAILS, user);
         /*args.putDouble(Constants.LATITUDE, latitude);
         args.putDouble(Constants.LONGITUDE, longitude);*/
         fragment.setArguments(args);
@@ -105,7 +105,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();*/
         if (getArguments() != null) {
-            mUser = (User) getArguments().getSerializable("user");
+            mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
             /*mLatitude = getArguments().getDouble(Constants.LATITUDE);
             mLongitude = getArguments().getDouble(Constants.LONGITUDE);*/
             //   mParam2 = getArguments().getString(ARG_PARAM2);
@@ -223,7 +223,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
             case R.id.time:
                 newFragment = new TimePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+                newFragment.show(getActivity().getSupportFragmentManager(), Constants.TIME_PICKER);
                 break;
 
            /* case R.id.date:
@@ -249,7 +249,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     GooglePlayServicesUtil
                             .getErrorDialog(e.getConnectionStatusCode(), getActivity(), 0);
                 } catch (GooglePlayServicesNotAvailableException e) {
-                    Toast.makeText(getActivity(), "Google Play Services is not available.",
+               //     Toast.makeText(getActivity(), "Google Play Services is not available.",
+                    Toast.makeText(getActivity(), getString(R.string.google_services_unavailable),
                             Toast.LENGTH_LONG)
                             .show();
                 }
@@ -287,10 +288,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         String time = gregorianCalendar.get(Calendar.HOUR) + ":" + gregorianCalendar.get(Calendar.MINUTE);
         String playingTime;
         if (hourOfDay > 12) {
-            playingTime = time + " PM";
+       //     playingTime = time + " PM";
+            playingTime = time + Constants.PM;
 
         } else {
-            playingTime = time + " AM";
+        //    playingTime = time + " AM";
+            playingTime = time + Constants.AM;
         }
 
         mTime.setText(playingTime);
@@ -377,12 +380,18 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         alarmReceiver.cancelAlarm();
         DatabaseReference ref = mUrlRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
         //  mUser.setPlayingTime(mTime.getText().toString());
-        ref.child("playingTime").setValue(mPlayingTime);
-        ref.child("latitude").setValue(mUser.getLatitude());
-        ref.child("longitude").setValue(mUser.getLongitude());
-        ref.child("playingPlace").setValue(mUser.getPlayingPlace());
-        ref.child("sport").setValue(mUser.getSport());
-        Toast.makeText(getContext(), "Profile has been updated successfully!", Toast.LENGTH_LONG).show();
+        //ref.child("playingTime").setValue(mPlayingTime);
+        ref.child(Constants.PLAY_TIME).setValue(mPlayingTime);
+        //ref.child("latitude").setValue(mUser.getLatitude());
+        ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());
+        //ref.child("longitude").setValue(mUser.getLongitude());
+        ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
+        //ref.child("playingPlace").setValue(mUser.getPlayingPlace());
+        ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
+       // ref.child("sport").setValue(mUser.getSport());
+        ref.child(Constants.SPORT).setValue(mUser.getSport());
+       // Toast.makeText(getContext(), "Profile has been updated successfully!", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
 
         alarmReceiver.setAlarmTime(getActivity(),mUser.getPlayingTime(),mUser.getPlayingPlace());
 

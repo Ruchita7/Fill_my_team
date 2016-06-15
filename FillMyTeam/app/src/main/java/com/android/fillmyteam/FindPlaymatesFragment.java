@@ -2,10 +2,8 @@ package com.android.fillmyteam;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -55,7 +53,6 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /*import com.firebase.client.DataSnapshot;
@@ -113,7 +110,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     boolean mToken;
     boolean mGooglePlayServicesAvbl;
     // Firebase mNotificationRef;
-    DatabaseReference mNotificationRef;
+  //  DatabaseReference mNotificationRef;
     User mUser;
     /* Button mClearButton;
      Button mResetButton;*/
@@ -145,7 +142,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Bundle args = new Bundle();
         /*args.putDouble(Constants.LATITUDE, latitude);
         args.putDouble(Constants.LONGITUDE, longitude);*/
-        args.putSerializable("user", user);
+        //args.putSerializable("user", user);
+        args.putSerializable(Constants.USER_DETAILS, user);
         //   args.putBoolean("GOOGLE_PLAY_SERVICES",isGooglePlayServices);
         fragment.setArguments(args);
 
@@ -158,21 +156,21 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
         super.onCreate(savedInstanceState);
         mContext = getActivity();
+        Firebase.setAndroidContext(getContext());
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
         //  mUrlRef = new Firebase(Constants.APP_URL_USERS);
         mUrlRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Constants.APP_URL_USERS);
         userLatLngMap = new HashMap<>();
         //mNotificationRef = new Firebase(Constants.PLAYERS_NOTIFICATIONS);
-        mNotificationRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(Constants.PLAYERS_NOTIFICATIONS);
+       // mNotificationRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Constants.PLAYERS_NOTIFICATIONS);
         mPlayerParcelables = new ArrayList<>();
         markerMap = new HashMap<>();
         if (getArguments() != null) {
          /*   mLatitude = getArguments().getDouble(Constants.LATITUDE);
             mLongitude = getArguments().getDouble(Constants.LONGITUDE);*/
-            mUser = (User) getArguments().getSerializable("user");
-            mGooglePlayServicesAvbl = getArguments().getBoolean("GOOGLE_PLAY_SERVICES");
+            mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
+           // mGooglePlayServicesAvbl = getArguments().getBoolean("GOOGLE_PLAY_SERVICES");
             //   mParam2 = getArguments().getString(ARG_PARAM2);
         }
         latLngCenter = new LatLng(mUser.getLatitude(), mUser.getLongitude());
@@ -182,12 +180,12 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                 //  .bearing(0)
                 //  .tilt(45)
                 .build();
-        if (mGooglePlayServicesAvbl) {
+        /*if (mGooglePlayServicesAvbl) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
             mToken = sharedPreferences.getBoolean(MainActivity.SENT_TOKEN_TO_SERVER, false);
         }
-
+*/
 
         //    GeoFire geoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
 
@@ -282,44 +280,56 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Log.v(LOG_TAG, "selected item" + sport);
         //   mUser.setSport(sport);
         switch (sport) {
-            case "All":
+         //   case "All":
+            case Constants.ALL:
                 mSport = "";
                 fireGeoQuery();
                 break;
-            case "Basketball":
+            //case "Basketball":
+            case Constants.BASKETBALL:
                 Log.v(LOG_TAG, "basketball clicked");
-                mSport = "basketball";
+                mSport = Constants.BASKETBALL;
                 fireGeoQuery();
 
                 break;
-            case "Tennis":
+          //  case "Tennis":
+            case Constants.TENNIS:
                 Log.v(LOG_TAG, "tennis clicked");
-                mSport = "tennis";
+              //  mSport = "tennis";
+                mSport = Constants.TENNIS;
                 fireGeoQuery();
 
                 break;
-            case "Football":
+        //    case "Football":
+            case Constants.FOOTBALL:
                 Log.v(LOG_TAG, "football clicked");
-                mSport = "football";
+                //mSport = "football";
+                mSport = Constants.FOOTBALL;
                 fireGeoQuery();
                 break;
 
-            case "Cricket":
+            //case "Cricket":
+            case Constants.CRICKET:
                 Log.v(LOG_TAG, "cricket clicked");
-                mSport = "cricket";
+             //   mSport = "cricket";
+               mSport = Constants.CRICKET;
                 fireGeoQuery();
                 break;
 
-            case "Badminton":
+         //   case "Badminton":
+            case Constants.BADMINTON:
                 Log.v(LOG_TAG, "badminton clicked");
-                mSport = "badminton";
+               // mSport = "badminton";
+                mSport = Constants.BADMINTON;
                 fireGeoQuery();
                 break;
 
 
-            case "Baseball":
+           // case "Baseball":
+            case Constants.BASEBALL:
                 Log.v(LOG_TAG, "baseball clicked");
-                mSport = "baseball";
+                //mSport = "baseball";
+                mSport = Constants.BASEBALL;
                 fireGeoQuery();
                 break;
         }
@@ -589,7 +599,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         String emailId = Utility.decodeEmail(key);
         if (!Utility.decodeEmail(mUser.getEmail()).equals(emailId)) {
             playerFoundCount++;
-            Log.d(LOG_TAG, String.format("Key %s entered the search area at [%f,%f]", emailId, location.latitude, location.longitude));
+          //  Log.d(LOG_TAG, String.format("Key %s entered the search area at [%f,%f]", emailId, location.latitude, location.longitude));
+            Log.d(LOG_TAG, getString(R.string.user_found_latlng, emailId, location.latitude, location.longitude));
             // Log.v(LOG_TAG,"onKeyEntered :" +mUrlRef.child(key).getKey());
             //   mPlayerParcelable = new PlayerParcelable(Utility.decodeEmail(key),"",location.latitude,location.longitude);
             //   mPlayerParcelables.add(mPlayerParcelable);
@@ -604,32 +615,37 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onKeyExited(String key) {
         playerFoundCount--;
-        Log.d(LOG_TAG, String.format("Key %s is no longer in the search area", key));
+       // Log.d(LOG_TAG, String.format("Key %s is no longer in the search area", key));
+        Log.d(LOG_TAG, getString(R.string.no_key_found, key));
     }
 
     @Override
     public void onGeoQueryReady() {
-        Log.d(LOG_TAG, "All initial com.android.fillmyteam.data has been loaded and events have been fired!");
+        Log.d(LOG_TAG, "All initial data has been loaded and events have been fired!");
         if (playerFoundCount <= 0) {
-            Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
+       //     Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_player_found), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onGeoQueryError(FirebaseError error) {
-        Log.e(LOG_TAG, "There was an error with this query: " + error);
+      //  Log.e(LOG_TAG, "There was an error with this query: " + error);
+        Log.e(LOG_TAG, getString(R.string.geo_query_error) + error);
     }
 
     @Override
     public void onKeyMoved(String key, GeoLocation location) {
-        Log.d(LOG_TAG, String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+      //  Log.d(LOG_TAG, String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+        Log.d(LOG_TAG, getString(R.string.user_moved, key, location.latitude, location.longitude));
     }
 
 
     private void findUserByEmailId(String emailId) {
         Query queryRef = null;
 
-        queryRef = mUrlRef.orderByChild("email").equalTo(emailId).limitToFirst(1);
+      //  queryRef = mUrlRef.orderByChild("email").equalTo(emailId).limitToFirst(1);
+        queryRef = mUrlRef.orderByChild(Constants.EMAIL).equalTo(emailId).limitToFirst(1);
 
         queryRef.addChildEventListener(this);
     }
@@ -641,7 +657,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
             if (!mSport.equalsIgnoreCase(userObj.getSport())) {
                 playerFoundCount--;
                 if (playerFoundCount <= 0) {
-                    Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.no_player_found), Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -811,18 +828,19 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     public void onInfoWindowClick(final Marker marker) {
         Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
-                .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
-                .setAction("SEND NOTIFICATION", new View.OnClickListener() {
+                //.make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
+                .make(frameLayout, getString(R.string.invite_user,marker.getTitle()), Snackbar.LENGTH_LONG)
+                .setAction(Constants.SEND_NOTIFICATION, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e(LOG_TAG, "onClick of onInfoWindowClick");
+                        Log.v(LOG_TAG, "onClick of onInfoWindowClick");
                         LatLng markerLatLng = marker.getPosition();
                         PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
                         User user = playerParcelable.getUser();
-                        List<String> msg = new ArrayList<String>();
-                        msg.add(user.getEmail() + " wants to play with you");
+                       /* List<String> msg = new ArrayList<String>();
+                        msg.add(user.getEmail() + " wants to play with you");*/
                         Log.v(LOG_TAG, "User's mail::" + user.getEmail());
-                        mNotificationRef.child(Utility.encodeEmail(user.getEmail())).child("msg").setValue(msg);
+                     //   mNotificationRef.child(Utility.encodeEmail(user.getEmail())).child("msg").setValue(msg);
                       /*  Intent intent = new Intent(getActivity(), NotificationService.class);
                         intent.putExtra(Constants.NOTIFY_USER, playerParcelable);
                         getActivity().startService(intent);*/
@@ -836,8 +854,10 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     public void onInfoWindowLongClick(final Marker marker) {
         Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
-                .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
-                .setAction("SEND NOTIFICATION", new View.OnClickListener() {
+              //  .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
+                .make(frameLayout,  getString(R.string.invite_user,marker.getTitle()), Snackbar.LENGTH_LONG)
+             //  .setAction("SEND NOTIFICATION", new View.OnClickListener() {
+                .setAction(Constants.SEND_NOTIFICATION, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.e(LOG_TAG, "onClick of onInfoWindowClick");

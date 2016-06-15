@@ -51,13 +51,16 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         // mAuth = FirebaseAuth.getInstance();
 
-        if (getIntent().hasExtra("User Credentials")) {
-            mUser = (User) getIntent().getSerializableExtra("User Credentials");
+     //   if (getIntent().hasExtra("User Credentials")) {
+        if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
+          //  mUser = (User) getIntent().getSerializableExtra("User Credentials");
+            mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
             Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("email", mUser.getEmail());
+         //   editor.putString("email", mUser.getEmail());
+            editor.putString(Constants.EMAIL, mUser.getEmail());
             editor.commit();
         }
     /*    mGoogleApiClient = new GoogleApiClient.Builder(this)

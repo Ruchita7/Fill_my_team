@@ -220,15 +220,17 @@ public class PlaceAutocompleteAdapter
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-                Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
+               // Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
+                Toast.makeText(getContext(), getContext().getString(R.string.place_autocomplete_error, status.toString()),
                         Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
+           //     Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                Log.e(TAG, getContext().getString(R.string.place_autocomplete_log_error,status.toString()) + status.toString());
                 autocompletePredictions.release();
                 return null;
             }
 
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
+          //  Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount() + " predictions.");
+            Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
 
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);

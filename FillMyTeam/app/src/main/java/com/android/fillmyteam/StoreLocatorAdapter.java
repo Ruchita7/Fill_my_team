@@ -1,8 +1,6 @@
 package com.android.fillmyteam;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,17 +77,10 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
     }
 
 
-    public void onItemClick(View view, double latitude, double longitude, String storeName, String address) {
+   /* public void onItemClick(View view, double latitude, double longitude, String storeName, String address) {
 
         //launch map
-   /*     String geoLocation="geo:"+latitude+","+longitude+"?q="+storeName+address;
 
-        Uri geoIntentUri = Uri.parse(geoLocation);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
-            mContext.startActivity(mapIntent);
-        }*/
 
         //directions
         String geoLocation = "google.navigation:" + "q=" + storeName + address;
@@ -100,6 +91,6 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
         if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
             mContext.startActivity(mapIntent);
         }
-    }
+    }*/
 
 }

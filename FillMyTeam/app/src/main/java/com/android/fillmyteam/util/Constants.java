@@ -51,4 +51,54 @@ public class Constants {
     public static final String RADIUS="radius";
     public static final String TEN_KM_RADIUS="10000";
     public static final String LOCATION_BASE_URL = "https://maps.googleapis.com/maps/api/place/";
+
+
+    public static final String TYPE="type";
+    public static final String KEY="key";
+    public static final String TIME_PLACE="time_place";
+    public static final String MESSAGE="msg";
+    public static final String USER_DETAILS="user";
+    public static final String  PM=" PM";
+    public static final String  AM=" AM";
+    public static final String PLAY_TIME="playingTime";
+    public static final String  PLAYING_PLACE="playingPlace";
+//    public static final String SPORT="Sport";
+
+    public static final String ALL="All";
+    public static final String BASKETBALL="Basketball";
+    public static final String TENNIS="Tennis";
+    public static final String FOOTBALL="Football";
+    public static final String CRICKET="Cricket";
+    public static final String BADMINTON="Badminton";
+    public static final String BASEBALL="Baseball";
+
+    //public static final String EMAIL="EMAIL";
+
+
+    public static final String SEND_NOTIFICATION="SEND NOTIFICATION";
+    public static final String TIME_PICKER="timePicker";
+
+    public static final String USER_CREDENTIALS="User Credentials";
+    public  static final String MATCH_SCHEDULED="match scheduled";
+    public  static final String SPORTS_NAME= "name";
+    public  static final String OBJECTIVE= "objective";
+    public  static final String PLAYERS= "players";
+    public  static final String RULES= "rules";
+    public  static final String THUMBNAIL= "thumbnail";
+    public  static final String IMAGE= "image";
+    public  static final String VIDEO= "video";
+    public  static final String GET_REQUEST= "GET";
+    public static final String SPORT_ID="ID";
+    public static final String ICON_VIEW= "iconView";
+    public static final String ASC_ORDER= " ASC";
+ //   public static final String GEO_LOCATION= "google.navigation:q=";
+    public static final String GOOGLE_MAPS_PACKAGE="com.google.android.apps.maps";
+
+    public static final String RESULTS="results";
+    public static final String LAT="lat";
+    public static final String LNG="lng";
+    public static final String PLACE_NAME="name";
+    public static final String GEOMETRY="geometry";
+    public static final String PLACE_LOCATION="location";
+    public static final String FORMATTED_ADDRESS="formatted_address";
 }

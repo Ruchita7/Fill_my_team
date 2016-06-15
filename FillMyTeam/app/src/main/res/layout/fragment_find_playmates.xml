@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:drawableLeft="@drawable/ic_search"
-        android:text="Locate players"/>
+        android:text="@string/locate_players"/>
 
     <Spinner
         android:id="@+id/sports_spinner"

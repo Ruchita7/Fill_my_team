@@ -73,7 +73,8 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     public static SportsDetailFragment newInstance(String sportId) {
         SportsDetailFragment fragment = new SportsDetailFragment();
         Bundle args = new Bundle();
-        args.putString("ID", sportId);
+       // args.putString("ID", sportId);
+        args.putString(Constants.SPORT_ID, sportId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,7 +84,8 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-            mSportId = getArguments().getString("ID");
+          //  mSportId = getArguments().getString("ID");
+            mSportId = getArguments().getString(Constants.SPORT_ID);
             Log.v(LOG_TAG, "sport id is ::" + mSportId);
         }
 

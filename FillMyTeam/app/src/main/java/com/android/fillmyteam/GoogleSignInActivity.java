@@ -176,7 +176,8 @@ public class GoogleSignInActivity extends BaseActivity implements
                             }
                             Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("User Credentials", mAuthenticatedUser);
+                        //    intent.putExtra("User Credentials", mAuthenticatedUser);
+                            intent.putExtra(Constants.USER_CREDENTIALS, mAuthenticatedUser);
                             startActivity(intent);
 
 
@@ -362,7 +363,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 if (!Geocoder.isPresent()) {
                    /* Toast.makeText(this, R.string.no_geocoder_available,
                             Toast.LENGTH_LONG).show();*/
-                    Toast.makeText(this, "no geocoder available",
+                    Toast.makeText(this, getString(R.string.no_geocoder),
                             Toast.LENGTH_LONG).show();
                     return;
                 } else {

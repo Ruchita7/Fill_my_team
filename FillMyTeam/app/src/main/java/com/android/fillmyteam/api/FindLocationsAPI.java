@@ -1,6 +1,7 @@
 package com.android.fillmyteam.api;
 
 import com.android.fillmyteam.model.LocationResponse;
+import com.android.fillmyteam.util.Constants;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -12,6 +13,6 @@ import retrofit.http.Query;
 
 public interface FindLocationsAPI {
     @GET("textsearch/json")
-    Call<LocationResponse> retrieveParksNearMe(@Query("location") String location, @Query("type") String type, @Query("radius") String radius, @Query("key") String key );
+    Call<LocationResponse> retrieveParksNearMe(@Query(Constants.LOCATION) String location, @Query(Constants.TYPE) String type, @Query(Constants.RADIUS) String radius, @Query(Constants.KEY) String key );
 
 }

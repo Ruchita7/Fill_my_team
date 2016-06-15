@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
+import com.android.fillmyteam.util.Constants;
 
 
 /**
@@ -81,8 +82,10 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public static SportsInfoFragment newInstance(double latitude,double longitude)  {
         SportsInfoFragment fragment = new SportsInfoFragment();
         Bundle args = new Bundle();
-        args.putDouble(ARG_PARAM1, latitude);
-        args.putDouble(ARG_PARAM2, longitude);
+        /*args.putDouble(ARG_PARAM1, latitude);
+        args.putDouble(ARG_PARAM2, longitude); */
+        args.putDouble(Constants.LATITUDE, latitude);
+        args.putDouble(Constants.LONGITUDE, longitude);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,8 +94,10 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mLatitude = getArguments().getDouble(ARG_PARAM1);
-            mLongitude = getArguments().getDouble(ARG_PARAM2);
+         /*   mLatitude = getArguments().getDouble(ARG_PARAM1);
+            mLongitude = getArguments().getDouble(ARG_PARAM2);  */
+            mLatitude = getArguments().getDouble(Constants.LATITUDE);
+            mLongitude = getArguments().getDouble(Constants.LONGITUDE);
          //   mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
@@ -157,7 +162,8 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String sortOrder= SportsColumns._ID+" ASC";
+        //String sortOrder= SportsColumns._ID+" ASC";
+        String sortOrder= SportsColumns._ID+Constants.ASC_ORDER;
         return new CursorLoader(getActivity(),
                 SportsProvider.Sports.CONTENT_URI,
                 null,

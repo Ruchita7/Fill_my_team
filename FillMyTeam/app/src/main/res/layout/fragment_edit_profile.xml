@@ -54,7 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Where" />
+            android:text="@string/where" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,7 +82,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sport" />
+            android:text="@string/sport" />
 
         <Spinner
             android:id="@+id/sports_list_spinner"
@@ -97,7 +97,7 @@
         android:id="@+id/saveUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update"
+        android:text="@string/update"
         android:layout_gravity="center_horizontal"/>
 
 
