@@ -1,0 +1,103 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FindPlaymatesFragment">
+
+    <FrameLayout
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+
+    <!--ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search by sports"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="bottom"
+        android:id="@+id/search_sports_button"/-->
+
+    <Button
+        android:id="@+id/search_sports_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:drawableLeft="@drawable/ic_search"
+        android:text="@string/locate_players"/>
+
+    <Spinner
+        android:id="@+id/sports_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:visibility="invisible" />
+    <!--LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+
+
+        <RadioGroup
+            android:id="@+id/sports_optioms"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <RadioButton
+                android:id="@+id/all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="All" />
+
+            <RadioButton
+                android:id="@+id/basketball"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Basketball" />
+
+            <RadioButton
+                android:id="@+id/tennis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tennis" />
+
+            <RadioButton
+                android:id="@+id/football"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Football" />
+
+            <RadioButton
+                android:id="@+id/cricket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cricket" />
+
+            <RadioButton
+                android:id="@+id/badminton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="badminton" />
+
+            <RadioButton
+                android:id="@+id/baseball"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baseball" />
+
+
+        </RadioGroup>
+    </LinearLayout-->
+
+</FrameLayout>
+

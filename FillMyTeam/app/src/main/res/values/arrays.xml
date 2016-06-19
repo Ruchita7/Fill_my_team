@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sports_list">
+        <item>@string/football</item>
+        <item>@string/cricket</item>
+        <item>@string/basketball</item>
+        <item>@string/hockey</item>
+        <item>@string/tennis</item>
+        <item>@string/badminton</item>
+        <item>@string/baseball</item>
+        <item>@string/rugby</item>
+        <item>@string/volleyball</item>
+        <item>@string/table_tennis</item>
+    </string-array>
+
+    <string-array name="all_sports">
+        <item>@string/all</item>
+        <item>@string/football</item>
+        <item>@string/cricket</item>
+        <item>@string/basketball</item>
+        <item>@string/tennis</item>
+        <item>@string/badminton</item>
+        <item>@string/baseball</item>
+        <item>@string/basketball</item>
+
+    </string-array>
+
+    <string-array name="time_interval">
+        <item>@string/fifteen_mins</item>
+        <item>@string/thirty_mins</item>
+        <item>@string/one_hour</item>
+        <item>@string/two_hour</item>
+    </string-array>
+
+    <string-array name="time_interval_values">
+        <item>@string/fifteen_mins_value</item>
+        <item>@string/thirty_mins_value</item>
+        <item>@string/one_hour_value</item>
+        <item>@string/two_hour_value</item>
+    </string-array>
+</resources>
