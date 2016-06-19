@@ -14,6 +14,11 @@
             android:id="@+id/edit_profile"
             android:icon="@drawable/ic_create"
             android:title="Edit Profile" />
+
+        <item
+            android:id="@+id/upcoming_matches"
+            android:title="@string/upcoming_matches" />
+
         <item
             android:id="@+id/sports_store_locator"
             android:icon="@drawable/ic_store_mall_directory"
@@ -22,10 +27,10 @@
         <item
             android:id="@+id/user_settings"
             android:title="Settings" />
-        <item android:id="@+id/logout"
+        <item
+            android:id="@+id/logout"
             android:icon="@drawable/ic_logout"
-            android:title="Logout"
-            />
+            android:title="Logout" />
         <!--item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
@@ -35,7 +40,6 @@
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools" /-->
     </group>
-
 
 
 </menu>

@@ -839,7 +839,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Snackbar snackbar = Snackbar
                 //.make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
                 .make(frameLayout, getString(R.string.invite_user,marker.getTitle()), Snackbar.LENGTH_LONG)
-                .setAction(Constants.SEND_NOTIFICATION, new View.OnClickListener() {
+                .setAction(getString(R.string.ok), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.v(LOG_TAG, "onClick of onInfoWindowClick");
@@ -849,6 +849,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                        /* List<String> msg = new ArrayList<String>();
                         msg.add(user.getEmail() + " wants to play with you");*/
                         Log.v(LOG_TAG, "User's mail::" + user.getEmail());
+                        ((Callback) getActivity()).onInviteClick(mUser,user);
                      //   mNotificationRef.child(Utility.encodeEmail(user.getEmail())).child("msg").setValue(msg);
                       /*  Intent intent = new Intent(getActivity(), NotificationService.class);
                         intent.putExtra(Constants.NOTIFY_USER, playerParcelable);
@@ -873,7 +874,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                         PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
                         User user = playerParcelable.getUser();
                         Log.v(LOG_TAG, "User's mail::" + user.getEmail());
-                        Log.e(LOG_TAG, "onClick of onInfoWindowClick");
+                     //   Log.e(LOG_TAG, "onClick of onInfoWindowClick");
                         ((Callback) getActivity()).onInviteClick(mUser,user);
                     }
                 });

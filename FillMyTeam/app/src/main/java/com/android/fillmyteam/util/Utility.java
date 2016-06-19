@@ -1,5 +1,6 @@
 package com.android.fillmyteam.util;
 
+import com.android.fillmyteam.R;
 import com.android.fillmyteam.model.User;
 
 import java.text.ParseException;
@@ -149,6 +150,44 @@ public class Utility {
 
         return playingTime;
         //  mUser.setPlayingTime(playingTime);
+    }
+
+    public static int retrieveSportsIcon(String sportName) {
+        int sportDrawable = 0;
+        switch (sportName) {
+
+            case "Football":
+                sportDrawable = R.drawable.ic_football;
+                break;
+            case "Cricket":
+                sportDrawable = R.drawable.cricket;
+                break;
+            case "Basketball":
+                sportDrawable = R.drawable.ic_basketball;
+                break;
+            case "Hockey":
+                sportDrawable = R.drawable.ic_hockey;
+                break;
+            case "Tennis":
+                sportDrawable = R.drawable.ic_tennis;
+                break;
+            case "Badminton":
+                sportDrawable = R.drawable.ic_badminton;
+                break;
+            case "Baseball":
+                sportDrawable = R.drawable.ic_baseball;
+                break;
+            case "Rugby":
+                sportDrawable = R.drawable.ic_rugby;
+                break;
+            case "Volleyball":
+                sportDrawable = R.drawable.ic_volleyball;
+                break;
+            case "Table Tennis":
+                sportDrawable = R.drawable.ic_table_tennis;
+                break;
+        }
+        return sportDrawable;
     }
 
 }

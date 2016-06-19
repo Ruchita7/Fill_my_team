@@ -9,13 +9,11 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -25,20 +23,20 @@
 
         <activity
             android:name=".MainActivity"
-
             android:theme="@style/AppTheme.NoActionBar">
-            <!--intent-filter>
+
+            <!--
+            intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter-->
+            </intent-filter
+            -->
         </activity>
-
         <activity
             android:name=".GoogleSignInActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-     >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,20 +44,27 @@
             </intent-filter>
         </activity>
 
+        <!-- service android:name=".NotificationService" / -->
+        <receiver android:name=".DailyAlarmReceiver" />
 
-
-
-
-        <!--service android:name=".NotificationService" /-->
-        <receiver android:name=".DailyAlarmReceiver"></receiver>
-
-        <service android:name=".ScheduleDailyAlarmService"/>
+        <service android:name=".ScheduleDailyAlarmService" />
 
         <provider
             android:name=".provider.SportsProvider"
             android:authorities="com.android.fillmyteam.SportsProvider"
             android:exported="false" />
 
+        <receiver
+            android:name=".widget.MatchDetailWidgetProvider"
+            android:label="@string/title_widget_detail">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/upcoming_matches_widget" />
+        </receiver>
 
     </application>
 

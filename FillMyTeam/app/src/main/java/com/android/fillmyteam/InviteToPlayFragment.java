@@ -1,6 +1,7 @@
 package com.android.fillmyteam;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -33,8 +35,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +75,9 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     Button mCancelButton;
     ArrayAdapter<CharSequence> mAdapter;
     static EditText mPlayTimeEditText;
+    DatabaseReference matchRef;
+    static TextView mDateTextView;
+
     public static InviteToPlayFragment newInstance(User currentUser, User playWithUser) {
 
         Bundle args = new Bundle();
@@ -85,7 +95,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             mPlayWithUser = (User) getArguments().get(TO_PLAY_WITH_USER);
             mUser = (User) getArguments().get(CURRENT_USER);
         }
-
+        matchRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Constants.PLAYERS_MATCHES);
     }
 
     @Nullable
@@ -102,16 +112,22 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             }
         }
         invitePlayTextView.setText(getString(R.string.invite_play, mPlayWithUser.getName()));
-        mPlayTimeEditText=(EditText) view.findViewById(R.id.invite_time);
+        mPlayTimeEditText = (EditText) view.findViewById(R.id.invite_time);
         mPlayTimeEditText.setText(mUser.getPlayingTime());
+        mDateTextView = (TextView) view.findViewById(R.id.invite_date);
+
+        GregorianCalendar gcalendar = new GregorianCalendar();
+        mDateTextView.setText(Utility.getCurrentDate(gcalendar));
         mPlaceTextView.setText(mUser.getPlayingPlace());
         mInviteButton.setOnClickListener(this);
         mPlaceImageView.setOnClickListener(this);
         mPlayTimeEditText.setOnClickListener(this);
+        mDateTextView.setOnClickListener(this);
         mAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setSelection(mAdapter.getPosition(mUser.getSport()));
+       mSportsListSpinner.setOnItemSelectedListener(this);
         return view;
     }
 
@@ -125,6 +141,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v) {
         DialogFragment newFragment;
+
         switch (v.getId()) {
             case R.id.invite_time:
                 newFragment = new TimePickerFragment();
@@ -147,14 +164,70 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                             .show();
                 }
                 break;
+            case R.id.invite_button:
+                mUser.setPlayingTime(mPlayTimeEditText.getText().toString());
+                mUser.setPlayingDate(mDateTextView.getText().toString());
+                DatabaseReference ref = matchRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
+                Map<String, Object> currentUserMap = new HashMap<>();
+                Map<String, Object> playingUserMap = new HashMap<>();
+                currentUserMap.put(Constants.PLAY_TIME, mUser.getPlayingTime());
+                currentUserMap.put(Constants.PLAY_DATE, mUser.getPlayingDate());
+                currentUserMap.put(Constants.PLAYING_PLACE, mUser.getPlayingPlace());
+                currentUserMap.put(Constants.LATITUDE, mUser.getLatitude());
+                currentUserMap.put(Constants.LONGITUDE, mUser.getLongitude());
+                currentUserMap.put(Constants.SPORT, mUser.getSport());
+                currentUserMap.put(Constants.PLAYING_WITH, mPlayWithUser.getName());
+                currentUserMap.put(Constants.PLAYER_EMAIL, mPlayWithUser.getEmail());
+
+                ref.push().setValue(currentUserMap);
+                ref = matchRef.child("/" + Utility.encodeEmail(mPlayWithUser.getEmail()));
+                playingUserMap.put(Constants.PLAY_TIME, mUser.getPlayingTime());
+                playingUserMap.put(Constants.PLAY_DATE, mUser.getPlayingDate());
+                playingUserMap.put(Constants.PLAYING_PLACE, mUser.getPlayingPlace());
+                playingUserMap.put(Constants.LATITUDE, mUser.getLatitude());
+                playingUserMap.put(Constants.LONGITUDE, mUser.getLongitude());
+                playingUserMap.put(Constants.SPORT, mUser.getSport());
+                playingUserMap.put(Constants.PLAYING_WITH, mUser.getName());
+                playingUserMap.put(Constants.PLAYER_EMAIL, mUser.getEmail());
+                ref.push().setValue(playingUserMap);
+
+              /*  ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
+                ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
+                ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());
+                ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
+                ref.child(Constants.SPORT).setValue(mUser.getSport());
+                ref.child(Constants.PLAYING_WITH).setValue(mPlayWithUser.getName());
+
+
+                ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
+                ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
+                ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());
+                ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
+                ref.child(Constants.SPORT).setValue(mUser.getSport());
+                ref.child(Constants.PLAYING_WITH).setValue(mUser.getName());*/
+                Toast.makeText(getContext(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
+                break;
+
+            case R.id.invite_date:
+                newFragment = new DatePickerFragment();
+                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+                break;
+
         }
     }
+
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //  matchRef.removeEventListener(this);
+    }
 
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
@@ -176,6 +249,32 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             mPlayTimeEditText.setText(playingTime);
         }
     }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            Log.v("Date Dialog", day + " " + month + "" + year);
+            updateDate(day, month, year);
+        }
+    }
+
+    public static void updateDate(int day, int month, int year) {
+        mDateTextView.setText(day + " " + Utility.months[month] + " " + year);
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

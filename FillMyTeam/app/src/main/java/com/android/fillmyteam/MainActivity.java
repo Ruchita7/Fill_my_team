@@ -280,6 +280,11 @@ public class MainActivity extends AppCompatActivity
                 fragment = (EditProfileFragment) EditProfileFragment.newInstance(mUser);
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 break;
+            case R.id.upcoming_matches :
+                fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                break;
             case R.id.sports_store_locator:
                 fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

@@ -96,4 +96,9 @@
     <string name="invite_play">Invite <xliff:g id="username">%1$s</xliff:g>  to play?</string>
     <string name="invite">Invite</string>
     <string name="cancel">Cancel</string>
+    <string name="invited_to_play">Invited <xliff:g id="username">%1$s</xliff:g>  to play</string>
+    <string name="upcoming_matches">Upcoming Matches</string>
+    <string name="title_widget_detail">Upcoming Match Details</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

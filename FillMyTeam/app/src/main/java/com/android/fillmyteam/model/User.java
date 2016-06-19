@@ -12,24 +12,26 @@ public class User implements Serializable {
     private double latitude;
     private double longitude;
     private String sport;
-  //  private boolean playingEveryDay;
+    //  private boolean playingEveryDay;
     private String playingTime;
     private String photoUrl;
     private String playingPlace;
+    private String playingDate;
+
     public User() {
 
     }
 
-    public User(String name, String email,String sport, double latitude,  double longitude, String playingTime,String photoUrl,String playingPlace) {
+    public User(String name, String email, String sport, double latitude, double longitude, String playingTime, String photoUrl, String playingPlace) {
         this.name = name;
         this.email = email;
         this.latitude = latitude;
         this.sport = sport;
         this.longitude = longitude;
-     //   this.playingEveryDay = playingEveryDay;
+        //   this.playingEveryDay = playingEveryDay;
         this.playingTime = playingTime;
-        this.photoUrl=photoUrl;
-        this.playingPlace=playingPlace;
+        this.photoUrl = photoUrl;
+        this.playingPlace = playingPlace;
     }
 
     public String getName() {
@@ -52,10 +54,10 @@ public class User implements Serializable {
         return sport;
     }
 
- /*   public boolean isPlayingEveryDay() {
-        return playingEveryDay;
-    }
-*/
+    /*   public boolean isPlayingEveryDay() {
+           return playingEveryDay;
+       }
+   */
     public String getPlayingTime() {
         return playingTime;
     }
@@ -80,10 +82,10 @@ public class User implements Serializable {
         this.sport = sport;
     }
 
-   /* public void setPlayingEveryDay(boolean playingEveryDay) {
-        this.playingEveryDay = playingEveryDay;
-    }
-*/
+    /* public void setPlayingEveryDay(boolean playingEveryDay) {
+         this.playingEveryDay = playingEveryDay;
+     }
+ */
     public void setPlayingTime(String playingTime) {
         this.playingTime = playingTime;
     }
@@ -102,5 +104,13 @@ public class User implements Serializable {
 
     public void setPlayingPlace(String playingPlace) {
         this.playingPlace = playingPlace;
+    }
+
+    public String getPlayingDate() {
+        return playingDate;
+    }
+
+    public void setPlayingDate(String playingDate) {
+        this.playingDate = playingDate;
     }
 }
