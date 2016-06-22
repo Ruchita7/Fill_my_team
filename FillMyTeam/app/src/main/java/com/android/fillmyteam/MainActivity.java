@@ -25,6 +25,7 @@ import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
+import com.facebook.stetho.Stetho;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -164,6 +165,14 @@ public class MainActivity extends AppCompatActivity
                 Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
             }
         }
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
 
         //   setupDrawerContent(navigationView);
         //   new GcmRegistrationAsyncTask(this).execute();

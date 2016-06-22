@@ -108,4 +108,6 @@ public class Constants {
     public static final String EVENT_ID = "event_id";
     public static final String CALENDAR_EVENT_CREATION = "calendar_created";
     public static final String PLAYING_WITH="playingWith";
+
+    public static final String MATCH_URL="https://fill-my-team-1315.firebaseio.com/matches/";
 }

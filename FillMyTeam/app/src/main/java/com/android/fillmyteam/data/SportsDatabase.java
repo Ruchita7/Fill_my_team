@@ -16,10 +16,13 @@ import net.simonvt.schematic.annotation.Table;
 @Database(version = SportsDatabase.VERSION,packageName = "com.android.fillmyteam.provider")
 public final class SportsDatabase {
 
-    public static final int VERSION = 4;
+    public static final int VERSION = 5;
 
     @Table(SportsColumns.class)
     public static final String SPORTS_INFO="sports_info";
+
+    @Table(PlayerMatchesColumns.class)
+    public static final String UPCOMING_MATCHES="upcoming_matches";
 
     @OnCreate
     public static void onCreate(Context context, SQLiteDatabase db) {

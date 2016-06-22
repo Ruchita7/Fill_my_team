@@ -1,6 +1,7 @@
 package com.android.fillmyteam;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import butterknife.ButterKnife;
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
     List<Match> matchesList;
     Context mContext;
+    Cursor mCursor;
 
     public MatchAdapter(Context context, List<Match> matches) {
         matchesList = matches;
@@ -46,11 +48,12 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Match match = matchesList.get(position);
-        holder.player.setText(match.getPlayingWith());
-        holder.playingTime.setText(match.getPlayingDate() + " " + match.getPlayingTime());
-        holder.playingPlace.setText(match.getPlayingPlace());
-        int sportDrawable= Utility.retrieveSportsIcon(match.getSport());
+        mCursor.moveToPosition(position);
+       // Match match = matchesList.get(position);
+        holder.player.setText(mCursor.getString(MatchesFragment.COL_PLAYER_NAME));
+        holder.playingTime.setText(mCursor.getString(MatchesFragment.COL_PLAYING_DATE) + " " + mCursor.getString(MatchesFragment.COL_PLAYING_TIME));
+        holder.playingPlace.setText(mCursor.getString(MatchesFragment.COL_PLAYING_PLACE));
+        int sportDrawable= Utility.retrieveSportsIcon(mCursor.getString(MatchesFragment.COL_PLAYING_SPORT));
         if(sportDrawable!=0)
         {
             holder.sport.setImageDrawable(mContext.getDrawable(sportDrawable));
@@ -66,6 +69,17 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return matchesList.size();
+        if (null == mCursor) return 0;
+        return mCursor.getCount();
     }
+
+    public void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
+     //   mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+    }
+    public Cursor getCursor() {
+        return mCursor;
+    }
+
 }

@@ -19,13 +19,7 @@ public class MainApplication extends Application {
 
        Firebase.getDefaultConfig().setPersistenceEnabled(true);
        // FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(
-                                Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(
-                                Stetho.defaultInspectorModulesProvider(this))
-                        .build());
+
 
     }
 }

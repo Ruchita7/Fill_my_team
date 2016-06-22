@@ -1,33 +1,33 @@
 package com.android.fillmyteam;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.fillmyteam.data.PlayerMatchesColumns;
+import com.android.fillmyteam.data.SportsProvider;
 import com.android.fillmyteam.model.Match;
 import com.android.fillmyteam.model.User;
+import com.android.fillmyteam.sync.SportsSyncAdapter;
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.util.Utility;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by dgnc on 6/19/2016.
  */
-public class MatchesFragment extends Fragment implements ValueEventListener {
+public class MatchesFragment extends Fragment implements   LoaderManager.LoaderCallbacks<Cursor> {
 
     User mUser;
     RecyclerView mRecyclerView;
@@ -36,6 +36,19 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
     List<Match> mUserMatches;
     public static final String LOG_TAG = MatchesFragment.class.getSimpleName();
     MatchAdapter matchAdapter;
+
+    public static final int MATCH_LOADER_ID=0;
+
+
+    public  static final int COL_MATCH_ID = 0;
+    public  static final int COL_LATITUDE = 1;
+    public  static final int COL_LONGITUDE = 2;
+    public  static final int COL_PLAYER_EMAIL = 3;
+    public  static final int COL_PLAYING_DATE = 4;
+    public  static final int COL_PLAYING_PLACE = 5;
+    public  static final int COL_PLAYING_TIME = 6;
+    public  static final int COL_PLAYER_NAME= 7;
+    public  static final int COL_PLAYING_SPORT= 8;
 
     public static MatchesFragment newInstance(User user) {
         MatchesFragment fragment = new MatchesFragment();
@@ -50,10 +63,17 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
-            mRef = FirebaseDatabase.getInstance()
+         /*   mRef = FirebaseDatabase.getInstance()
                     .getReferenceFromUrl(Constants.PLAYERS_MATCHES);
-            mRef = mRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
+            mRef = mRef.child("/" + Utility.encodeEmail(mUser.getEmail()));*/
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MATCH_LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     @Nullable
@@ -61,7 +81,8 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mUserMatches = new ArrayList<>();
         View view = inflater.inflate(R.layout.match_fragment, container, false);
-        mRef.addValueEventListener(this);
+    //    mRef.addValueEventListener(this);
+        SportsSyncAdapter.syncImmediately(getActivity());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.matches_recycler_view);
         matchAdapter = new MatchAdapter(getContext(), mUserMatches);
         mLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -71,6 +92,30 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
     }
 
     @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        matchAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        matchAdapter.swapCursor(data);
+      /*  if (mPosition != RecyclerView.NO_POSITION) {
+            mRecyclerView.smoothScrollToPosition(mPosition);
+        }*/
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder= PlayerMatchesColumns._ID+Constants.ASC_ORDER;
+        return new CursorLoader(getActivity(),
+                SportsProvider.UpcomingMatches.CONTENT_URI,
+                null,
+                null,
+                null,
+                sortOrder);
+    }
+
+    /* @Override
     public void onCancelled(DatabaseError databaseError) {
 
     }
@@ -93,11 +138,7 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
                 mUserMatches.add(match);
             }
         }
-        //    matchesMap.putAll(objectMap.values());
 
-    /*    mUserMatches.addAll(matchesMap.values());
-        Log.v(LOG_TAG, "list count " + mUserMatches);
-        matchAdapter.notifyDataSetChanged();*/
         matchAdapter.notifyDataSetChanged();
     }
 
@@ -107,5 +148,5 @@ public class MatchesFragment extends Fragment implements ValueEventListener {
             mRef.removeEventListener(this);
         }
         super.onDestroy();
-    }
+    }*/
 }

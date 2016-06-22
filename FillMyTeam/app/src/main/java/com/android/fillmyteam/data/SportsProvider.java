@@ -26,6 +26,7 @@ public final class SportsProvider {
 
     interface Path {
         String SPORTS_INFO = "sports_info";
+        String UPCOMING_MATCHES="upcoming_matches";
     }
 
     /**
@@ -52,6 +53,20 @@ public final class SportsProvider {
                 type = "vnd.android.cursor.dir/sports_detail",
                 defaultSort = SportsColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.SPORTS_INFO);
+
+
+    }
+
+
+
+    @TableEndpoint(table = SportsDatabase.UPCOMING_MATCHES)
+    public static class UpcomingMatches {
+
+        @ContentUri(
+                path = Path.UPCOMING_MATCHES,
+                type = "vnd.android.cursor.dir/match_detail",
+                defaultSort = PlayerMatchesColumns._ID + " ASC")
+        public static final Uri CONTENT_URI = buildUri(Path.UPCOMING_MATCHES);
 
 
     }

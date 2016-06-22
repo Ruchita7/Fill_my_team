@@ -101,4 +101,8 @@
     <string name="title_widget_detail">Upcoming Match Details</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="content_authority">com.android.fillmyteam.SportsProvider</string>
+    <string name="sync_account_type">fillmyteam.android.com</string>
+    <string name="network_status_key">sync_status</string>
+    <string name="match_id">match_id</string>
 </resources>
