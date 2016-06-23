@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
         android:paddingRight="@dimen/abc_list_item_padding_horizontal_material">
 

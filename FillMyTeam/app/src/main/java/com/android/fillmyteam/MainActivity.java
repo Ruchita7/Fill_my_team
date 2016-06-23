@@ -42,19 +42,14 @@ public class MainActivity extends AppCompatActivity
 
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
 
-//    final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 
-
-
-    // AddressResultReceiver mResultReceiver;
-    // GoogleApiClient mGoogleApiClient;
     String mAddressOutput = "";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     User mUser;
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     //  FirebaseAuth mAuth;
     boolean isDrawerLocked;
-     ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,34 +91,12 @@ public class MainActivity extends AppCompatActivity
 
 
         }
-    /*    mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this *//* FragmentActivity *//*, this *//* OnConnectionFailedListener *//*)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();*/
-
-     /*   mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-          //      .addApi(Auth.GOOGLE_SIGN_IN_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();*/
 
 
         //  editor.putString("email", "poomah29@gmail,com");
         // editor.putString("email", "ruchita,maheshwary@gmail,com");
 
-        //mResultReceiver = new AddressResultReceiver(new Handler());
 
-        //   mResultReceiver.setReceiver(this);
-      /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
      /*   if (isTablet()) {
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -174,43 +147,9 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 
-        //   setupDrawerContent(navigationView);
-        //   new GcmRegistrationAsyncTask(this).execute();
 
-    /*    if (checkPlayServices()) {
-      //      SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-            boolean sentToken = sharedPreferences.getBoolean(SENT_TOKEN_TO_SERVER, false);
-            if (!sentToken) {
-                Intent intent = new Intent(this, RegistrationIntentService.class);
-                startService(intent);
-            }
-        }*/
-
-     /*   FirebaseOptions options = null;
-
-        try {
-            options = new FirebaseOptions.Builder()
-                    .setServiceAccount(new FileInputStream("/Development/Notifications/My-Notification_Server-serviceAccountCredentials.json"))
-                    .setDatabaseUrl("https://my-notification-server.firebaseio.com/")
-                    .build();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
 
     }
-
- /*   private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-*/
 
 
     private boolean isTablet() {
@@ -228,13 +167,6 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -260,19 +192,6 @@ public class MainActivity extends AppCompatActivity
         Class fragmentClass = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = null;
-       /* if (id == R.id.learn_play) {
-            //   fragmentClass = SportsInfoFragment.class;
-            SportsInfoFragment sportsInfoFragment = SportsInfoFragment.newInstance(mLatitude, mLongitude);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, sportsInfoFragment).commit();
-        } else if (id == R.id.find_playmates) {
-            //   fragmentClass = FindPlaymatesFragment.class;
-            FindPlaymatesFragment findPlaymatesFragment = FindPlaymatesFragment.newInstance(mLatitude, mLongitude);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, findPlaymatesFragment).commit();
-        } else if (id == R.id.edit_profile) {
-            EditProfileFragment editProfileFragmentFragment = EditProfileFragment.newInstance(mLatitude, mLongitude);
-            fragmentManager.beginTransaction().replace(R.id.content_frame, editProfileFragmentFragment).commit();
-        }*/
-
 
         switch (id) {
 
@@ -360,59 +279,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
- /*   protected void startIntentService() {
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(Constants.RECEIVER, mResultReceiver);
-        intent.putExtra(Constants.LOCATION_DATA_EXTRA, mLastLocation);
-        startService(intent);
-    }*/
 
-
-
- /*   class AddressResultReceiver extends ResultReceiver {
-        public AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-
-            // Display the address string
-            // or an error message sent from the intent service.
-            mAddressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            //  displayAddressOutput();
-
-            // Show a toast message if an address was found.
-            if (resultCode == Constants.SUCCESS_RESULT) {
-                // showToast(getString(R.string.address_found));
-                Log.v(LOG_TAG, "address found" + mAddressOutput);
-        *//*    if(mReceiver!=null) {
-                mReceiver.onReceiveResult(resultCode, resultData);
-            }*//*
-            }
-        }
-
-   *//* @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        Log.d("Main Activity","received result from Service="+resultData.getString(Constants.RESULT_DATA_KEY));
-    }*//*
-    }*/
-
- /*   public boolean checkPlayServices() {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Log.v(LOG_TAG, "This device is not supported");
-                finish();
-                ;
-            }
-            return false;
-        }
-        return true;
-    }*/
 
 
     @Override
@@ -426,13 +293,9 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.weather_detail_container, detailFragment, DETAILFRAGMENT_TAG)
                     .commit();
 
-        } else {*/
+        } */
 
-       /* Bundle args = new Bundle();
-        args.putString("Id", sportId);
-        SportsDetailFragment fragment = new SportsDetailFragment();
-        fragment.setArguments(args);*/
-        //    FragmentManager fragmentManager = getSupportFragmentManager();
+
         SportsDetailFragment fragment = SportsDetailFragment.newInstance(sportId);
         // fragment.show(fragmentManager, "dialog");
         getSupportFragmentManager().beginTransaction()
@@ -447,51 +310,6 @@ public class MainActivity extends AppCompatActivity
         ActivityCompat.startActivity(this, intent, activityOptions.toBundle());*/
     }
 
- /*   @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.REQ_START_STANDALONE_PLAYER && resultCode != RESULT_OK) {
-            YouTubeInitializationResult errorReason =
-                    YouTubeStandalonePlayer.getReturnedInitializationResult(data);
-            if (errorReason.isUserRecoverableError()) {
-                errorReason.getErrorDialog(this, 0).show();
-            } else {
-                String errorMessage =
-                        String.format(getString(R.string.error_player), errorReason.toString());
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
-            }
-        }
-    }*/
-
-    /*
-         * Called when an activity launched here (specifically, AccountPicker
-         * and authorization) exits, giving you the requestCode you started it with,
-         * the resultCode it returned, and any additional data from it.
-         *
-         * @param requestCode code indicating which activity result is incoming.
-         * @param resultCode  code indicating the result of the incoming
-         *                    activity result.
-         * @param data        Intent (containing result data) returned by incoming
-         *                    activity result.
-
-  @Override
-    protected void onActivityResult(
-            int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.v(LOG_TAG, "In on activity result");
-        if (requestCode == Constants.REQ_START_STANDALONE_PLAYER && resultCode != RESULT_OK) {
-            YouTubeInitializationResult errorReason =
-                    YouTubeStandalonePlayer.getReturnedInitializationResult(data);
-            if (errorReason.isUserRecoverableError()) {
-                errorReason.getErrorDialog(this, 0).show();
-            } else {
-                String errorMessage =
-                        String.format(getString(R.string.error_player), errorReason.toString());
-                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
-            }
-        }
-        // super.onActivityResult(requestCode, resultCode, data);
-    }*/
 
 
     @Override
