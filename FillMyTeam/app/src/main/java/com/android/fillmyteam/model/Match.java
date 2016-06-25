@@ -7,9 +7,10 @@ public class Match {
     double latitude;
     double longitude;
     String playerEmail;
-    String playingDate;
+ //   String playingDate;
     String playingPlace;
-    String playingTime;
+   // String playingTime;
+    long playingTime;
     String playingWith;
     String sport;
 
@@ -36,14 +37,14 @@ public class Match {
     public void setPlayerEmail(String playerEmail) {
         this.playerEmail = playerEmail;
     }
-
-    public String getPlayingDate() {
-        return playingDate;
-    }
-
-    public void setPlayingDate(String playingDate) {
-        this.playingDate = playingDate;
-    }
+//
+//    public String getPlayingDate() {
+//        return playingDate;
+//    }
+//
+//    public void setPlayingDate(String playingDate) {
+//        this.playingDate = playingDate;
+//    }
 
     public String getPlayingPlace() {
         return playingPlace;
@@ -53,11 +54,11 @@ public class Match {
         this.playingPlace = playingPlace;
     }
 
-    public String getPlayingTime() {
+    public long getPlayingTime() {
         return playingTime;
     }
 
-    public void setPlayingTime(String playingTime) {
+    public void setPlayingTime(long playingTime) {
         this.playingTime = playingTime;
     }
 

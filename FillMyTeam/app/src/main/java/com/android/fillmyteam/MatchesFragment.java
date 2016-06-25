@@ -44,11 +44,11 @@ public class MatchesFragment extends Fragment implements   LoaderManager.LoaderC
     public  static final int COL_LATITUDE = 1;
     public  static final int COL_LONGITUDE = 2;
     public  static final int COL_PLAYER_EMAIL = 3;
-    public  static final int COL_PLAYING_DATE = 4;
+    public  static final int COL_PLAYING_TIME = 4;
     public  static final int COL_PLAYING_PLACE = 5;
-    public  static final int COL_PLAYING_TIME = 6;
-    public  static final int COL_PLAYER_NAME= 7;
-    public  static final int COL_PLAYING_SPORT= 8;
+  //  public  static final int COL_PLAYING_TIME = 6;
+    public  static final int COL_PLAYER_NAME= 6;
+    public  static final int COL_PLAYING_SPORT= 7;
 
     public static MatchesFragment newInstance(User user) {
         MatchesFragment fragment = new MatchesFragment();
@@ -106,7 +106,7 @@ public class MatchesFragment extends Fragment implements   LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder= PlayerMatchesColumns._ID+Constants.ASC_ORDER;
+        String sortOrder= PlayerMatchesColumns.PLAYING_TIME+Constants.ASC_ORDER;
         return new CursorLoader(getActivity(),
                 SportsProvider.UpcomingMatches.CONTENT_URI,
                 null,

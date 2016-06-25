@@ -14,7 +14,13 @@ import com.android.fillmyteam.MatchesFragment;
 import com.android.fillmyteam.R;
 import com.android.fillmyteam.data.PlayerMatchesColumns;
 import com.android.fillmyteam.data.SportsProvider;
+import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by dgnc on 6/19/2016.
@@ -62,14 +68,20 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 // data. Therefore we need to clear (and finally restore) the calling identity so
                 // that calls use our process and permission
                 final long identityToken = Binder.clearCallingIdentity();
+                final Calendar c = Calendar.getInstance();
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                String currentDate = day + " " + Utility.months[month] + " " + year;
                 //      String email
                 //  String location = Utility.getPreferredLocation(DetailWidgetRemoteViewsService.this);
                 Uri weatherForLocationUri = SportsProvider.UpcomingMatches.CONTENT_URI;
+                String sortOrder= PlayerMatchesColumns.PLAYING_TIME+ Constants.ASC_ORDER;
                 data = getContentResolver().query(weatherForLocationUri,
                         null,
-                        //  PlayerMatchesColumns.PLAYER_EMAIL+"=?",
-                        null, null,
-                        PlayerMatchesColumns.PLAYING_DATE + " ASC");
+                        null,
+                        null,
+                        sortOrder);
                 Binder.restoreCallingIdentity(identityToken);
             }
 
@@ -94,9 +106,14 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 }
                 RemoteViews views = new RemoteViews(getPackageName(),
                         R.layout.widget_detail_list_item);
-
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
                 String playerName = data.getString(MatchesFragment.COL_PLAYER_NAME);
-                String matchDate = data.getString(MatchesFragment.COL_PLAYING_DATE) + " " + data.getString(MatchesFragment.COL_PLAYING_TIME);
+     //           String matchDate = data.getString(MatchesFragment.COL_PLAYING_DATE) + " " + data.getString(MatchesFragment.COL_PLAYING_TIME);
+                long matchDate=data.getLong(MatchesFragment.COL_PLAYING_TIME);
+                GregorianCalendar gregorianCalendar = new GregorianCalendar();
+                gregorianCalendar.setTimeInMillis(matchDate);
+
+                String displayTime =   Utility.getCurrentDate(gregorianCalendar)+" "+Utility.getCurrentTime(gregorianCalendar);
                 String playingLocation = data.getString(MatchesFragment.COL_PLAYING_PLACE);
                 String playingSport = data.getString(MatchesFragment.COL_PLAYING_SPORT);
 
@@ -106,7 +123,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_player, playerName);
                 views.setTextViewText(R.id.widget_place, playingLocation);
                 views.setImageViewResource(R.id.widget_sport_icon, Utility.retrieveSportsIcon(playingSport));
-                views.setTextViewText(R.id.widget_time, matchDate);
+                views.setTextViewText(R.id.widget_time, displayTime);
 
                 final Intent fillInIntent = new Intent();
                /* String locationSetting =

@@ -30,19 +30,24 @@ public interface PlayerMatchesColumns {
     String PLAYER_EMAIL="player_email";
 
 
-    @DataType(TEXT)
-    String PLAYING_DATE="playing_date";
+/*    @DataType(TEXT)
+    String PLAYING_DATE="playing_date";*/
 
+    @DataType(INTEGER)
+    String PLAYING_TIME="playing_time";
 
     @DataType(TEXT)
     String PLAYING_PLACE="playing_place";
 
 
-    @DataType(TEXT)
-    String PLAYING_TIME="playing_time";
+/*    @DataType(TEXT)
+    String PLAYING_TIME="playing_time";*/
+
+
 
     @DataType(TEXT)
     String PLAYER_NAME="player_name";
+
 
     @DataType(TEXT)
     String PLAYING_SPORT="playing_sport";

@@ -25,6 +25,8 @@ import com.android.fillmyteam.model.Match;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,9 +38,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -52,7 +59,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
 
-    private static final int INDEX_MATCH_ID=0;
+    private static final int INDEX_MATCH_ID = 0;
     // these indices must match the projection
   /*  private static final int INDEX_WEATHER_ID = 0;
     private static final int INDEX_MAX_TEMP = 1;
@@ -145,6 +152,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
                 return;
             }
             forecastJsonStr = buffer.toString();
+            getContext().getContentResolver().delete(SportsProvider.UpcomingMatches.CONTENT_URI, null, null);
             getMatchDataFromJson(forecastJsonStr);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -242,51 +250,90 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
         final String PLAYING_WITH = "playingWith";
         final String SPORT = "sport";
 
-        String playerEmail;
-        String playingDate;
-        double latitude;
-        double longitude;
-        String playingPlace;
-        String playingTime;
-        String playingWith;
-        String sport;
-
 
         try {
             JSONObject matchJson = new JSONObject(matchJsonStr);
             Iterator<String> matchIterator = matchJson.keys();
-           List<Match> matchList = new ArrayList<>();
+            List<Match> matchList = new ArrayList<>();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
             String key = null;
             JSONObject jsonObj;
+            Calendar currentCal = Calendar.getInstance();
+
+            String playingDate = null;
+            String playingTime = null;
+        //    Calendar playingCal = Calendar.getInstance();
+            GregorianCalendar gcalendar = new GregorianCalendar();
+            GregorianCalendar playingCal = new GregorianCalendar();
+            int currentDay,matchDay;
+            int currentMonth,matchMonth;
+            int currentYear,matchYear;
+            int currentHour,matchHour;
+            int currentMin,matchMin;
+         /*   try {
+                String currentDateTime = Utility.getCurrentDate(gcalendar) + " " + Utility.getCurrentTime(gcalendar);
+                currentCal.setTime(sdf.parse(currentDateTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }*/
+            currentDay=gcalendar.get(Calendar.DATE);
+            currentMonth=gcalendar.get(Calendar.MONTH)+1;
+            currentYear=gcalendar.get(Calendar.YEAR);
+            currentHour=gcalendar.get(Calendar.HOUR);
+            currentMin=gcalendar.get(Calendar.MINUTE);
+
+            DateTime currentDateTime=new DateTime(currentYear,currentMonth,currentDay,currentHour,currentMin,0);
+            DateTime matchDateTime=null;
+            int result;
             while (matchIterator.hasNext()) {
                 //in future insert only upcoming matches only compared by date
                 key = matchIterator.next();
                 jsonObj = matchJson.getJSONObject(key);
-                Match obj = new Match();
-                obj.setPlayerEmail(jsonObj.getString(PLAYER_EMAIL));
-                obj.setPlayingDate(jsonObj.getString(PLAYING_DATE));
-                obj.setLatitude(jsonObj.getDouble(LATITUDE));
-                obj.setLongitude(jsonObj.getDouble(LONGITUDE));
-                obj.setPlayingPlace(jsonObj.getString(PLAYING_PLACE));
-                obj.setPlayingTime(jsonObj.getString(PLAYING_TIME));
-                obj.setSport(jsonObj.getString(SPORT));
-                obj.setPlayingWith(jsonObj.getString(PLAYING_WITH));
-                matchList.add(obj);
+                try {
+
+                    playingDate = jsonObj.getString(PLAYING_DATE);
+                    playingTime = jsonObj.getString(PLAYING_TIME);
+
+                    playingCal.setTime(sdf.parse(playingDate + " " + playingTime));
+                    long date = playingCal.getTimeInMillis();
+                    matchDay=playingCal.get(Calendar.DATE);
+                    matchMonth=playingCal.get(Calendar.MONTH)+1;
+                    matchYear=playingCal.get(Calendar.YEAR);
+                    matchHour=playingCal.get(Calendar.HOUR);
+                    matchMin=playingCal.get(Calendar.MINUTE);
+                    matchDateTime=new DateTime(matchYear,matchMonth,matchDay,matchHour,matchMin,0);
+                   // if (playingCal.after(currentCal)) {
+                    result = DateTimeComparator.getInstance().compare(matchDateTime, currentDateTime);
+                    if(result >=0)  {
+                        Match obj = new Match();
+                        obj.setPlayerEmail(jsonObj.getString(PLAYER_EMAIL));
+                   //   obj.setPlayingDate(playingDate);
+                        obj.setLatitude(jsonObj.getDouble(LATITUDE));
+                        obj.setLongitude(jsonObj.getDouble(LONGITUDE));
+                        obj.setPlayingPlace(jsonObj.getString(PLAYING_PLACE));
+                        obj.setPlayingTime(date);
+                        obj.setSport(jsonObj.getString(SPORT));
+                        obj.setPlayingWith(jsonObj.getString(PLAYING_WITH));
+                        matchList.add(obj);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
             Vector<ContentValues> cVVector = new Vector<ContentValues>(matchList.size());
-            for(Match matchObj : matchList) {
+            for (Match matchObj : matchList) {
                 ContentValues weatherValues = new ContentValues();
 
                 weatherValues.put(PlayerMatchesColumns.LATITUDE, matchObj.getLatitude());
                 weatherValues.put(PlayerMatchesColumns.LONGITUDE, matchObj.getLongitude());
                 weatherValues.put(PlayerMatchesColumns.PLAYER_NAME, matchObj.getPlayingWith());
-                weatherValues.put(PlayerMatchesColumns.PLAYING_DATE, matchObj.getPlayingDate());
+          //      weatherValues.put(PlayerMatchesColumns.PLAYING_DATE, matchObj.getPlayingDate());
                 weatherValues.put(PlayerMatchesColumns.PLAYING_TIME, matchObj.getPlayingTime());
                 weatherValues.put(PlayerMatchesColumns.PLAYING_SPORT, matchObj.getSport());
                 weatherValues.put(PlayerMatchesColumns.PLAYING_PLACE, matchObj.getPlayingPlace());
                 weatherValues.put(PlayerMatchesColumns.PLAYER_EMAIL, matchObj.getPlayerEmail());
-           cVVector.add(weatherValues);
+                cVVector.add(weatherValues);
             }
 
              /* if (forecastJson.has(OWM_MESSAGE_CODE)) {
@@ -308,7 +355,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 ContentValues[] contentValuesArr = new ContentValues[cVVector.size()];
                 cVVector.toArray(contentValuesArr);
-                getContext().getContentResolver().delete(SportsProvider.UpcomingMatches.CONTENT_URI, null,null);
+
 
                 getContext().getContentResolver().bulkInsert(SportsProvider.UpcomingMatches.CONTENT_URI, contentValuesArr);
                 updateWidgets();
