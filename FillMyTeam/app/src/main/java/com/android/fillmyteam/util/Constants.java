@@ -110,4 +110,6 @@ public class Constants {
     public static final String PLAYING_WITH="playingWith";
 
     public static final String MATCH_URL="https://fill-my-team-1315.firebaseio.com/matches/";
+
+    public static final String LOGOUT="logout";
 }

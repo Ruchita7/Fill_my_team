@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     //  FirebaseAuth mAuth;
     boolean isDrawerLocked;
-
+    View navigationHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +57,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
         // mAuth = FirebaseAuth.getInstance();
 
         //   if (getIntent().hasExtra("User Credentials")) {
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
             //  mUser = (User) getIntent().getSerializableExtra("User Credentials");
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
+            updateNavigationViewHeader();
             Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     mUser = dataSnapshot.getValue(User.class);
+                    updateNavigationViewHeader();
                     ref.removeEventListener(this);
                 }
 
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         mUser.setLatitude(77.0994467);
         mUser.setEmail("android.studio@android.com");
         mUser.setName("Android Studio");*/
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+     /*   ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
                 // getActionBar().setTitle(mTitle);
@@ -121,23 +124,13 @@ public class MainActivity extends AppCompatActivity
                 //    getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
-        };
+        };*/
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        if (mUser != null) {
-            View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
-            TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
-            ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
-            userTextView.setText(mUser.getName());
-            emailTextView.setText(mUser.getEmail());
-            if (mUser.getPhotoUrl() != null && !mUser.getPhotoUrl().isEmpty()) {
-                Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
-            }
-        }
+
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
@@ -151,6 +144,21 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    private void updateNavigationViewHeader()   {
+        if (mUser != null) {
+            //  View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
+            TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
+            ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
+            userTextView.setText(mUser.getName());
+            emailTextView.setText(mUser.getEmail());
+            if (mUser.getPhotoUrl() != null && !mUser.getPhotoUrl().isEmpty()) {
+                Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
+            }
+        }
+
+    }
 
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
@@ -276,6 +284,7 @@ public class MainActivity extends AppCompatActivity
                 });*/
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+        intent.putExtra(Constants.LOGOUT,true);
         startActivity(intent);
     }
 

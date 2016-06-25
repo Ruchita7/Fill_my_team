@@ -83,22 +83,27 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        boolean isLogout=false;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         String userEmailId = sharedPreferences.getString(Constants.EMAIL, "");
         mUrlRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Constants.APP_URL);
 
-        if (!userEmailId.isEmpty()) {
-
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            //    intent.putExtra("User Credentials", mAuthenticatedUser);
-            intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
-
-            startActivity(intent);
+        if(getIntent().hasExtra(Constants.LOGOUT))
+        {
+            isLogout  = getIntent().getBooleanExtra(Constants.LOGOUT,false);
         }
+        if(!isLogout) {
+            if (!userEmailId.isEmpty()) {
 
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //    intent.putExtra("User Credentials", mAuthenticatedUser);
+                intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
+
+                startActivity(intent);
+            }
+        }
 
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -313,6 +318,8 @@ public class GoogleSignInActivity extends BaseActivity implements
                     @Override
                     public void onResult(@NonNull Status status) {
                         updateUI(null);
+                        Toast.makeText(GoogleSignInActivity.this, "You have been successfully signed out.",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -336,13 +343,11 @@ public class GoogleSignInActivity extends BaseActivity implements
        /* if (user != null) {
             mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText("Signed out");
             mDetailTextView.setText(null);
-
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }*/
@@ -430,7 +435,6 @@ public class GoogleSignInActivity extends BaseActivity implements
 /*
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }*/
 
 }
