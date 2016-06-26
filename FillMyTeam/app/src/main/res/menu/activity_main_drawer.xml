@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/learn_play"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_reading"
             android:title="Learn to Play" />
         <item
             android:id="@+id/find_playmates"
             android:icon="@drawable/ic_search"
             android:title="Find Playmates" />
+
+
+        <item
+            android:id="@+id/sports_store_locator"
+            android:icon="@drawable/ic_store_mall_directory"
+            android:title="Sports Store Locator" />
+    </group>
+
+    <group
+        android:id="@+id/menu_profile"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/edit_profile"
             android:icon="@drawable/ic_create"
@@ -17,29 +30,32 @@
 
         <item
             android:id="@+id/upcoming_matches"
-            android:title="@string/upcoming_matches" />
-
-        <item
-            android:id="@+id/sports_store_locator"
-            android:icon="@drawable/ic_store_mall_directory"
-            android:title="Sports Store Locator" />
+            android:title="@string/upcoming_matches"
+            android:icon="@drawable/ic_calendar"/>
 
         <item
             android:id="@+id/user_settings"
-            android:title="Settings" />
+            android:title="Settings"
+            android:icon="@drawable/ic_settings"/>
+
+    </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout"
             android:title="Logout" />
-        <!--item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" /-->
     </group>
+    <!--item
+        android:id="@+id/nav_slideshow"
+        android:icon="@drawable/ic_menu_slideshow"
+        android:title="Slideshow" />
+    <item
+        android:id="@+id/nav_manage"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="Tools" /-->
 
 
 </menu>

@@ -11,12 +11,14 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.ScrimUtil;
 import com.android.fillmyteam.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.Firebase;
@@ -119,7 +121,9 @@ public class GoogleSignInActivity extends BaseActivity implements
             actionBar.hide();*/
         }
         setContentView(R.layout.activity_google_sign_in);
-
+        View scrimView = findViewById(R.id.scrim_view);
+        scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
+                0xaa000000, 8, Gravity.BOTTOM));
         // Views
         //  mStatusTextView = (TextView) findViewById(R.id.status);
         //   mDetailTextView = (TextView) findViewById(R.id.detail);

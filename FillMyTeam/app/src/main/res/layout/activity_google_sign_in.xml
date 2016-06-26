@@ -1,11 +1,52 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical">
 
-    <FrameLayout
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_login_screen"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:id="@+id/scrim_view"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:background="@drawable/button_custom"
+
+            android:text="@string/sign_in"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"></Button>
+
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:text="@string/sign_out"
+            android:theme="@style/ThemeOverlay.MyDarkButton" />
+    </LinearLayout>
+
+    <!--FrameLayout
         android:id="@+id/login_background"
         android:layout_width="match_parent"
         android:background="@color/grey_100"
@@ -24,41 +65,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/background_login_screen" />
+            android:src="@drawable/background_login_screen" /-->
 
-        <RelativeLayout
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            >
-
-            <Button
-                android:id="@+id/sign_in_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-
-                android:background="@drawable/button_custom"
-                android:gravity="center|center_vertical"
-                android:text="@string/sign_in"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"></Button>
-
-            <Button
-                android:id="@+id/sign_out_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-
-                android:layout_toRightOf="@id/sign_in_button"
-                android:gravity="center|center_vertical"
-                android:text="@string/sign_out"
-                android:theme="@style/ThemeOverlay.MyDarkButton" />
-
-        </RelativeLayout>
-    </FrameLayout>
-    <!--LinearLayout
+    <!-- </FrameLayout>
+    LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
@@ -166,4 +177,4 @@
     </LinearLayout-->
 
 
-</LinearLayout>
+</FrameLayout>

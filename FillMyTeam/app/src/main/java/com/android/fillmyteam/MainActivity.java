@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
+import com.android.fillmyteam.util.CircularImageTransform;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.facebook.stetho.Stetho;
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity
             userTextView.setText(mUser.getName());
             emailTextView.setText(mUser.getEmail());
             if (mUser.getPhotoUrl() != null && !mUser.getPhotoUrl().isEmpty()) {
-                Picasso.with(this).load(mUser.getPhotoUrl()).into(userPhotoImageView);
+                Picasso.with(this).load(mUser.getPhotoUrl()).transform(new CircularImageTransform()).into(userPhotoImageView);
             }
         }
 
