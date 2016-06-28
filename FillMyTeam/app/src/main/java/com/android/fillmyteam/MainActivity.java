@@ -214,29 +214,29 @@ public class MainActivity extends AppCompatActivity
             case R.id.learn_play:
                 //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-                ft.replace(R.id.content_frame, fragment).commit();
+            //    ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.find_playmates:
                 fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mUser);
-                ft.replace(R.id.content_frame, fragment).commit();
+             //   ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.edit_profile:
                 fragment = (EditProfileFragment) EditProfileFragment.newInstance(mUser);
-                ft.replace(R.id.content_frame, fragment).commit();
+            //    ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.upcoming_matches :
                 fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-               ft.replace(R.id.content_frame, fragment).commit();
+         //      ft.replace(R.id.content_frame, fragment).commit();
 
                 break;
             case R.id.sports_store_locator:
                 fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-               ft.replace(R.id.content_frame, fragment).commit();
+          //     ft.replace(R.id.content_frame, fragment).commit();
                 break;
 
             case R.id.user_settings:
-                //fragment = (SettingsFragment) SettingsFragment.newInstance();
-                ft.replace(R.id.content_frame, new SettingsFragment()).commit();
+                fragment = (SettingsFragment) SettingsFragment.newInstance();
+               // ft.replace(R.id.content_frame, new SettingsFragment()).commit();
                 break;
 
             case R.id.logout:
@@ -244,6 +244,9 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
+        if(fragment!=null)  {
+            ft.replace(R.id.content_frame, fragment).commit();
+        }
      /*   try {
             fragment = (Fragment) fragmentClass.newInstance(mAddressOutput);
         } catch (Exception e) {

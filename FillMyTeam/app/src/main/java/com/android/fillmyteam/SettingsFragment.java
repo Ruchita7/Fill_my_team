@@ -29,14 +29,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
   //  Context mContext;
     // GoogleAccountCredential credential;
 
-   /* Activity mActivity;
+   // Activity mActivity;
 
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
 
         return settingsFragment;
     }
-*/
+
 /*  @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
