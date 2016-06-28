@@ -9,8 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -168,13 +169,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         dailyNotifyCheckbox.setOnClickListener(this);*/
         mCalendarInviteCheckbox = (CheckBox) view.findViewById(R.id.calendar_notify);
         //  calendarInviteCheckbox.setOnClickListener(this);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean isCalendarInvite = sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
         if (isCalendarInvite) {
             mCalendarInviteCheckbox.setChecked(true);
         }
         mSportsListSpinner = (Spinner) view.findViewById(R.id.sports_list_spinner);
-        mAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_list, android.R.layout.simple_spinner_item);
+        mAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setOnItemSelectedListener(this);
@@ -219,6 +220,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     }
 
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     private void updateViews() {
         mTime.setText(mUser.getPlayingTime());
         // LatLng latLng =new LatLng(mUser.getLatitude(),mUser.getLongitude());
@@ -243,7 +249,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
             case R.id.time:
                 newFragment = new TimePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), Constants.TIME_PICKER);
+                newFragment.show(getActivity().getFragmentManager(), Constants.TIME_PICKER);
                 break;
 
            /* case R.id.date:
@@ -256,7 +262,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 mPlayingTime = mTime.getText().toString();
                 //    Log.v(LOG_TAG,"playing date is"+date);
                 saveUserData();
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor editor=sharedPreferences.edit();
                 editor.putBoolean(Constants.CALENDAR_EVENT_CREATION,mCalendarInviteCheckbox.isChecked());
                 editor.commit();
@@ -479,7 +485,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         // ref.child("sport").setValue(mUser.getSport());
         ref.child(Constants.SPORT).setValue(mUser.getSport());
         // Toast.makeText(getContext(), "Profile has been updated successfully!", Toast.LENGTH_LONG).show();
-        Toast.makeText(getContext(), getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
 
         //  alarmReceiver.setAlarmTime(getActivity(),mUser.getPlayingTime(),mUser.getPlayingPlace());
 

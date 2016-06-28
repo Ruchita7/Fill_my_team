@@ -1,16 +1,19 @@
 package com.android.fillmyteam;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -67,6 +72,8 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     public SportsDetailFragment() {
     }
 
+
+
     @Override
     public String toString() {
         return super.toString();
@@ -93,6 +100,20 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
 
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
+        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+    /*    ((MainActivity) getActivity()).setSupportActionBar(toolbar);
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+*/
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
+       // collapsingToolbar.setTitle(cheeseName);
+
+   /*     getActivity().setSupportActionBar(toolbar);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+
+       /* CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar_layout);
+        collapsingToolbar.setTitle("title");*/
         mUri = SportsProvider.Sports.CONTENT_URI;
         ButterKnife.bind(this, view);
        /* TextView textView=(TextView)view.findViewById(R.id.txt1);
@@ -100,6 +121,12 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         return view;
     }
 
+  @Override
+    public void onResume() {
+        super.onResume();
+        final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
+        ab.hide();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -141,7 +168,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
             mSportNameTextView.setText(name);
-            Picasso.with(getContext()).load(imageUrl).into(mSportsImageView);
+            Picasso.with(getActivity()).load(imageUrl).into(mSportsImageView);
         }
     }
 
@@ -178,7 +205,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             } else {
                 String errorMessage =
                         String.format(getString(R.string.error_player), errorReason.toString());
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
             }
         }
         // super.onActivityResult(requestCode, resultCode, data);

@@ -8,10 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +25,7 @@ import android.widget.TextView;
 
 import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
-import com.android.fillmyteam.util.CircularImageTransform;
+import com.android.fillmyteam.ui.CircularImageTransform;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.facebook.stetho.Stetho;
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        final ActionBar ab = getSupportActionBar();
+      //  ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
@@ -199,37 +205,38 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         // Fragment fragment = null;
         Class fragmentClass = null;
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
+        FragmentTransaction ft = fragmentManager.beginTransaction();
 
         switch (id) {
 
             case R.id.learn_play:
                 //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.find_playmates:
                 fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mUser);
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.edit_profile:
                 fragment = (EditProfileFragment) EditProfileFragment.newInstance(mUser);
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.upcoming_matches :
                 fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+               ft.replace(R.id.content_frame, fragment).commit();
 
                 break;
             case R.id.sports_store_locator:
                 fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+               ft.replace(R.id.content_frame, fragment).commit();
                 break;
 
             case R.id.user_settings:
-                fragment = (SettingsFragment) SettingsFragment.newInstance();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                //fragment = (SettingsFragment) SettingsFragment.newInstance();
+                ft.replace(R.id.content_frame, new SettingsFragment()).commit();
                 break;
 
             case R.id.logout:
@@ -308,7 +315,7 @@ public class MainActivity extends AppCompatActivity
 
         SportsDetailFragment fragment = SportsDetailFragment.newInstance(sportId);
         // fragment.show(fragmentManager, "dialog");
-        getSupportFragmentManager().beginTransaction()
+        getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
                 //     .addToBackStack(getResources().getString(R.string.book_detail))         //used string resource
                 .commit();

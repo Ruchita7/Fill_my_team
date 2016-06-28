@@ -5,10 +5,11 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
 
-import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
 import com.android.fillmyteam.util.Constants;
@@ -129,7 +129,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.sports_info_recycler_view);
 
-        mLayoutManager = new GridLayoutManager(getContext(),1);
+        mLayoutManager = new GridLayoutManager(getActivity(),1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         TextView textView = (TextView) view.findViewById(R.id.recyclerview_forecast_empty);
         // specify an adapter (see also next example)
@@ -140,7 +140,14 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
 
                // ((Callback) getActivity()).onItemSelected(SportsProvider.buildUri(sportId), viewHolder);
-                ((Callback) getActivity()).onItemSelected(sportId, viewHolder);
+             //   ((Callback) getActivity()).onItemSelected(sportId, viewHolder);
+             //   SportsDetailFragment nextFrag=  SportsDetailFragment.newInstance(sportId);
+              //  SportsDetailFragment nextFrag= new  SportsDetailFragment.newInstance(sportId);
+                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId);
+                getActivity().getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, nextFrag)
+                        .addToBackStack(null)
+                        .commit();
                 mPosition = viewHolder.getAdapterPosition();
             }
         }, textView, mChoiceMode);
@@ -161,6 +168,14 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
+        ab.show();
+    }
+
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         //String sortOrder= SportsColumns._ID+" ASC";
@@ -177,7 +192,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data.getCount()==0)
         {
-            SportsAsyncTask asyncTask =new SportsAsyncTask(getContext());
+            SportsAsyncTask asyncTask =new SportsAsyncTask(getActivity());
             asyncTask.execute();
           //  getLoaderManager().restartLoader(MY_SPORTS_LOADER_ID, null, this);
         }

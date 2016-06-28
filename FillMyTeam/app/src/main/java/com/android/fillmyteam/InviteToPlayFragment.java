@@ -123,7 +123,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         mPlaceImageView.setOnClickListener(this);
         mPlayTimeEditText.setOnClickListener(this);
         mDateTextView.setOnClickListener(this);
-        mAdapter = ArrayAdapter.createFromResource(getContext(), R.array.sports_list, android.R.layout.simple_spinner_item);
+        mAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setSelection(mAdapter.getPosition(mUser.getSport()));
@@ -205,7 +205,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
                 ref.child(Constants.SPORT).setValue(mUser.getSport());
                 ref.child(Constants.PLAYING_WITH).setValue(mUser.getName());*/
-                Toast.makeText(getContext(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
                 break;
 
             case R.id.invite_date:

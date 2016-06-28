@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.fillmyteam.util;
+package com.android.fillmyteam.ui;
 
 import android.graphics.Color;
 import android.graphics.LinearGradient;

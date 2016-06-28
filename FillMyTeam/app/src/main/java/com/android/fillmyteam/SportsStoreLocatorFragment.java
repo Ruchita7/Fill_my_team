@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -83,7 +83,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -110,12 +110,12 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
 
         // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
         // the entire world.
-        mAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient,
+        mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
                 null);
         mAutocompleteView.setAdapter(mAdapter);
         mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
         //    mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(getActivity());
         mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
         //  mRecyclerView.setLayoutManager(mLayoutManager);
         mListView.setOnItemClickListener(this);
@@ -127,7 +127,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables) {
         Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
         mStoreLocatorParcelables = storeLocatorParcelables;
-        mStoreLocatorAdapter = new StoreLocatorAdapter(getContext(), 0, mStoreLocatorParcelables);
+        mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
         mListView.setAdapter(mStoreLocatorAdapter);
         mStoreLocatorAdapter.notifyDataSetChanged();
 
@@ -208,7 +208,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
            Uri uri= builder.build();
 
             Log.v(LOG_TAG,"Uri is::"+uri.toString());*/
-            StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getContext(), mFragment);
+            StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getActivity(), mFragment);
             //  storeLocatorAsyncTask.setStoreDataReceivedListener(SportsStoreLocatorFragment.this);
             storeLocatorAsyncTask.execute(latitude);
             //         Log.v(LOG_TAG,"Store locator list size"+storeLocatorParcelables);
@@ -256,7 +256,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 + connectionResult.getErrorCode());
 
         // TODO(Developer): Check error code and notify the user of error state and resolution.
-        Toast.makeText(getContext(),
+        Toast.makeText(getActivity(),
                // "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 getString(R.string.google_api_client_connect_error, connectionResult.getErrorCode()),
                 Toast.LENGTH_SHORT).show();
@@ -287,8 +287,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
       //  mapIntent.setPackage("com.google.android.apps.maps");
         mapIntent.setPackage(Constants.GOOGLE_MAPS_PACKAGE);
-        if (mapIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            getContext().startActivity(mapIntent);
+        if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            getActivity().startActivity(mapIntent);
         }
     }
 

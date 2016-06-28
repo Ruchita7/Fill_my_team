@@ -1,20 +1,15 @@
 package com.android.fillmyteam;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,33 +21,36 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 
-public class SettingsFragment extends Fragment {
-    public static final String LOG_TAG = SettingsPrefFragment.class.getSimpleName();
+public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
+        SharedPreferences.OnSharedPreferenceChangeListener, ValueEventListener  {
+    public static final String LOG_TAG = SettingsFragment.class.getSimpleName();
     //  com.google.api.services.calendar.Calendar mService;
 
-    Context mContext;
+  //  Context mContext;
     // GoogleAccountCredential credential;
 
-    Activity mActivity;
+   /* Activity mActivity;
 
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
 
         return settingsFragment;
     }
-
-    @Override
+*/
+/*  @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mContext = getContext();
+//        mContext = getContext();
         mActivity = getActivity();
         getActivity().getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new SettingsPrefFragment())
+       // .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
-    private class SettingsPrefFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
-            SharedPreferences.OnSharedPreferenceChangeListener, ValueEventListener {
+
+/*    private class SettingsPrefFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
+            SharedPreferences.OnSharedPreferenceChangeListener, ValueEventListener {*/
         DatabaseReference mUrlRef;
         String mEmail;
         DatabaseReference ref;
@@ -190,4 +188,4 @@ public class SettingsFragment extends Fragment {
     }
 
 
-}
+//}
