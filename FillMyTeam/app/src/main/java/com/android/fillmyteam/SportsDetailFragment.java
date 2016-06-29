@@ -34,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -57,7 +58,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     TextView mRulesTextView;
     @BindView(R.id.sport_poster)
     ImageView mSportsImageView;
-    // @BindView(R.id.playVideo)
+    @BindView(R.id.playVideo)
     ImageView mVideoPlayImageView;
     String sportsName;
     String mVideoKey;
@@ -194,7 +195,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
     }
 
-  /*  @OnClick(R.id.playVideo)
+  @OnClick(R.id.playVideo)
     public void playVideo() {
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                 getActivity(), Constants.YOUTUBE_KEY, mVideoKey, 0, true, false);
@@ -207,7 +208,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                         .getErrorDialog(getActivity(), Constants.REQ_RESOLVE_SERVICE_MISSING).show();
             }
         }
-    }*/
+    }
 
     @Override
     public void onActivityResult(

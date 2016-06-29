@@ -51,6 +51,7 @@
     <string name="locate_players">Locate players</string>
     <string name="players">Players</string>
     <string name="basic_rules">Basic Rules</string>
+    <string name="video">Video</string>
     <string name="data_unavailable">Data unavailable</string>
     <string name="autocomplete_hint">Search Sports Stores within 5KM Range</string>
     <string name="daily_notification">Notify 30 minutes before my playing time</string>
