@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,8 +34,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 
 /**
@@ -58,20 +57,19 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     TextView mRulesTextView;
     @BindView(R.id.sport_poster)
     ImageView mSportsImageView;
-    @BindView(R.id.playVideo)
+    // @BindView(R.id.playVideo)
     ImageView mVideoPlayImageView;
-
+    String sportsName;
     String mVideoKey;
-/*    @BindView(R.id.youtube_view)
-    YouTubePlayerView youTubeView;*/
-
+    /*    @BindView(R.id.youtube_view)
+        YouTubePlayerView youTubeView;*/
+    CollapsingToolbarLayout collapsingToolbar;
 
     String mSportId;
     public static final int DETAIL_LOADER = 0;
 
     public SportsDetailFragment() {
     }
-
 
 
     @Override
@@ -100,13 +98,30 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
 
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+       /* final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
+        ((MainActivity) getActivity()).setSupportActionBar(toolbar);*/
     /*    ((MainActivity) getActivity()).setSupportActionBar(toolbar);
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 */
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-       // collapsingToolbar.setTitle(cheeseName);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+      /*  final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.ic_action_ic_arrow_back);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(LOG_TAG, "on click clicked");
+                }
+            });
+        }
+
+        collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
+
+        // collapsingToolbar.setTitle(getString(R.string.app_name));
 
    /*     getActivity().setSupportActionBar(toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
@@ -121,7 +136,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         return view;
     }
 
-  @Override
+    @Override
     public void onResume() {
         super.onResume();
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
@@ -156,8 +171,10 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             return;
         }
         if (data != null && data.moveToFirst()) {
-            String name = data.getString(data.getColumnIndex(SportsColumns.SPORTS_NAME));
-
+            sportsName = data.getString(data.getColumnIndex(SportsColumns.SPORTS_NAME));
+            if (collapsingToolbar != null) {
+                collapsingToolbar.setTitle(sportsName);
+            }
             String players = data.getString(data.getColumnIndex(SportsColumns.PLAYERS));
             String imageUrl = data.getString(data.getColumnIndex(SportsColumns.POSTER_IMAGE));
             String objective = data.getString(data.getColumnIndex(SportsColumns.OBJECTIVE));
@@ -167,7 +184,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
-            mSportNameTextView.setText(name);
+            mSportNameTextView.setText(sportsName);
             Picasso.with(getActivity()).load(imageUrl).into(mSportsImageView);
         }
     }
@@ -177,7 +194,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
     }
 
-    @OnClick(R.id.playVideo)
+  /*  @OnClick(R.id.playVideo)
     public void playVideo() {
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                 getActivity(), Constants.YOUTUBE_KEY, mVideoKey, 0, true, false);
@@ -190,7 +207,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                         .getErrorDialog(getActivity(), Constants.REQ_RESOLVE_SERVICE_MISSING).show();
             }
         }
-    }
+    }*/
 
     @Override
     public void onActivityResult(
