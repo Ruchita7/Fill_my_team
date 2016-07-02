@@ -4,7 +4,10 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by dgnc on 6/3/2016.
+ *
+ * @author Ruchita_Maheshwary
+ * Base class for GoogleSignInActivity
+ *
  */
 public class BaseActivity extends AppCompatActivity {
 

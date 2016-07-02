@@ -3,8 +3,6 @@ package com.android.fillmyteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.android.fillmyteam.SportsStoreLocatorFragment;
-
 /**
  * Created by dgnc on 5/29/2016.
  */
@@ -13,20 +11,22 @@ public class StoreLocatorParcelable implements Parcelable {
     String address;
     double latitude;
     double longitude;
-
+    String photoReference;
 
     private StoreLocatorParcelable(Parcel in) {
         name = in.readString();
         address = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        photoReference=in.readString();
     }
 
-    public StoreLocatorParcelable(String name, String address, double latitude, double longitude) {
+    public StoreLocatorParcelable(String name, String address, double latitude, double longitude,String photoReference) {
         this.name = name;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.photoReference=photoReference;
     }
 
     @Override
@@ -40,6 +40,7 @@ public class StoreLocatorParcelable implements Parcelable {
         dest.writeString(address);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(photoReference);
     }
 
     public String getName() {
@@ -72,6 +73,14 @@ public class StoreLocatorParcelable implements Parcelable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getPhotoReference() {
+        return photoReference;
+    }
+
+    public void setPhotoReference(String photoReference) {
+        this.photoReference = photoReference;
     }
 
     public static final Parcelable.Creator<StoreLocatorParcelable> CREATOR

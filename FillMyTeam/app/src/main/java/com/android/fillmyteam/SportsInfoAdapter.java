@@ -9,30 +9,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.util.Constants;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by dgnc on 5/28/2016.
+ *
+ * @author Ruchita_Maheshwary
+ * Adapter for SportsInfoFragment
+ *
  */
 public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.InfoViewHolder> {
 
-  //  SportsAdapterOnClickHandler mAdapterOnClickHandler;
     private Cursor mCursor;
     Context mContext;
     ItemChoiceManager mIcm;
     final SportsAdapterOnClickHandler mClickHandler;
     final View mEmptyView;
+    ProgressBar mProgressBar;
 
-    public SportsInfoAdapter(Context context,SportsAdapterOnClickHandler adapterClickHandler,View emptyView, int choiceMode)  {
+    public SportsInfoAdapter(Context context,SportsAdapterOnClickHandler adapterClickHandler,View emptyView,ProgressBar progressBar, int choiceMode)  {
         mContext=context;
         mClickHandler=adapterClickHandler;
         mEmptyView=emptyView;
         mIcm = new ItemChoiceManager(this);
         mIcm.setChoiceMode(choiceMode);
+        mProgressBar=progressBar;
+
     }
 
     @Override
@@ -46,9 +53,23 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
     public void onBindViewHolder(InfoViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         String url = mCursor.getString(SportsInfoFragment.COL_SPORT_POSTER_IMAGE);
-        Picasso.with(mContext).load(url).into(holder.sportsImage);
+        Picasso.with(mContext).load(url).into(holder.sportsImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                if(mProgressBar!=null)  {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        }
+
+        );
         holder.sportsName.setText(mCursor.getString(SportsInfoFragment.COL_SPORT_NAME));
-     //   ViewCompat.setTransitionName(holder.sportsImage, "iconView" + position);
+        //   ViewCompat.setTransitionName(holder.sportsImage, "iconView" + position);
         ViewCompat.setTransitionName(holder.sportsImage, Constants.ICON_VIEW + position);
         mIcm.onBindViewHolder(holder, position);
     }
@@ -107,7 +128,6 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-   //     mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public static  interface SportsAdapterOnClickHandler    {

@@ -7,8 +7,8 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -145,7 +145,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.invite_time:
                 newFragment = new TimePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), Constants.TIME_PICKER);
+                newFragment.show(getActivity().getFragmentManager(), Constants.TIME_PICKER);
                 break;
             case R.id.invite_picker_image_view:
                 try {
@@ -210,7 +210,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
 
             case R.id.invite_date:
                 newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+                newFragment.show(getActivity().getFragmentManager(), "datePicker");
                 break;
 
         }

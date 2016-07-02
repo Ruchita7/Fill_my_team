@@ -1,29 +1,32 @@
 package com.android.fillmyteam;
 
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.fillmyteam.api.StoreDataReceivedListener;
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.api.StoreDataReceivedListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -42,7 +45,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class SportsStoreLocatorFragment extends Fragment implements StoreDataReceivedListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemClickListener {
+        GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemClickListener,StoreLocatorAdapter.StoreLocatorAdapterOnClickHandler {
 
     double mLatitude;
     double mLongitude;
@@ -53,14 +56,16 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     private TextView mPlaceDetailsText;
     SportsStoreLocatorFragment mFragment;
     // private TextView mPlaceDetailsAttribution;
-
-    ListView mListView;
+    private int mChoiceMode;
+   // ListView mListView;
     private RecyclerView.Adapter mRecyclerViewAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    RecyclerView mRecyclerView;
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
     StoreLocatorAdapter mStoreLocatorAdapter;
     public static final String LOG_TAG = SportsStoreLocatorFragment.class.getSimpleName();
+    private boolean mAutoSelectView;
+    TextView noStoresTextView;
 
     public SportsStoreLocatorFragment() {
         // Required empty public constructor
@@ -92,6 +97,16 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     }
 
     @Override
+    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
+        super.onInflate(activity, attrs, savedInstanceState);
+        TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.SportInfoFragment,
+                +0, 0);
+        mChoiceMode = a.getInt(R.styleable.SportInfoFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
+        mAutoSelectView = a.getBoolean(R.styleable.SportInfoFragment_autoSelectView, false);
+        a.recycle();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -113,12 +128,19 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
                 null);
         mAutocompleteView.setAdapter(mAdapter);
-        mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
-        //    mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+      /*  mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());*/
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.store_locator_recycler_view);
+
+        mLayoutManager = new GridLayoutManager(getActivity(),1);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
-        //  mRecyclerView.setLayoutManager(mLayoutManager);
-        mListView.setOnItemClickListener(this);
+       noStoresTextView=(TextView) view.findViewById(R.id.no_stores_found) ;
+        mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), this,mStoreLocatorParcelables, noStoresTextView,mChoiceMode);
+        mRecyclerView.setAdapter(mStoreLocatorAdapter);
+       // mListView.setOnItemClickListener(this);
         mFragment = this;
         return view;
     }
@@ -127,10 +149,15 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables) {
         Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
         mStoreLocatorParcelables = storeLocatorParcelables;
-        mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
-        mListView.setAdapter(mStoreLocatorAdapter);
+        mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), this,mStoreLocatorParcelables, noStoresTextView,mChoiceMode);
+        mRecyclerView.setAdapter(mStoreLocatorAdapter);
         mStoreLocatorAdapter.notifyDataSetChanged();
 
+
+    }
+
+    @Override
+    public void itemClick(int position, StoreLocatorAdapter.StoreViewHolder svh) {
 
     }
 

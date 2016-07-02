@@ -1,14 +1,14 @@
 package com.android.fillmyteam;
 
 import android.app.Activity;
-import android.content.res.TypedArray;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.res.TypedArray;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.fillmyteam.data.SportsColumns;
@@ -25,24 +26,21 @@ import com.android.fillmyteam.util.Constants;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SportsInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * @author Ruchita_Maheshwary
+ * This Fragment provides listing of Sports
+ *
  */
 public class SportsInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mLocation;
     private String mParam2;
     double mLatitude;
     double mLongitude;
 
     private RecyclerView mRecyclerView;
-     SportsInfoAdapter mAdapter;
+    SportsInfoAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     static final int COL_SPORT_ID = 0;
@@ -59,32 +57,22 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     private boolean mAutoSelectView;
     private int mChoiceMode;
     private int mPosition = RecyclerView.NO_POSITION;
+
+    ProgressBar mProgressBar;
+
     public SportsInfoFragment() {
-        // Required empty public constructor
+
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-
      * @return A new instance of fragment SportsInfoFragment.
      */
-/*    // TODO: Rename and change types and number of parameters
-    public static SportsInfoFragment newInstance(String param1, String param2) {
-        SportsInfoFragment fragment = new SportsInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
     public static SportsInfoFragment newInstance(double latitude,double longitude)  {
         SportsInfoFragment fragment = new SportsInfoFragment();
         Bundle args = new Bundle();
-        /*args.putDouble(ARG_PARAM1, latitude);
-        args.putDouble(ARG_PARAM2, longitude); */
         args.putDouble(Constants.LATITUDE, latitude);
         args.putDouble(Constants.LONGITUDE, longitude);
         fragment.setArguments(args);
@@ -95,11 +83,8 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-         /*   mLatitude = getArguments().getDouble(ARG_PARAM1);
-            mLongitude = getArguments().getDouble(ARG_PARAM2);  */
             mLatitude = getArguments().getDouble(Constants.LATITUDE);
             mLongitude = getArguments().getDouble(Constants.LONGITUDE);
-         //   mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
     }
@@ -124,7 +109,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view= inflater.inflate(R.layout.fragment_sports_info, container, false);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.sports_info_recycler_view);
@@ -132,38 +117,30 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         mLayoutManager = new GridLayoutManager(getActivity(),1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         TextView textView = (TextView) view.findViewById(R.id.recyclerview_forecast_empty);
-        // specify an adapter (see also next example)
+        mProgressBar = (ProgressBar) view.findViewById(R.id.loading_indicator);
+        mProgressBar.setVisibility(View.VISIBLE);
+
         mAdapter = new SportsInfoAdapter(getActivity(), new SportsInfoAdapter.SportsAdapterOnClickHandler() {
             @Override
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
-         //       String locationSetting = Utility.getPreferredLocation(getActivity());
-
-
-               // ((Callback) getActivity()).onItemSelected(SportsProvider.buildUri(sportId), viewHolder);
-             //   ((Callback) getActivity()).onItemSelected(sportId, viewHolder);
-             //   SportsDetailFragment nextFrag=  SportsDetailFragment.newInstance(sportId);
-              //  SportsDetailFragment nextFrag= new  SportsDetailFragment.newInstance(sportId);
-                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId);
-                getActivity().getFragmentManager().beginTransaction()
+                mPosition = viewHolder.getAdapterPosition();
+                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId,mPosition);
+                getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag)
                         .addToBackStack(null)
                         .commit();
-                mPosition = viewHolder.getAdapterPosition();
+
             }
-        }, textView, mChoiceMode);
+        }, textView, mProgressBar,mChoiceMode);
         mRecyclerView.setAdapter(mAdapter);
-
-/*
-        Button button = (Button)view.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SportsAsyncTask asyncTask =new SportsAsyncTask(getContext());
-                asyncTask.execute();
+      /*  if(getActivity().getIntent()!=null)
+        {
+            if(getActivity().getIntent().hasExtra(SportsDetailFragment.POSITION))
+            {
+                int position = getActivity().getIntent().getIntExtra(SportsDetailFragment.POSITION,RecyclerView.NO_POSITION);
+                mRecyclerView.scrollToPosition(position);
             }
-        });
-*/
-
+        }*/
         return view;
     }
 
@@ -178,7 +155,6 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        //String sortOrder= SportsColumns._ID+" ASC";
         String sortOrder= SportsColumns._ID+Constants.ASC_ORDER;
         return new CursorLoader(getActivity(),
                 SportsProvider.Sports.CONTENT_URI,
@@ -194,21 +170,18 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         {
             SportsAsyncTask asyncTask =new SportsAsyncTask(getActivity());
             asyncTask.execute();
-          //  getLoaderManager().restartLoader(MY_SPORTS_LOADER_ID, null, this);
         }
         else
         {
             mAdapter.swapCursor(data);
         }
+     //   mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
-
-
-
 }
 
 

@@ -3,6 +3,7 @@ package com.android.fillmyteam;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -36,9 +37,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-
 /**
- * A placeholder fragment containing a simple view.
+ *
+ * @author Ruchita_Maheshwary
+ * Fragment for showing sports detail
  */
 public class SportsDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -47,6 +49,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
     Uri mUri;
     public static final String LOG_TAG = SportsDetailFragment.class.getSimpleName();
+    public static final String POSITION = "position";
 
     @BindView(R.id.sports_name_text)
     TextView mSportNameTextView;
@@ -62,13 +65,13 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     ImageView mVideoPlayImageView;
     String sportsName;
     String mVideoKey;
-    /*    @BindView(R.id.youtube_view)
-        YouTubePlayerView youTubeView;*/
+    Context mContext;
     CollapsingToolbarLayout collapsingToolbar;
 
     String mSportId;
     public static final int DETAIL_LOADER = 0;
 
+    int mPosition;
     public SportsDetailFragment() {
     }
 
@@ -78,11 +81,11 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         return super.toString();
     }
 
-    public static SportsDetailFragment newInstance(String sportId) {
+    public static SportsDetailFragment newInstance(String sportId,int cursorPosition) {
         SportsDetailFragment fragment = new SportsDetailFragment();
         Bundle args = new Bundle();
-        // args.putString("ID", sportId);
         args.putString(Constants.SPORT_ID, sportId);
+        args.putInt(POSITION,cursorPosition);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,23 +95,15 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
 
         if (getArguments() != null) {
-            //  mSportId = getArguments().getString("ID");
             mSportId = getArguments().getString(Constants.SPORT_ID);
             Log.v(LOG_TAG, "sport id is ::" + mSportId);
+            mPosition=getArguments().getInt(POSITION);
         }
 
-
+        mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
-       /* final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
-        ((MainActivity) getActivity()).setSupportActionBar(toolbar);*/
-    /*    ((MainActivity) getActivity()).setSupportActionBar(toolbar);
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-*/
         AppCompatActivity activity = (AppCompatActivity) getActivity();
 
-      /*  final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.ic_action_ic_arrow_back);
@@ -116,24 +111,17 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                 @Override
                 public void onClick(View v) {
                     Log.v(LOG_TAG, "on click clicked");
+                   /* Intent intent = new Intent(mContext,SportsInfoFragment.class);
+                    intent.putExtra(POSITION,mPosition);
+                    startActivity(intent);*/
+                    getFragmentManager().popBackStackImmediate();
                 }
             });
         }
 
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
-
-        // collapsingToolbar.setTitle(getString(R.string.app_name));
-
-   /*     getActivity().setSupportActionBar(toolbar);
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-
-       /* CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar_layout);
-        collapsingToolbar.setTitle("title");*/
         mUri = SportsProvider.Sports.CONTENT_URI;
         ButterKnife.bind(this, view);
-       /* TextView textView=(TextView)view.findViewById(R.id.txt1);
-        textView.setText("in detail fragment with id"+sportId);*/
         return view;
     }
 
@@ -180,8 +168,8 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             String imageUrl = data.getString(data.getColumnIndex(SportsColumns.POSTER_IMAGE));
             String objective = data.getString(data.getColumnIndex(SportsColumns.OBJECTIVE));
             String rules = data.getString(data.getColumnIndex(SportsColumns.RULES));
-            String videoUrl = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
-            mVideoKey = videoUrl.substring(videoUrl.indexOf("=") + 1, videoUrl.length());
+          //  String videoReference = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
+            mVideoKey = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
@@ -195,7 +183,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
     }
 
-  @OnClick(R.id.playVideo)
+    @OnClick(R.id.playVideo)
     public void playVideo() {
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                 getActivity(), Constants.YOUTUBE_KEY, mVideoKey, 0, true, false);
@@ -226,7 +214,6 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                 Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
             }
         }
-        // super.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -236,11 +223,4 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     }
 
 
-  /*  @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }*/
 }

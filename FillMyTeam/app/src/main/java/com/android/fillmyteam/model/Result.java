@@ -15,7 +15,7 @@ public class Result {
     private String placeId;
     private String reference;
     private List<String> types = new ArrayList<String>();
-
+    private List<Photo> photos = new ArrayList<Photo>();
 
     public String getFormatted_address() {
         return formatted_address;
@@ -151,4 +151,21 @@ public class Result {
         this.types = types;
     }
 
+    /**
+     *
+     * @return
+     *     The photos
+     */
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    /**
+     *
+     * @param photos
+     *     The photos
+     */
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
 }

@@ -36,7 +36,8 @@ public class Constants {
     public static final String PLAYERS_NOTIFICATIONS = APP_URL + "/" + NOTIFY;
     public static final String NOTIFY_USER = "NOTIFY_USER";
 
-    public static final String SPORTS_URL = "https://api.myjson.com/bins/5alsc";
+    //public static final String SPORTS_URL = "https://api.myjson.com/bins/5alsc";
+    public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
     public static final String LIST = "list";
     public static final String YOUTUBE_KEY = BuildConfig.YOUTUBE_KEY;
     //  public static final String SPORTS="Sport";
@@ -89,7 +90,7 @@ public class Constants {
     public static final String RULES = "rules";
     public static final String THUMBNAIL = "thumbnail";
     public static final String IMAGE = "image";
-    public static final String VIDEO = "video";
+    public static final String VIDEO_REFERENCE = "video_reference";
     public static final String GET_REQUEST = "GET";
     public static final String SPORT_ID = "ID";
     public static final String ICON_VIEW = "iconView";
@@ -112,4 +113,16 @@ public class Constants {
     public static final String MATCH_URL="https://fill-my-team-1315.firebaseio.com/matches/";
 
     public static final String LOGOUT="logout";
+
+
+   // public static final String REFERENCE="reference";
+    public static final String PHOTO_URL="https://maps.googleapis.com/maps/api/place/photo";
+   public static final String MAX_WIDTH ="maxwidth";
+   public static final String REFERENCE_ID ="photoreference";
+   public static final String WIDTH_VALUE ="100";
+   public static final String PHOTOS ="photos";
+
+    public static final String PHOTO_REFERENCE="photo_reference";
+
+    public static final String IMAGE_THUMBNAIL="http://img.youtube.com/vi/";
 }

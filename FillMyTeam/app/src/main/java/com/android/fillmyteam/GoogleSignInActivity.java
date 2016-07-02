@@ -53,7 +53,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Created by dgnc on 6/3/2016.
+ * @author Ruchita_Maheshwary
+ * This is the main launcher activity which logs in the user with Google  using Firebase-Google Authentication
+ *
  */
 public class GoogleSignInActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener,
@@ -63,19 +65,11 @@ public class GoogleSignInActivity extends BaseActivity implements
     private static final String LOG_TAG = GoogleSignInActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
     Location mLastLocation;
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
-
-    // [START declare_auth_listener]
     private FirebaseAuth.AuthStateListener mAuthListener;
     DatabaseReference mUrlRef;
-    // [END declare_auth_listener]
-
     private GoogleApiClient mGoogleApiClient;
-    /*   private TextView mStatusTextView;
-       private TextView mDetailTextView;*/
-    //  Firebase mUrlRef;
+
     User mAuthenticatedUser;
     double mLongitude;
     double mLatitude;
@@ -97,10 +91,8 @@ public class GoogleSignInActivity extends BaseActivity implements
             isLogout  = getIntent().getBooleanExtra(Constants.LOGOUT,false);
         }
         if(!isLogout) {
-            if (!userEmailId.isEmpty()) {
-
+            if (!userEmailId.isEmpty()) {		//If user is already logged in then redirect to MainActivity
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                //    intent.putExtra("User Credentials", mAuthenticatedUser);
                 intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
 
                 startActivity(intent);
@@ -111,55 +103,35 @@ public class GoogleSignInActivity extends BaseActivity implements
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
-            View decorView = getWindow().getDecorView();
-// Hide the status bar.
+            View decorView = getWindow().getDecorView();	// Hide the status bar.
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
-// Remember that you should never show the action bar if the
-// status bar is hidden, so hide that too if necessary.
-         /*   ActionBar actionBar = getActionBar();
-            actionBar.hide();*/
         }
         setContentView(R.layout.activity_google_sign_in);
         View scrimView = findViewById(R.id.scrim_view);
         scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
                 0xaa000000, 8, Gravity.BOTTOM));
-        // Views
-        //  mStatusTextView = (TextView) findViewById(R.id.status);
-        //   mDetailTextView = (TextView) findViewById(R.id.detail);
 
-        // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-        //    mUrlRef = new Firebase(Constants.APP_URL_USERS);
-        //   findViewById(R.id.disconnect_button).setOnClickListener(this);
-
-        // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // [END config_signin]
-     /*   DatabaseReference  urlRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(Constants.APP_URL_USERS);
-        mGeoFire = new GeoFire(urlRef);*/
         Firebase.setAndroidContext(this);
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this , this )
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(LocationServices.API)
-                //      .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
 
-        // [START auth_state_listener]
+        mAuth = FirebaseAuth.getInstance();
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -168,9 +140,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                     // User is signed in
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     final String userEmailAddress = user.getEmail();
-                 /*   Query queryRef = mUrlRef.orderByChild("email").equalTo(Utility.decodeEmail(userEmailAddress)).limitToFirst(1);
-                    if(queryRef.getPath()!=null) {*/
-                    //   queryRef.addChildEventListener(this);
+
                     final DatabaseReference ref = mUrlRef.child("/" + Constants.LOCATION_USERS + "/" + Utility.encodeEmail(userEmailAddress));
 
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -204,7 +174,6 @@ public class GoogleSignInActivity extends BaseActivity implements
                             ref.removeEventListener(this);
                             Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            //    intent.putExtra("User Credentials", mAuthenticatedUser);
                             intent.putExtra(Constants.USER_CREDENTIALS, mAuthenticatedUser);
 
                             startActivity(intent);
@@ -220,30 +189,25 @@ public class GoogleSignInActivity extends BaseActivity implements
                         }
                     });
 
-
-                    // }
                 } else {
                     // User is signed out
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                 }
-                // [START_EXCLUDE]
+
                 updateUI(user);
-                // [END_EXCLUDE]
+
             }
         };
-        // [END auth_state_listener]
+
     }
 
-    // [START on_start_add_listener]
+
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
-    // [END on_start_add_listener]
 
-    // [START on_stop_remove_listener]
-    @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
@@ -251,9 +215,13 @@ public class GoogleSignInActivity extends BaseActivity implements
 
         }
     }
-    // [END on_stop_remove_listener]
 
-    // [START onactivityresult]
+    /**
+     * Activity Result from signIn()
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -267,20 +235,19 @@ public class GoogleSignInActivity extends BaseActivity implements
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
-                // [START_EXCLUDE]
                 updateUI(null);
-                // [END_EXCLUDE]
             }
         }
     }
-    // [END onactivityresult]
 
-    // [START auth_with_google]
+
+    /**
+     * Authenticate with google
+     * @param acct
+     */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
         showProgressDialog();
-        // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -297,25 +264,21 @@ public class GoogleSignInActivity extends BaseActivity implements
                             Toast.makeText(GoogleSignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        // [START_EXCLUDE]
                         hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
-    // [END auth_with_google]
 
-    // [START signin]
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    // [END signin]
 
+    /**
+     * Sign out method
+     */
     private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-
+        mAuth.signOut();	// Firebase sign out
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -342,29 +305,26 @@ public class GoogleSignInActivity extends BaseActivity implements
                 });
     }
 
+    /**
+     *
+     * @param user
+     */
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
-       /* if (user != null) {
-            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-        } else {
-            mStatusTextView.setText("Signed out");
-            mDetailTextView.setText(null);
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
-        }*/
     }
 
+    // An unresolvable error has occurred and Google APIs (including Sign-In) will not be available.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
+
         Log.d(LOG_TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Handle button click listener
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -374,12 +334,13 @@ public class GoogleSignInActivity extends BaseActivity implements
             case R.id.sign_out_button:
                 signOut();
                 break;
-         /*   case R.id.disconnect_button:
-                revokeAccess();
-                break;*/
         }
     }
 
+    /**
+     *
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
@@ -391,8 +352,6 @@ public class GoogleSignInActivity extends BaseActivity implements
                 mLatitude = mLastLocation.getLatitude();
                 mLongitude = mLastLocation.getLongitude();
                 if (!Geocoder.isPresent()) {
-                   /* Toast.makeText(this, R.string.no_geocoder_available,
-                            Toast.LENGTH_LONG).show();*/
                     Toast.makeText(this, getString(R.string.no_geocoder),
                             Toast.LENGTH_LONG).show();
                     return;
@@ -421,10 +380,6 @@ public class GoogleSignInActivity extends BaseActivity implements
                     }
 
                 }
-
-
-                //    startIntentService();
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,9 +391,5 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     }
 
-/*
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }*/
 
 }

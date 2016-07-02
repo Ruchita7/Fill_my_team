@@ -35,10 +35,10 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
     public static final String LOG_TAG = StoreLocatorAsyncTask.class.getSimpleName();
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
 
-    public StoreLocatorAsyncTask(Context context,SportsStoreLocatorFragment fragment) {
+    public StoreLocatorAsyncTask(Context context, SportsStoreLocatorFragment fragment) {
         super();
         mContext = context;
-        mFragment=fragment;
+        mFragment = fragment;
     }
 
 
@@ -53,17 +53,17 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
             mStoreLocatorParcelables = new ArrayList<>();
             Uri.Builder builder = Uri.parse(Constants.STORE_LOCATOR_BASE_URL).buildUpon().
                     appendQueryParameter(Constants.QUERY, mContext.getString(R.string.sport_goods_query)).
-                    appendQueryParameter(Constants.LOCATION,location).
-                    appendQueryParameter(Constants.RADIUS,Constants.TEN_KM_RADIUS).
+                    appendQueryParameter(Constants.LOCATION, location).
+                    appendQueryParameter(Constants.RADIUS, Constants.TEN_KM_RADIUS).
                     appendQueryParameter(Constants.LOCATION_KEY, mContext.getString(R.string.map_key));
             Uri builtUri = builder.build();
-            Log.v(LOG_TAG,"Uri is::"+builtUri.toString());
+            Log.v(LOG_TAG, "Uri is::" + builtUri.toString());
             URL url = new URL(builtUri.toString());
 
             Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
-      //      urlConnection.setRequestMethod("GET");
+            //      urlConnection.setRequestMethod("GET");
             urlConnection.setRequestMethod(Constants.GET_REQUEST);
             urlConnection.connect();
 
@@ -121,8 +121,7 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
     }
 
 
-
-    private void retrieveStoreLocator(String locationData)      throws JSONException  {
+    private void retrieveStoreLocator(String locationData) throws JSONException {
         String address;
         double latitude;
         double longitude;
@@ -132,29 +131,46 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
         JSONObject jsonObject;
         try {
             JSONObject storeJson = new JSONObject(locationData);
-         //   JSONArray storeJsonArray = storeJson.getJSONArray("results");
+            //   JSONArray storeJsonArray = storeJson.getJSONArray("results");
             JSONArray storeJsonArray = storeJson.getJSONArray(Constants.RESULTS);
             JSONObject latLng;
             JSONObject geometry;
-            for(int i=0;i<storeJsonArray.length();i++) {
-                jsonObject =storeJsonArray.getJSONObject(i);
+            String  photoReference=null;
+            JSONArray photoJsonArray;
+            JSONObject photoJson;
+           // String photoRef;
+            for (int i = 0; i < storeJsonArray.length(); i++) {
+                jsonObject = storeJsonArray.getJSONObject(i);
                 /*geometry=jsonObject.getJSONObject("geometry");
                 latLng= geometry.getJSONObject("location");*/
-                geometry=jsonObject.getJSONObject(Constants.GEOMETRY);
-                latLng= geometry.getJSONObject(Constants.LOCATION);
-             //   latLngArray=geometry.getJSONArray("location");
+                geometry = jsonObject.getJSONObject(Constants.GEOMETRY);
+                latLng = geometry.getJSONObject(Constants.LOCATION);
+                //   latLngArray=geometry.getJSONArray("location");
             /*    address=jsonObject.getString("formatted_address");
                 latitude=latLng.getDouble("lat");
                 longitude=latLng.getDouble("lng");
                 name=jsonObject.getString("name");     */
-                address=jsonObject.getString(Constants.FORMATTED_ADDRESS);
-                latitude=latLng.getDouble(Constants.LAT);
-                longitude=latLng.getDouble(Constants.LNG);
-                name=jsonObject.getString(Constants.PLACE_NAME);
-                storeLocatorParcelable = new StoreLocatorParcelable(name,address,latitude,longitude);
+                address = jsonObject.getString(Constants.FORMATTED_ADDRESS);
+                latitude = latLng.getDouble(Constants.LAT);
+                longitude = latLng.getDouble(Constants.LNG);
+                name = jsonObject.getString(Constants.PLACE_NAME);
+                photoReference=null;
+                if(jsonObject.has(Constants.PHOTOS)) {
+                    photoJsonArray = jsonObject.getJSONArray(Constants.PHOTOS);
+                    for (int j = 0; j< photoJsonArray.length();j++) {
+                        photoJson = photoJsonArray.getJSONObject(j);
+                        if(photoJson.get(Constants.PHOTO_REFERENCE)!=null)   {
+                            photoReference = photoJson.getString(Constants.PHOTO_REFERENCE);
+                            Log.v(LOG_TAG, "photo url " + photoReference);
+                            break;
+                        }
+                    }
+                }
+
+                storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude,photoReference);
                 mStoreLocatorParcelables.add(storeLocatorParcelable);
             }
-            Log.v(LOG_TAG,"List size"+mStoreLocatorParcelables.size());
+            Log.v(LOG_TAG, "List size" + mStoreLocatorParcelables.size());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -163,8 +179,8 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
     @Override
     protected void onPostExecute(List<StoreLocatorParcelable> storeLocators) {
         super.onPostExecute(storeLocators);
-        storeLocators=mStoreLocatorParcelables;
-      //  mStoreDataReceivedListener.retrieveStoresList(storeLocators);
+        storeLocators = mStoreLocatorParcelables;
+        //  mStoreDataReceivedListener.retrieveStoresList(storeLocators);
         mFragment.retrieveStoresList(storeLocators);
 
         //mContext.setStoreLocatorParcelables(storeLocators);
@@ -172,7 +188,7 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
         Log.v(LOG_TAG,"List size"+storeLocators.length);*/
     }
 
-    public  void setStoreDataReceivedListener(StoreDataReceivedListener listener)   {
-        mStoreDataReceivedListener=listener;
+    public void setStoreDataReceivedListener(StoreDataReceivedListener listener) {
+        mStoreDataReceivedListener = listener;
     }
 }

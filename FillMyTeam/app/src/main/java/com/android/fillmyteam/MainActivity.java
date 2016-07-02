@@ -38,19 +38,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
-//import com.google.api.client.json.gson.GsonFactory;
-
+/**
+ * @author Ruchita_Maheshwary
+ *         Main Activity launched after login. It will be first screen if the user is already logged in
+ */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,Callback {
+        implements NavigationView.OnNavigationItemSelectedListener, Callback {
 
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
-
-
     String mAddressOutput = "";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     User mUser;
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    //  FirebaseAuth mAuth;
     boolean isDrawerLocked;
     View navigationHeader;
 
@@ -62,28 +61,25 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         final ActionBar ab = getSupportActionBar();
-      //  ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        // mAuth = FirebaseAuth.getInstance();
 
-        //   if (getIntent().hasExtra("User Credentials")) {
+        //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
-            //  mUser = (User) getIntent().getSerializableExtra("User Credentials");
+
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
             updateNavigationViewHeader();
             Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
             SharedPreferences sharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(this);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            //   editor.putString("email", mUser.getEmail());
             editor.putString(Constants.EMAIL, mUser.getEmail());
             editor.commit();
-        } else if (getIntent().hasExtra(Constants.LOGGED_IN_USER_EMAIL)) {
+        } else if (getIntent().hasExtra(Constants.LOGGED_IN_USER_EMAIL)) {            //User is already logged in
             String email = getIntent().getStringExtra(Constants.LOGGED_IN_USER_EMAIL);
-           final DatabaseReference ref = FirebaseDatabase.getInstance()
+            final DatabaseReference ref = FirebaseDatabase.getInstance()
                     .getReferenceFromUrl((Constants.APP_URL_USERS) + "/" + Utility.encodeEmail(email));
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -98,46 +94,13 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-
-
         }
-
-
-        //  editor.putString("email", "poomah29@gmail,com");
-        // editor.putString("email", "ruchita,maheshwary@gmail,com");
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-     /*   if (isTablet()) {
-            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-            drawer.setScrimColor(Color.TRANSPARENT);
-            isDrawerLocked = true;
-        }
-*/
- /*       mUser = new User();
-        mUser.setLongitude(28.7514586);
-        mUser.setLatitude(77.0994467);
-        mUser.setEmail("android.studio@android.com");
-        mUser.setName("Android Studio");*/
-     /*   ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            public void onDrawerClosed(View view) {
-                // getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
 
-            public void onDrawerOpened(View drawerView) {
-                //    getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };*/
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
@@ -147,14 +110,14 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 
-
-
     }
 
 
-    private void updateNavigationViewHeader()   {
+    /**
+     * Update navigation drawer header
+     */
+    private void updateNavigationViewHeader() {
         if (mUser != null) {
-            //  View navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
             TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
             TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
             ImageView userPhotoImageView = (ImageView) navigationHeader.findViewById(R.id.profileImageView);
@@ -198,12 +161,16 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Handle navigation view item clicks here to call corresponding fragments for each navigation item
+     *
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-        // Fragment fragment = null;
         Class fragmentClass = null;
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
@@ -212,31 +179,23 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
 
             case R.id.learn_play:
-                //  fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-            //    ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.find_playmates:
                 fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mUser);
-             //   ft.replace(R.id.content_frame, fragment).commit();
                 break;
             case R.id.edit_profile:
                 fragment = (EditProfileFragment) EditProfileFragment.newInstance(mUser);
-            //    ft.replace(R.id.content_frame, fragment).commit();
                 break;
-            case R.id.upcoming_matches :
+            case R.id.upcoming_matches:
                 fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-         //      ft.replace(R.id.content_frame, fragment).commit();
-
                 break;
             case R.id.sports_store_locator:
                 fragment = (SportsStoreLocatorFragment) SportsStoreLocatorFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
-          //     ft.replace(R.id.content_frame, fragment).commit();
                 break;
 
             case R.id.user_settings:
                 fragment = (SettingsFragment) SettingsFragment.newInstance();
-               // ft.replace(R.id.content_frame, new SettingsFragment()).commit();
                 break;
 
             case R.id.logout:
@@ -244,22 +203,12 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        if(fragment!=null)  {
+        if (fragment != null) {
             ft.replace(R.id.content_frame, fragment).commit();
         }
-     /*   try {
-            fragment = (Fragment) fragmentClass.newInstance(mAddressOutput);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
-        // Insert the fragment by replacing any existing fragment
-        //   FragmentManager fragmentManager = getSupportFragmentManager();
-        //   fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-        // Highlight the selected item has been done by NavigationView
         item.setChecked(true);
-        // Set action bar title
+
         setTitle(item.getTitle());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -271,75 +220,55 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
 
-        //mGoogleApiClient.disconnect();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        mGoogleApiClient.connect();
     }
 
     private void logoutUser() {
-     /*   mAuth.signOut();
 
-        // Google sign out
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                       // updateUI(null);
-                        Intent intent = new Intent(getApplicationContext(),GoogleSignInActivity.class);
-                        startActivity(intent);
-                    }
-                });*/
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
-        intent.putExtra(Constants.LOGOUT,true);
+        intent.putExtra(Constants.LOGOUT, true);
         startActivity(intent);
     }
 
 
+    /**
+     * Called when SportsInfoFragment list item is clicked. This will then replace the fragment with SportsDetailFragment
+     * @param sportId
+     * @param vh
+     */
+   /* @Override
+    public void onItemSelected(String sportId, SportsInfoAdapter.InfoViewHolder vh) {
 
+        SportsDetailFragment fragment = SportsDetailFragment.newInstance(sportId);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+
+                .commit();
+    }
+*/
+
+    /**
+     * Called when user needs to be invited to play from FindPlaymatesFragment
+     *
+     * @param currentUser
+     * @param playWithUser
+     */
+    @Override
+    public void onInviteClick(User currentUser, User playWithUser) {
+        InviteToPlayFragment fragment = InviteToPlayFragment.newInstance(currentUser, playWithUser);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
     @Override
     public void onItemSelected(String sportId, SportsInfoAdapter.InfoViewHolder vh) {
-        /*if (mTwoPane) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(DetailFragment.DETAIL_URI, dateUri);
-            DetailFragment detailFragment = new DetailFragment();
-            detailFragment.setArguments(bundle);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.weather_detail_container, detailFragment, DETAILFRAGMENT_TAG)
-                    .commit();
-
-        } */
-
-
-        SportsDetailFragment fragment = SportsDetailFragment.newInstance(sportId);
-        // fragment.show(fragmentManager, "dialog");
-        getFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                //     .addToBackStack(getResources().getString(R.string.book_detail))         //used string resource
-                .commit();
-       /* Intent intent = new Intent(this, SportsDetailActivity.class)
-                .setData(dateUri);
-
-
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(this, new Pair<View, String>(vh.sportsImage, getString(R.string.detail_icon_transition_name)));
-        ActivityCompat.startActivity(this, intent, activityOptions.toBundle());*/
-    }
-
-
-
-    @Override
-    public void onInviteClick(User currentUser, User playWithUser) {
-        InviteToPlayFragment fragment = InviteToPlayFragment.newInstance(currentUser,playWithUser);
-        // fragment.show(fragmentManager, "dialog");
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                //     .addToBackStack(getResources().getString(R.string.book_detail))         //used string resource
-                .commit();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

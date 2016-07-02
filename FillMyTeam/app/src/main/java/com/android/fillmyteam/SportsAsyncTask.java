@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
@@ -26,12 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dgnc on 5/22/2016.
+ * AsyncTask for retrieval
+ * @author Ruchita_Maheshwary
+ *
  */
 public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
 
     final String LOG_TAG = SportsAsyncTask.class.getSimpleName();
     Context mContext;
+    ProgressBar mProgressbar;
 
     public SportsAsyncTask(Context context) {
         mContext=context;
@@ -50,7 +54,6 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
-           // urlConnection.setRequestMethod("GET");
             urlConnection.setRequestMethod(Constants.GET_REQUEST);
             urlConnection.connect();
 
@@ -65,9 +68,6 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
                 buffer.append(line + "\n");
             }
 
@@ -99,7 +99,7 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
         }
 
         try {
-             retrieveSports(sportsData);
+            retrieveSports(sportsData);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -122,20 +122,13 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             JSONArray sportsJsonArray = sportsJson.getJSONObject(Constants.SPORT).getJSONArray(Constants.LIST);
             for(int i=0;i<sportsJsonArray.length();i++) {
                 jsonObject =sportsJsonArray.getJSONObject(i);
-               /* sportName=jsonObject.getString("name");
-                objective=jsonObject.getString("objective");
-                players=jsonObject.getString("players");
-                rules=jsonObject.getString("rules");
-                thumbnail=jsonObject.getString("thumbnail");
-                image=jsonObject.getString("image");
-                video=jsonObject.getString("video");*/
                 sportName=jsonObject.getString(Constants.SPORTS_NAME);
                 objective=jsonObject.getString(Constants.OBJECTIVE);
                 players=jsonObject.getString(Constants.PLAYERS);
                 rules=jsonObject.getString(Constants.RULES);
                 thumbnail=jsonObject.getString(Constants.THUMBNAIL);
                 image=jsonObject.getString(Constants.IMAGE);
-                video=jsonObject.getString(Constants.VIDEO);
+                video=jsonObject.getString(Constants.VIDEO_REFERENCE);
                 sportParcelable = new SportParcelable("",sportName,objective,players,rules,thumbnail,image,video);
                 mSportParcelables.add(sportParcelable);
 
@@ -145,12 +138,15 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
         }
     }
 
+
+
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         for(SportParcelable sportParcelable : mSportParcelables)    {
             insertValues(sportParcelable);
         }
+
     }
 
     private void insertValues(SportParcelable sportParcelable)  {
