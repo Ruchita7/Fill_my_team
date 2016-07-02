@@ -31,7 +31,7 @@
     <string name="google_services_unavailable" translatable="false">Google Play Services is not available.</string>
     <string name="profile_updated" translatable="false">Profile has been updated successfully!</string>
     <string name="user_found_latlng" translatable="false">Key <xliff:g id="key">%1$s</xliff:g> entered the search area at <xliff:g id="lat">%2$f</xliff:g>,<xliff:g id="lng">%3$f</xliff:g></string>
-    <string name="no_player_found" translatable="false">No players found nearby!</string>
+    <string name="no_player_found" translatable="false">No <xliff:g id="sportName">%1$s</xliff:g>  players found nearby!</string>
     <string name="no_key_found" translatable="false">Key <xliff:g id="key">%1$s</xliff:g> is no longer in the search area</string>
     <string name="geo_query_error" translatable="false">There was an error with this query: </string>
     <string name="user_moved" translatable="false">Key <xliff:g id="key">%1$s</xliff:g> moved within the search area to <xliff:g id="lat">%2$f</xliff:g>,<xliff:g id="lng">%3$f</xliff:g></string>

@@ -74,7 +74,11 @@ public class Constants {
     public static final String FOOTBALL = "Football";
     public static final String CRICKET = "Cricket";
     public static final String BADMINTON = "Badminton";
-    public static final String BASEBALL = "Baseball";
+    public static final String HOCKEY = "Hockey";
+    public static final String TABLE_TENNIS = "TableTennis";
+    public static final String RUGBY = "Rugby";
+    public static final String VOLLEY_BALL = "VolleyBall";
+    public static final String BASEBALL = "BaseBall";
 
     //public static final String EMAIL="EMAIL";
 

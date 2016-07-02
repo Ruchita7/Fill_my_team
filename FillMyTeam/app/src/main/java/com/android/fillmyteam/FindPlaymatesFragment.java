@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -56,6 +58,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /*import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;*/
@@ -95,10 +101,17 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     Map<LatLng, PlayerParcelable> userLatLngMap;
     private View mWindow;
     //    CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.map)
     FrameLayout frameLayout;
     private View mContents;
     int playerFoundCount;
     LatLng latLngCenter;
+
+    boolean isImgClicked;
+    boolean isPanelClicked;
+    public static final String IMAGE_CLICK = "image_click";
+    public static final String PANEL_CLICK = "panel_click";
+
     //   LatLng latLngCenter = new LatLng(28.7514586,77.0994467);
  /*   final CameraPosition cameraPosition = CameraPosition.builder()
             .target(latLngCenter)
@@ -118,24 +131,37 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     private RadioGroup mOptions;
     String mSport;
     GeoQuery geoQuery;
-    Button searchSportsButton;
-
+    @BindView(R.id.search_sports_image)
+    ImageView searchSportsImageView;
+    MapFragment mapFragment;
     Spinner sportSpinner;
+    @BindView(R.id.sports_panel)
+    FrameLayout panelLayout;
+    @BindView(R.id.badminton_image)
+    ImageView badmintonImage;
+    @BindView(R.id.football_image)
+    ImageView footballImage;
+    @BindView(R.id.tennis_image)
+    ImageView tennisImage;
+    @BindView(R.id.cricket_image)
+    ImageView cricketImage;
+    @BindView(R.id.hockey_image)
+    ImageView hockeyImage;
+    @BindView(R.id.table_tennis_image)
+    ImageView tableTennisImage;
+    @BindView(R.id.volleyball_image)
+    ImageView volleyballImage;
+    @BindView(R.id.rugby_image)
+    ImageView rugbyImage;
+    @BindView(R.id.baseball_image)
+    ImageView baseballImage;
+    @BindView(R.id.basketball_image)
+    ImageView basketballImage;
+
 
     public FindPlaymatesFragment() {
         // Required empty public constructor
     }
-
-
-    // TODO: Rename and change types and number of parameters
-/*    public static FindPlaymatesFragment newInstance(String param1, String param2) {
-        FindPlaymatesFragment fragment = new FindPlaymatesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
 
 
     public static FindPlaymatesFragment newInstance(User user) {
@@ -217,19 +243,20 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
             }
         });*/
 
-        frameLayout = (FrameLayout) view.findViewById(R.id.map);
+        //   frameLayout = (FrameLayout) view.findViewById(R.id.map);
         FragmentManager fragmentManager = getChildFragmentManager();
         MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
 
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             fragmentManager.beginTransaction().replace(R.id.map, mapFragment).commit();
-            mapFragment.getMapAsync(this);
+
         }
-
-
+        mapFragment.getMapAsync(this);
+        //  panelLayout = (FrameLayout) view.findViewById(R.id.sports_panel);
         mWindow = getActivity().getLayoutInflater().inflate(R.layout.custom_info_window, null);
         mContents = getActivity().getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+        ButterKnife.bind(this, view);
     /*    SupportMapFragment mapFragment =
                 (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
         if(mapFragment!=null)
@@ -242,16 +269,37 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         mResetButton.setOnClickListener(this);*/
       /*  searchSportsButton = (ImageView) view.findViewById(R.id.search_sports_button);
         registerForContextMenu(searchSportsButton);*/
-        searchSportsButton = (Button) view.findViewById(R.id.search_sports_button);
-        searchSportsButton.setOnClickListener(this);
-        sportSpinner = (Spinner) view.findViewById(R.id.sports_spinner);
+        //     searchSportsImageView = (ImageView) view.findViewById(R.id.search_sports_image);
+        panelLayout.setOnClickListener(this);
+        searchSportsImageView.setOnClickListener(this);
+        tennisImage.setOnClickListener(this);
+        footballImage.setOnClickListener(this);
+        baseballImage.setOnClickListener(this);
+        basketballImage.setOnClickListener(this);
+        cricketImage.setOnClickListener(this);
+        hockeyImage.setOnClickListener(this);
+        rugbyImage.setOnClickListener(this);
+        volleyballImage.setOnClickListener(this);
+        tableTennisImage.setOnClickListener(this);
+        badmintonImage.setOnClickListener(this);
+
+      /*  sportSpinner = (Spinner) view.findViewById(R.id.sports_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.all_sports, android.R.layout.simple_spinner_item);
+                R.array.all_sports, android.R.layout.simple_spinner_item);*/
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 // Apply the adapter to the spinner
-        sportSpinner.setAdapter(adapter);
+        /*sportSpinner.setAdapter(adapter);
         sportSpinner.setOnItemSelectedListener(this);
+        */
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(PANEL_CLICK) && (savedInstanceState.containsKey(IMAGE_CLICK))) {
+                isPanelClicked = savedInstanceState.getBoolean(PANEL_CLICK);
+                isImgClicked = savedInstanceState.getBoolean(IMAGE_CLICK);
+                searchSportsImageView.setVisibility(!isImgClicked ? View.VISIBLE : View.INVISIBLE);
+                panelLayout.setVisibility(!isPanelClicked ? View.VISIBLE : View.INVISIBLE);
+            }
+        }
         return view;
     }
 
@@ -263,25 +311,117 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         mUrlRef.removeEventListener(this);
     }
 
+    @OnClick({R.id.sports_panel, R.id.search_sports_image, R.id.basketball_image, R.id.football_image, R.id.table_tennis_image, R.id.tennis_image,
+            R.id.hockey_image, R.id.cricket_image, R.id.rugby_image, R.id.volleyball_image, R.id.badminton_image, R.id.baseball_image})
     @Override
     public void onClick(View v) {
-        sportSpinner.performClick();
+        // sportSpinner.performClick();
         //  searchSportsButton.setVisibility(View.INVISIBLE);
+        Slide slide;
+        switch (v.getId()) {
+
+            case R.id.sports_panel:
+
+                slide = new Slide(Gravity.RIGHT);
+
+                searchSportsImageView.animate().translationX(10);
+                slide.addTarget(R.id.search_sports_image);
+                slide.setInterpolator(AnimationUtils.loadInterpolator(mContext, android.R.interpolator
+                        .linear_out_slow_in));
+                slide.setDuration(300);
+
+                panelLayout.setVisibility(View.INVISIBLE);
+                searchSportsImageView.setVisibility(View.VISIBLE);
+                isImgClicked = false;
+                isPanelClicked = true;
+                break;
+            case R.id.search_sports_image:
+                slide = new Slide(Gravity.RIGHT);
+
+                panelLayout.animate().translationX(10);
+                slide.addTarget(R.id.sports_panel);
+                slide.setInterpolator(AnimationUtils.loadInterpolator(mContext, android.R.interpolator
+                        .linear_out_slow_in));
+                slide.setDuration(300);
+                panelLayout.setVisibility(View.VISIBLE);
+                searchSportsImageView.setVisibility(View.INVISIBLE);
+                isImgClicked = true;
+                isPanelClicked = false;
+                break;
+            case R.id.basketball_image:
+                Log.v(LOG_TAG, "basketball clicked");
+                mSport = Constants.BASKETBALL;
+                fireGeoQuery();
+                break;
+            case R.id.football_image:
+                Log.v(LOG_TAG, "football clicked");
+                mSport = Constants.FOOTBALL;
+                fireGeoQuery();
+                break;
+            case R.id.table_tennis_image:
+                Log.v(LOG_TAG, "table_tennis_image clicked");
+                mSport = Constants.TABLE_TENNIS;
+                fireGeoQuery();
+                break;
+            case R.id.tennis_image:
+                Log.v(LOG_TAG, "tennis clicked");
+                mSport = Constants.TENNIS;
+                fireGeoQuery();
+                break;
+            case R.id.hockey_image:
+                Log.v(LOG_TAG, "rugby_image hockey_image");
+                mSport = Constants.HOCKEY;
+                fireGeoQuery();
+                break;
+            case R.id.cricket_image:
+                Log.v(LOG_TAG, "cricket clicked");
+                mSport = Constants.CRICKET;
+                fireGeoQuery();
+                break;
+            case R.id.rugby_image:
+                Log.v(LOG_TAG, "rugby_image clicked");
+                mSport = Constants.RUGBY;
+                fireGeoQuery();
+                break;
+            case R.id.volleyball_image:
+                Log.v(LOG_TAG, "volleyball clicked");
+                mSport = Constants.VOLLEY_BALL;
+                fireGeoQuery();
+                break;
+            case R.id.badminton_image:
+                Log.v(LOG_TAG, "badminton clicked");
+                mSport = Constants.BADMINTON;
+                fireGeoQuery();
+                break;
+            case R.id.baseball_image:
+                Log.v(LOG_TAG, "baseball clicked");
+                mSport = Constants.BASEBALL;
+                fireGeoQuery();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IMAGE_CLICK, isImgClicked);
+        outState.putBoolean(PANEL_CLICK, isPanelClicked);
     }
 
     /*@Override
-        public void onResume() {
-            super.onResume();
+            public void onResume() {
+                super.onResume();
 
 
 
-            for (MarkerOptions markerOptions : markerMap.values()) {
-                mMap.addMarker(markerOptions);
-            }
+                for (MarkerOptions markerOptions : markerMap.values()) {
+                    mMap.addMarker(markerOptions);
+                }
 
 
 
-        }*/
+            }*/
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String sport = (String) parent.getItemAtPosition(position);
@@ -348,115 +488,11 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     }
 
-/*    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.all:
-                mSport = "";
-                fireGeoQuery();
-                break;
-            case R.id.basketball:
-                Log.v(LOG_TAG, "basketball clicked");
-                mSport = "basketball";
-                fireGeoQuery();
-
-                break;
-            case R.id.tennis:
-                Log.v(LOG_TAG, "tennis clicked");
-                mSport = "tennis";
-                fireGeoQuery();
-
-                break;
-            case R.id.football :
-                Log.v(LOG_TAG, "football clicked");
-                mSport = "football";
-                fireGeoQuery();
-                break;
-
-            case R.id.cricket :
-                Log.v(LOG_TAG, "cricket clicked");
-                mSport = "cricket";
-                fireGeoQuery();
-                break;
-
-            case R.id.badminton :
-                Log.v(LOG_TAG, "badminton clicked");
-                mSport = "badminton";
-                fireGeoQuery();
-                break;
-
-
-            case R.id.baseball :
-                Log.v(LOG_TAG, "baseball clicked");
-                mSport = "baseball";
-                fireGeoQuery();
-                break;
-        }
-
-        return super.onContextItemSelected(item);
-    }*/
-
-   /* public void handleMarkers(int radioButtonId) {
-        switch (radioButtonId) {
-            case R.id.all:
-                mSport = "";
-
-               *//* clearMap();
-                //   mSport = "basketball";
-                geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLngCenter.latitude, latLngCenter.longitude), 1);
-                geoQuery.addGeoQueryEventListener(this);*//*
-                fireGeoQuery();
-                break;
-            case R.id.basketball:
-                Log.v(LOG_TAG, "basketball clicked");
-                mSport = "basketball";
-                fireGeoQuery();
-             *//*   geoQuery.removeAllListeners();
-                clearMap();
-
-                geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLngCenter.latitude, latLngCenter.longitude), 1);
-                geoQuery.addGeoQueryEventListener(this);*//*
-                break;
-            case R.id.tennis:
-                Log.v(LOG_TAG, "tennis clicked");
-                mSport = "tennis";
-                fireGeoQuery();
-               *//* geoQuery.removeAllListeners();
-                clearMap();
-
-                geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLngCenter.latitude, latLngCenter.longitude), 1);
-                geoQuery.addGeoQueryEventListener(this);*//*
-                break;
-            case R.id.football :
-                Log.v(LOG_TAG, "football clicked");
-                mSport = "football";
-                fireGeoQuery();
-                break;
-
-            case R.id.cricket :
-                Log.v(LOG_TAG, "cricket clicked");
-                mSport = "cricket";
-                fireGeoQuery();
-                break;
-
-            case R.id.badminton :
-                Log.v(LOG_TAG, "badminton clicked");
-                mSport = "badminton";
-                fireGeoQuery();
-                break;
-
-
-            case R.id.baseball :
-                Log.v(LOG_TAG, "baseball clicked");
-                mSport = "baseball";
-                fireGeoQuery();
-                break;
-        }
-    }*/
 
     private void fireGeoQuery() {
-        geoQuery.removeAllListeners();
+        if (geoQuery != null) {
+            geoQuery.removeAllListeners();
+        }
         //   sportSpinner.setVisibility(View.INVISIBLE);
         // searchSportsButton.setVisibility(View.VISIBLE);
         clearMap();
@@ -513,7 +549,14 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         }
         mMap.clear();
     }
-/*
+
+/*    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapFragment.getMapAsync(this);
+    }
+    */
+    /*
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -632,7 +675,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Log.d(LOG_TAG, "All initial data has been loaded and events have been fired!");
         if (playerFoundCount <= 0) {
             //     Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), getString(R.string.no_player_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.no_player_found,mSport), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -667,7 +710,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                 playerFoundCount--;
                 if (playerFoundCount <= 0) {
                     //  Toast.makeText(getContext(), "No players found nearby", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(), getString(R.string.no_player_found), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getString(R.string.no_player_found,mSport), Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -838,7 +881,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
                 //.make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
-                .make(frameLayout, getString(R.string.invite_user,marker.getTitle()), Snackbar.LENGTH_LONG)
+                .make(frameLayout, getString(R.string.invite_user, marker.getTitle()), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.ok), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -849,7 +892,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                        /* List<String> msg = new ArrayList<String>();
                         msg.add(user.getEmail() + " wants to play with you");*/
                         Log.v(LOG_TAG, "User's mail::" + user.getEmail());
-                        ((Callback) getActivity()).onInviteClick(mUser,user);
+                        ((Callback) getActivity()).onInviteClick(mUser, user);
                         //   mNotificationRef.child(Utility.encodeEmail(user.getEmail())).child("msg").setValue(msg);
                       /*  Intent intent = new Intent(getActivity(), NotificationService.class);
                         intent.putExtra(Constants.NOTIFY_USER, playerParcelable);
@@ -865,7 +908,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
                 //  .make(frameLayout, "Invite " + marker.getTitle() + " to play", Snackbar.LENGTH_LONG)
-                .make(frameLayout,  getString(R.string.invite_user,marker.getTitle()), Snackbar.LENGTH_LONG)
+                .make(frameLayout, getString(R.string.invite_user, marker.getTitle()), Snackbar.LENGTH_LONG)
                 //  .setAction("SEND NOTIFICATION", new View.OnClickListener() {
                 .setAction(getString(R.string.ok), new View.OnClickListener() {
                     @Override
@@ -875,7 +918,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                         User user = playerParcelable.getUser();
                         Log.v(LOG_TAG, "User's mail::" + user.getEmail());
                         //   Log.e(LOG_TAG, "onClick of onInfoWindowClick");
-                        ((Callback) getActivity()).onInviteClick(mUser,user);
+                        ((Callback) getActivity()).onInviteClick(mUser, user);
                     }
                 });
         snackbar.show();

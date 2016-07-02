@@ -12,15 +12,92 @@
         android:layout_height="match_parent"></FrameLayout>
 
 
-    <!--ImageView
+    <ImageView
+        android:id="@+id/search_sports_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search by sports"
-        android:src="@mipmap/ic_launcher"
-        android:layout_gravity="bottom"
-        android:id="@+id/search_sports_button"/-->
+        android:layout_gravity="end|center_vertical"
+        android:src="@drawable/ic_search" />
 
-    <Button
+    <FrameLayout
+        android:id="@+id/sports_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:background="@drawable/gradient_box"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/badminton_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_badminton" />
+
+            <ImageView
+                android:id="@+id/baseball_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseball" />
+
+            <ImageView
+                android:id="@+id/football_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_football" />
+
+            <ImageView
+                android:id="@+id/cricket_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_cricket" />
+
+            <ImageView
+                android:id="@+id/tennis_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_tennis" />
+
+            <ImageView
+                android:id="@+id/table_tennis_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_table_tennis" />
+
+            <ImageView
+                android:id="@+id/hockey_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_hockey" />
+
+            <ImageView
+                android:id="@+id/rugby_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_rugby" />
+
+            <ImageView
+                android:id="@+id/volleyball_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_volleyball" />
+
+
+            <ImageView
+                android:id="@+id/basketball_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_basketball" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+    <!--Button
         android:id="@+id/search_sports_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,71 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:visibility="invisible" />
-    <!--LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-
-
-        <RadioGroup
-            android:id="@+id/sports_optioms"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-            <RadioButton
-                android:id="@+id/all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="All" />
-
-            <RadioButton
-                android:id="@+id/basketball"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="Basketball" />
-
-            <RadioButton
-                android:id="@+id/tennis"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tennis" />
-
-            <RadioButton
-                android:id="@+id/football"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Football" />
-
-            <RadioButton
-                android:id="@+id/cricket"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cricket" />
-
-            <RadioButton
-                android:id="@+id/badminton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="badminton" />
-
-            <RadioButton
-                android:id="@+id/baseball"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Baseball" />
-
-
-        </RadioGroup>
-    </LinearLayout-->
+        android:visibility="invisible" /-->
 
 </FrameLayout>
 
