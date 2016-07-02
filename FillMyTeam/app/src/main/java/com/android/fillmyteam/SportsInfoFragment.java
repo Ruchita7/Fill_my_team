@@ -57,6 +57,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     private boolean mAutoSelectView;
     private int mChoiceMode;
     private int mPosition = RecyclerView.NO_POSITION;
+    private static final String SELECTED_KEY = "selected_position";
 
     ProgressBar mProgressBar;
 
@@ -133,14 +134,14 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
             }
         }, textView, mProgressBar,mChoiceMode);
         mRecyclerView.setAdapter(mAdapter);
-      /*  if(getActivity().getIntent()!=null)
-        {
-            if(getActivity().getIntent().hasExtra(SportsDetailFragment.POSITION))
-            {
-                int position = getActivity().getIntent().getIntExtra(SportsDetailFragment.POSITION,RecyclerView.NO_POSITION);
-                mRecyclerView.scrollToPosition(position);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SELECTED_KEY)) {
+                // The listview probably hasn't even been populated yet.  Actually perform the
+                // swapout in onLoadFinished.
+                mPosition = savedInstanceState.getInt(SELECTED_KEY);
             }
-        }*/
+            mAdapter.onRestoreInstanceState(savedInstanceState);
+        }
         return view;
     }
 
@@ -182,6 +183,18 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if (mPosition != RecyclerView.NO_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+            mAdapter.onSaveInstanceState(outState);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
+
 }
 
 

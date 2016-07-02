@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
+import com.android.fillmyteam.model.SportParcelable;
 import com.android.fillmyteam.util.Constants;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
@@ -75,11 +76,13 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     CollapsingToolbarLayout collapsingToolbar;
     String mImageUrl;
     String mThumbnailUrl;
-   // MenuItem menuItem;
+    // MenuItem menuItem;
     String mSportId;
     public static final int DETAIL_LOADER = 0;
     ShareActionProvider mShareActionProvider;
     int mPosition;
+    SportParcelable mSportParcelable;
+    public static final String PLAYER_PARCELABLE = "player_object";
 
     public SportsDetailFragment() {
     }
@@ -143,9 +146,6 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
                 @Override
                 public void onClick(View v) {
                     Log.v(LOG_TAG, "on click clicked");
-                   /* Intent intent = new Intent(mContext,SportsInfoFragment.class);
-                    intent.putExtra(POSITION,mPosition);
-                    startActivity(intent);*/
                     getFragmentManager().popBackStackImmediate();
                 }
             });
@@ -154,6 +154,11 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         collapsingToolbar = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         mUri = SportsProvider.Sports.CONTENT_URI;
         ButterKnife.bind(this, view);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(PLAYER_PARCELABLE)) {
+                mSportParcelable = savedInstanceState.getParcelable(PLAYER_PARCELABLE);
+            }
+        }
         return view;
     }
 
@@ -202,17 +207,18 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             String rules = data.getString(data.getColumnIndex(SportsColumns.RULES));
             //  String videoReference = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
             mVideoKey = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
+            Uri.Builder builder = Uri.parse(Constants.IMAGE_THUMBNAIL).buildUpon().appendPath(mVideoKey).appendPath(Constants.DEFAULT_IMG);
+            mThumbnailUrl = builder.toString();
+            mSportParcelable = new SportParcelable(mSportId, sportsName, objective, players, rules, mThumbnailUrl, mImageUrl, mVideoKey);
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
             mSportNameTextView.setText(sportsName);
             Picasso.with(getActivity()).load(mImageUrl).into(mSportsImageView);
-            Uri.Builder builder = Uri.parse(Constants.IMAGE_THUMBNAIL).buildUpon().appendPath(mVideoKey).appendPath(Constants.DEFAULT_IMG);
-            mThumbnailUrl = builder.toString();
+
             Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView);
             //menuItem.setIntent(createSharedIntent());
-            if(mShareActionProvider!=null)
-            {
+            if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createSharedIntent());
             }
         }
@@ -277,5 +283,12 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         return resolveInfo != null && !resolveInfo.isEmpty();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
 
+        if (mSportParcelable != null) {
+            outState.putParcelable(PLAYER_PARCELABLE, mSportParcelable);
+        }
+        super.onSaveInstanceState(outState);
+    }
 }
