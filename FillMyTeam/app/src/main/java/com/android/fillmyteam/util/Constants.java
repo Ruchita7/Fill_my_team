@@ -108,21 +108,24 @@ public class Constants {
     public static final String LOGGED_IN_USER_EMAIL = "user_already_logged_in";
     public static final String EVENT_ID = "event_id";
     public static final String CALENDAR_EVENT_CREATION = "calendar_created";
-    public static final String PLAYING_WITH="playingWith";
+    public static final String PLAYING_WITH = "playingWith";
 
-    public static final String MATCH_URL="https://fill-my-team-1315.firebaseio.com/matches/";
+    public static final String MATCH_URL = "https://fill-my-team-1315.firebaseio.com/matches/";
 
-    public static final String LOGOUT="logout";
+    public static final String LOGOUT = "logout";
 
 
-   // public static final String REFERENCE="reference";
-    public static final String PHOTO_URL="https://maps.googleapis.com/maps/api/place/photo";
-   public static final String MAX_WIDTH ="maxwidth";
-   public static final String REFERENCE_ID ="photoreference";
-   public static final String WIDTH_VALUE ="100";
-   public static final String PHOTOS ="photos";
+    // public static final String REFERENCE="reference";
+    public static final String PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo";
+    public static final String MAX_WIDTH = "maxwidth";
+    public static final String REFERENCE_ID = "photoreference";
+    public static final String WIDTH_VALUE = "100";
+    public static final String PHOTOS = "photos";
 
-    public static final String PHOTO_REFERENCE="photo_reference";
+    public static final String PHOTO_REFERENCE = "photo_reference";
 
-    public static final String IMAGE_THUMBNAIL="http://img.youtube.com/vi/";
+    public static final String IMAGE_THUMBNAIL = "http://img.youtube.com/vi/";
+    public static final String DEFAULT_IMG = "default.jpg";
+    public static final String YOUTUBE_URL = "https://www.youtube.com/watch";
+    public static final String VIDEO_REF = "v";
 }
