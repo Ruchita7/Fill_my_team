@@ -69,6 +69,7 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
 
         );
         holder.sportsName.setText(mCursor.getString(SportsInfoFragment.COL_SPORT_NAME));
+        holder.sportsImage.setTransitionName("iconView"+position);
         //   ViewCompat.setTransitionName(holder.sportsImage, "iconView" + position);
         ViewCompat.setTransitionName(holder.sportsImage, Constants.ICON_VIEW + position);
         mIcm.onBindViewHolder(holder, position);

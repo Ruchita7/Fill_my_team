@@ -7,11 +7,15 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,9 +130,42 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
                 Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId,mPosition);
+               /* setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_exit));
+                setReenterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_reenter));
+                nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_photo));*/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                   /* setSharedElementReturnTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(R.transition.change_image_trans));
+                    setExitTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(android.R.transition.fade));
+
+                    nextFrag.setSharedElementEnterTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(R.transition.change_image_trans));
+                    nextFrag.setEnterTransition(TransitionInflater.from(
+                            getActivity()).inflateTransition(android.R.transition.fade));*/
+
+                   /* setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
+                    setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.explode));
+                    nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
+                    nextFrag.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.explode));*/
+
+                    /*nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
+                    setExitTransition(new Explode());
+
+                    nextFrag.setSharedElementReturnTransition((TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform)));
+                    nextFrag.setEnterTransition(new Explode());*/
+
+                    setExitTransition(new Fade());
+
+                    nextFrag.setEnterTransition(new Explode());
+                    nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_photo));
+                    setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_photo));
+                    setReenterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_reenter));
+                }
                 getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag)
                         .addToBackStack(null)
+                        .addSharedElement(viewHolder.sportsImage,viewHolder.sportsImage.getTransitionName())
                         .commit();
 
             }

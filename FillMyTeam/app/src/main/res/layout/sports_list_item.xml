@@ -15,7 +15,9 @@
             android:id="@+id/sports_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
+            android:foreground="@drawable/grey_ripple"
+            android:stateListAnimator="@animator/raise"
            />
 
         <TextView
