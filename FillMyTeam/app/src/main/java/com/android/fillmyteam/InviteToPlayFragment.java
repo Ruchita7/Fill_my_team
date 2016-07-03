@@ -3,12 +3,13 @@ package com.android.fillmyteam;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,9 +39,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -112,11 +116,13 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             }
         }
         invitePlayTextView.setText(getString(R.string.invite_play, mPlayWithUser.getName()));
+        GregorianCalendar gcalendar = new GregorianCalendar();
         mPlayTimeEditText = (EditText) view.findViewById(R.id.invite_time);
-        mPlayTimeEditText.setText(mUser.getPlayingTime());
+    //    mPlayTimeEditText.setText(mUser.getPlayingTime());
+        mPlayTimeEditText.setText(Utility.getCurrentTime(gcalendar));
         mDateTextView = (TextView) view.findViewById(R.id.invite_date);
 
-        GregorianCalendar gcalendar = new GregorianCalendar();
+
         mDateTextView.setText(Utility.getCurrentDate(gcalendar));
         mPlaceTextView.setText(mUser.getPlayingPlace());
         mInviteButton.setOnClickListener(this);
@@ -165,13 +171,15 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 }
                 break;
             case R.id.invite_button:
-                mUser.setPlayingTime(mPlayTimeEditText.getText().toString());
-                mUser.setPlayingDate(mDateTextView.getText().toString());
+                String playTime = mPlayTimeEditText.getText().toString();
+                String playingDate = mDateTextView.getText().toString();
+                mUser.setPlayingTime(playTime);
+                mUser.setPlayingDate(playingDate);
                 DatabaseReference ref = matchRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
                 Map<String, Object> currentUserMap = new HashMap<>();
                 Map<String, Object> playingUserMap = new HashMap<>();
-                currentUserMap.put(Constants.PLAY_TIME, mUser.getPlayingTime());
-                currentUserMap.put(Constants.PLAY_DATE, mUser.getPlayingDate());
+                currentUserMap.put(Constants.PLAY_TIME,playTime);
+                currentUserMap.put(Constants.PLAY_DATE, playingDate);
                 currentUserMap.put(Constants.PLAYING_PLACE, mUser.getPlayingPlace());
                 currentUserMap.put(Constants.LATITUDE, mUser.getLatitude());
                 currentUserMap.put(Constants.LONGITUDE, mUser.getLongitude());
@@ -181,8 +189,8 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
 
                 ref.push().setValue(currentUserMap);
                 ref = matchRef.child("/" + Utility.encodeEmail(mPlayWithUser.getEmail()));
-                playingUserMap.put(Constants.PLAY_TIME, mUser.getPlayingTime());
-                playingUserMap.put(Constants.PLAY_DATE, mUser.getPlayingDate());
+                playingUserMap.put(Constants.PLAY_TIME,playTime);
+                playingUserMap.put(Constants.PLAY_DATE, playingDate);
                 playingUserMap.put(Constants.PLAYING_PLACE, mUser.getPlayingPlace());
                 playingUserMap.put(Constants.LATITUDE, mUser.getLatitude());
                 playingUserMap.put(Constants.LONGITUDE, mUser.getLongitude());
@@ -190,6 +198,30 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 playingUserMap.put(Constants.PLAYING_WITH, mUser.getName());
                 playingUserMap.put(Constants.PLAYER_EMAIL, mUser.getEmail());
                 ref.push().setValue(playingUserMap);
+
+
+               GregorianCalendar beginTime = new GregorianCalendar();
+               GregorianCalendar endTime = new GregorianCalendar();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
+
+                try {
+                    beginTime.setTime(sdf.parse(playingDate + " " + playTime));
+                    endTime.setTime(sdf.parse(playingDate + " " + playTime));
+                    endTime.add(Calendar.HOUR,1);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                        .putExtra(CalendarContract.Events.TITLE, getString(R.string.lets_play,mUser.getSport()))
+                        .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.play_invitation,mUser.getSport(),playingDate+" "+playTime))
+                        .putExtra(CalendarContract.Events.EVENT_LOCATION,  mUser.getPlayingPlace())
+                        .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+                        .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail()+","+mPlayWithUser.getEmail());
+                startActivity(intent);
 
               /*  ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
                 ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());

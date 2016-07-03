@@ -26,7 +26,7 @@
     <string name="map_not_ready" translatable="false">Map is not ready yet</string>
     <string name="clear_map" translatable="false">Clear</string>
     <string name="reset_map" translatable="false">Reset</string>
-    <string name="player_time_location" translatable="false"><xliff:g id="location" >%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="player_time_location" translatable="false"><xliff:g id="location">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
     <string name="playing_message" translatable="false">You are scheduled to play in <xliff:g id="place">%1$s</xliff:g> </string>
     <string name="google_services_unavailable" translatable="false">Google Play Services is not available.</string>
     <string name="profile_updated" translatable="false">Profile has been updated successfully!</string>
@@ -56,7 +56,7 @@
     <string name="data_unavailable" translatable="false">Data unavailable</string>
     <string name="autocomplete_hint" translatable="false">Search Sports Stores within 5KM Range</string>
     <string name="daily_notification" translatable="false">Notify 30 minutes before my playing time</string>
-    <string name="google_calendar_notification" translatable="false">Create Google Calendar Event for my playing time</string>
+    <string name="google_calendar_notification" translatable="false">Book my calendar</string>
     <string name="settings" translatable="false">Settings</string>
     <string name="manage_notifications" translatable="false">Manage Notifications</string>
     <string name="notify_frequency_key" translatable="false">notify_frequency</string>
@@ -108,4 +108,6 @@
     <string name="network_status_key" translatable="false">sync_status</string>
     <string name="match_id" translatable="false">match_id</string>
     <string name="learn_to_play" translatable="false">Learn to play <xliff:g id="sport">%1$s</xliff:g></string>
+    <string name="lets_play" translatable="false">Let\'s play <xliff:g id="sport">%1$s</xliff:g></string>
+    <string name="play_invitation" translatable="false">You are invited to play <xliff:g id="sport">%1$s</xliff:g> with me on <xliff:g id="time">%2$s</xliff:g></string>
 </resources>

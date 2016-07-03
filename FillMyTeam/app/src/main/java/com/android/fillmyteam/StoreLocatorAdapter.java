@@ -2,12 +2,10 @@ package com.android.fillmyteam;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,106 +18,92 @@ import java.util.List;
 /**
  * Created by dgnc on 5/31/2016.
  */
-public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapter.StoreViewHolder> {
+public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
 
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
     Context mContext;
-    final StoreLocatorAdapterOnClickHandler mClickHandler;
-    final View mEmptyView;
-    ItemChoiceManager mIcm;
 
-    public StoreLocatorAdapter(Context context, StoreLocatorAdapterOnClickHandler adapterClickHandler, List<StoreLocatorParcelable> storeLocatorParcelables, View emptyView, int choiceMode) {
-        mContext = context;
-        mClickHandler = adapterClickHandler;
-        mEmptyView = emptyView;
-        mStoreLocatorParcelables = storeLocatorParcelables;
-        mIcm = new ItemChoiceManager(this);
-        mIcm.setChoiceMode(choiceMode);
+    public StoreLocatorAdapter(Context context, int resource, List<StoreLocatorParcelable> mStoreLocatorParcelables) {
+        super(context, R.layout.store_locator_list_item, mStoreLocatorParcelables);
+        this.mStoreLocatorParcelables = mStoreLocatorParcelables;
+        this.mContext = context;
+    }
+
+    public static class ViewHolder {
+        // each data item is just a string in this case
+        public TextView addressTextView;
+        public TextView nameTextView;
+        ImageView locatorImageView;
+        ImageView storeImageView;
+
+        public ViewHolder() {
+        }
+
+        public ViewHolder(View v) {
+            //  super(v);
+            addressTextView = (TextView) v.findViewById(R.id.address);
+            nameTextView = (TextView) v.findViewById(R.id.name);
+            locatorImageView = (ImageView) v.findViewById(R.id.locator_imageView);
+            storeImageView=(ImageView) v.findViewById(R.id.store_image_view);
+        }
     }
 
 
     @Override
-    public StoreViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.store_locator_list_item, parent, false);
-        view.setFocusable(true);
-        return new StoreViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(StoreViewHolder holder, int position) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         StoreLocatorParcelable storeLocatorParcelable = mStoreLocatorParcelables.get(position);
-
-        holder.addressTextView.setText(storeLocatorParcelable.getAddress());
-        holder.nameTextView.setText(storeLocatorParcelable.getName());
+        ViewHolder viewHolder; // view lookup cache stored in tag
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.store_locator_list_item, parent, false);
+            viewHolder.addressTextView = (TextView) convertView.findViewById(R.id.address);
+            viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.name);
+            viewHolder.locatorImageView = (ImageView) convertView.findViewById(R.id.locator_imageView);
+            viewHolder.storeImageView=(ImageView) convertView.findViewById(R.id.store_image_view);
+            // viewHolder.home = (TextView) convertView.findViewById(R.id.tvHome);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        viewHolder.addressTextView.setText(storeLocatorParcelable.getAddress());
+        viewHolder.nameTextView.setText(storeLocatorParcelable.getName());
 
         Uri.Builder builder = Uri.parse(Constants.PHOTO_URL).buildUpon().
                 appendQueryParameter(Constants.MAX_WIDTH, Constants.WIDTH_VALUE).
                 appendQueryParameter(Constants.REFERENCE_ID, storeLocatorParcelable.getPhotoReference()).
                 appendQueryParameter(Constants.KEY, mContext.getString(R.string.map_key));
         String photoUrl = builder.build().toString();
-        Log.v(StoreLocatorAdapter.class.getSimpleName(),"photo url "+photoUrl);
-        Picasso.with(mContext).load(photoUrl).into(holder.storeImageView);
-
-
-        // ViewCompat.setTransitionName(holder.sportsImage, Constants.ICON_VIEW + position);
-        mIcm.onBindViewHolder(holder, position);
+        Picasso.with(mContext).load(photoUrl).into(viewHolder.storeImageView);
+       /* final double latitude = storeLocatorParcelable.getLatitude();
+        final double longitude = storeLocatorParcelable.getLongitude();
+        final String storeName = storeLocatorParcelable.getName();
+        final String address = storeLocatorParcelable.getAddress();
+*/
+      /*  viewHolder.locatorImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClick(v, latitude, longitude, storeName, address);
+            }
+        });*/
+        return convertView;
     }
 
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        mIcm.onRestoreInstanceState(savedInstanceState);
-    }
 
-    public void onSaveInstanceState(Bundle outState) {
-        mIcm.onSaveInstanceState(outState);
-    }
+   /* public void onItemClick(View view, double latitude, double longitude, String storeName, String address) {
+
+        //launch map
 
 
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
+        //directions
+        String geoLocation = "google.navigation:" + "q=" + storeName + address;
 
-    @Override
-    public int getItemCount() {
-        if (null == mStoreLocatorParcelables) return 0;
-        return mStoreLocatorParcelables.size();
-    }
-
-    public class StoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public TextView addressTextView;
-        public TextView nameTextView;
-        ImageView locatorImageView;
-        ImageView storeImageView;
-
-        public StoreViewHolder(View v) {
-             super(v);
-            addressTextView = (TextView) v.findViewById(R.id.address);
-            nameTextView = (TextView) v.findViewById(R.id.name);
-            locatorImageView = (ImageView) v.findViewById(R.id.locator_imageView);
-            storeImageView = (ImageView) v.findViewById(R.id.store_image_view);
+        Uri geoIntentUri = Uri.parse(geoLocation);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
+            mContext.startActivity(mapIntent);
         }
-
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            mClickHandler.itemClick(position, this);
-            mIcm.onClick(this);
-        }
-    }
-
-
-    public void selectView(RecyclerView.ViewHolder viewHolder) {
-        if (viewHolder instanceof RecyclerView.ViewHolder) {
-            StoreViewHolder svh = (StoreViewHolder) viewHolder;
-            svh.onClick(svh.itemView);
-        }
-    }
-
-
-    public static interface StoreLocatorAdapterOnClickHandler {
-        public void itemClick(int position,StoreViewHolder svh);
-    }
-
+    }*/
 
 }
