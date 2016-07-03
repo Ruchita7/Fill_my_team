@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new SportsInfoFragment())
+                    .replace(R.id.content_frame, new MatchesFragment())
                     .commit();
         }
 
