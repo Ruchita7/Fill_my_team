@@ -137,9 +137,23 @@ public class Utility {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         gregorianCalendar.set(Calendar.HOUR, hourOfDay);
         gregorianCalendar.set(Calendar.MINUTE, minute);
-        String time = gregorianCalendar.get(Calendar.HOUR) + ":" + gregorianCalendar.get(Calendar.MINUTE);
+        String time;
+        if (hourOfDay == 0) {
+            time = "12:";
+        } else {
+            if (hourOfDay > 12) {
+                time = (hourOfDay - 12) + ":";
+            } else {
+                time = hourOfDay + ":";
+            }
+        }
+        if (minute < 10) {
+            time += "0" + gregorianCalendar.get(Calendar.MINUTE);
+        } else {
+            time += gregorianCalendar.get(Calendar.MINUTE);
+        }
         String playingTime;
-        if (hourOfDay > 12) {
+        if (hourOfDay >= 12) {
             //     playingTime = time + " PM";
             playingTime = time + Constants.PM;
 

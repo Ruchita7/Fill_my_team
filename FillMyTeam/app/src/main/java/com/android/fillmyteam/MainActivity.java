@@ -1,6 +1,9 @@
 package com.android.fillmyteam;
 
 import android.annotation.TargetApi;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -8,9 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -27,15 +27,14 @@ import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.ui.CircularImageTransform;
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.util.Utility;
 import com.facebook.stetho.Stetho;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 
 /**
@@ -65,21 +64,29 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
-            updateNavigationViewHeader();
+
             Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
-            SharedPreferences sharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this);
+
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.EMAIL, mUser.getEmail());
             editor.commit();
+            try {
+                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                String userJson = ow.writeValueAsString(mUser);
+                editor.putString(Constants.USER_INFO,userJson);
+                editor.commit();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         } else if (getIntent().hasExtra(Constants.LOGGED_IN_USER_EMAIL)) {            //User is already logged in
             String email = getIntent().getStringExtra(Constants.LOGGED_IN_USER_EMAIL);
-            final DatabaseReference ref = FirebaseDatabase.getInstance()
+          /*  final DatabaseReference ref = FirebaseDatabase.getInstance()
                     .getReferenceFromUrl((Constants.APP_URL_USERS) + "/" + Utility.encodeEmail(email));
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -93,8 +100,17 @@ public class MainActivity extends AppCompatActivity
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
+            });*/
+            String userJson = sharedPreferences.getString(Constants.USER_INFO,"");
+            if(userJson!=null &&!userJson.isEmpty())    {
+                try {
+                    mUser = new ObjectMapper().readValue(userJson,User.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        updateNavigationViewHeader();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -110,9 +126,9 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 
-        if (savedInstanceState == null) {
+      if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new MatchesFragment())
+                    .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
                     .commit();
         }
 

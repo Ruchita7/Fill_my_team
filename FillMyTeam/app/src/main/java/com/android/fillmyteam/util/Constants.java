@@ -132,4 +132,8 @@ public class Constants {
     public static final String DEFAULT_IMG = "default.jpg";
     public static final String YOUTUBE_URL = "https://www.youtube.com/watch";
     public static final String VIDEO_REF = "v";
+
+    public static final String USER_INFO = "user_info";
+
+
 }

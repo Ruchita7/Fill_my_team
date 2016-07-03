@@ -2,6 +2,8 @@ package com.android.fillmyteam;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +12,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,14 +30,15 @@ import android.widget.Toast;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -48,11 +49,6 @@ import java.util.GregorianCalendar;
 import retrofit.Retrofit;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class EditProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,6 +81,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     ArrayAdapter<CharSequence> mAdapter;
     //  DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
     CheckBox mCalendarInviteCheckbox;
+    public static final String SAVED_USER = "saved_user";
+
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -95,23 +93,16 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         EditProfileFragment fragment = new EditProfileFragment();
         Bundle args = new Bundle();
         args.putSerializable(Constants.USER_DETAILS, user);
-        /*args.putDouble(Constants.LATITUDE, latitude);
-        args.putDouble(Constants.LONGITUDE, longitude);*/
+
         fragment.setArguments(args);
         return fragment;
     }
-
-
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-      /*  retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.LOCATION_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();*/
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
             /*mLatitude = getArguments().getDouble(Constants.LATITUDE);
@@ -122,7 +113,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 .getReferenceFromUrl(Constants.APP_URL_USERS);
 
 
-        mUserRef = mUrlRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
+    /*    mUserRef = mUrlRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
         mCurrentUserRefListener = mUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,8 +127,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
             }
         });
-        //  mPlayerParcelables = new ArrayList<>();
-        //    GeoFire geoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
+*/
 
     }
 
@@ -146,27 +136,15 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        //mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
-        //  mUrlRef = new Firebase(Constants.APP_URL_USERS);
 
-
-
-      /*  mDate = (TextView) view.findViewById(R.id.date);
-        mDate.setText(Utility.getCurrentDate(gcalendar));*/
         mPlacePickerImageView = (ImageView) view.findViewById(R.id.picker_image_view);
         mPlacePickerImageView.setOnClickListener(this);
         mPlaceTextView = (TextView) view.findViewById(R.id.place_text_view);
-        // mPlaceTextView.setText(mUser.getLatitude() + " " + mUser.getLongitude());
-        // mDate.setOnClickListener(this);
         mTime = (TextView) view.findViewById(R.id.time);
-        //  mTime.setText(Utility.getCurrentTime(gcalendar));
-
         mTime.setOnClickListener(this);
         submitButton = (Button) view.findViewById(R.id.saveUserButton);
         submitButton.setOnClickListener(this);
 
-      /*  CheckBox dailyNotifyCheckbox=(CheckBox)view.findViewById(R.id.daily_notify);
-        dailyNotifyCheckbox.setOnClickListener(this);*/
         mCalendarInviteCheckbox = (CheckBox) view.findViewById(R.id.calendar_notify);
         //  calendarInviteCheckbox.setOnClickListener(this);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -180,42 +158,12 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setOnItemSelectedListener(this);
         updateViews();
-       /*  Call call = null;
-       FindLocationsAPI locationsAPI = retrofit.create(FindLocationsAPI.class);
-        call = locationsAPI.retrieveParksNearMe(mUser.getLatitude() + "," + mUser.getLongitude(), "park", "5000", getString(R.string.map_key));
-        call.enqueue(new Callback<LocationResponse>() {
-            @Override
-            public void onResponse(Response<LocationResponse> response, Retrofit retrofit) {
-                LocationResponse locationResponse = response.body();
-                if (locationResponse == null) {
-                    ResponseBody responseErrBody = response.errorBody();
-                    if (responseErrBody != null) {
-
-                        try {
-                            String str = response.errorBody().string();
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                            return;
-                        }
-                    }
-                }
-                List<Result> locationResults = locationResponse.getResults();
-                Result firstResult = locationResults.get(0);
-                mParkLocation = firstResult.getFormatted_address();
-                double latitude=firstResult.getGeometry().getLocation().getLat();
-                double longitude=firstResult.getGeometry().getLocation().getLng();
-                mUser.setLatitude(latitude);
-                mUser.setLongitude(longitude);
-                mPlaceTextView.setText(mParkLocation);
-                Log.v(LOG_TAG, "park location" + latitude+","+longitude);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SAVED_USER)) {
+                mUser = (User) savedInstanceState.getSerializable(SAVED_USER);
+                updateViews();
             }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.e(LOG_TAG, t.getMessage());
-            }
-        });*/
-
+        }
         return view;
     }
 
@@ -236,10 +184,21 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mUserRef.removeEventListener(mCurrentUserRefListener);
+  /*      if (mUrlRef != null) {
+            mUserRef.removeEventListener(mCurrentUserRefListener);
+        }*/
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mUser != null) {
+            mUser.setPlayingTime(mTime.getText().toString());
+            //    mUser.setPlayingPlace();
+            outState.putSerializable(SAVED_USER, mUser);
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -252,10 +211,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 newFragment.show(getActivity().getFragmentManager(), Constants.TIME_PICKER);
                 break;
 
-           /* case R.id.date:
-                newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-                break;*/
 
             case R.id.saveUserButton:
                 // mPlayingTime = Utility.getPlayingTimeInfo(mTime.getText().toString());
@@ -263,8 +218,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 //    Log.v(LOG_TAG,"playing date is"+date);
                 saveUserData();
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                SharedPreferences.Editor editor=sharedPreferences.edit();
-                editor.putBoolean(Constants.CALENDAR_EVENT_CREATION,mCalendarInviteCheckbox.isChecked());
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(Constants.CALENDAR_EVENT_CREATION, mCalendarInviteCheckbox.isChecked());
                 editor.commit();
                 if (mCalendarInviteCheckbox.isChecked()) {
 
@@ -323,26 +278,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             .show();
                 }
                 break;
-/*
 
-            case R.id.daily_notify :
-                 checked = ((CheckBox)v).isChecked();
-                if(checked)
-                {
-                    Log.v(LOG_TAG,"daily notification is checked");
-                }
-                break;
-*/
-
-          /*  case R.id.calendar_notify :
-                checked = ((CheckBox)v).isChecked();
-                if(checked)
-                {
-                    Log.v(LOG_TAG,"calendar notification is checked");
-                }
-                break;
-
-        }*/
         }
 
     }
@@ -365,48 +301,24 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             Log.v("Time Dialog", hourOfDay + ":" + minute);
 
-           // updateTime(hourOfDay, minute);
-           String playingTime = Utility.updateTime(hourOfDay,minute);
+            // updateTime(hourOfDay, minute);
+            String playingTime = Utility.updateTime(hourOfDay, minute);
             mTime.setText(playingTime);
         }
     }
 
-/*    public static void updateTime(int hourOfDay, int minute) {
-
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.set(Calendar.HOUR, hourOfDay);
-        gregorianCalendar.set(Calendar.MINUTE, minute);
-        String time = gregorianCalendar.get(Calendar.HOUR) + ":" + gregorianCalendar.get(Calendar.MINUTE);
-        String playingTime;
-        if (hourOfDay > 12) {
-            //     playingTime = time + " PM";
-            playingTime = time + Constants.PM;
-
-        } else {
-            //    playingTime = time + " AM";
-            playingTime = time + Constants.AM;
-        }
-
-        mTime.setText(playingTime);
-        //  mUser.setPlayingTime(playingTime);
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // BEGIN_INCLUDE(activity_result)
-        Log.v(LOG_TAG,"In on activity result");
+        Log.v(LOG_TAG, "In on activity result");
         if (requestCode == REQUEST_PLACE_PICKER) {
             // This result is from the PlacePicker dialog.
-
-
             if (resultCode == Activity.RESULT_OK) {
-                /* User has picked a place, extract data.
-                   Data is extracted from the returned intent by retrieving a Place object from
-                   the PlacePicker.
-                 */
+
                 final Place place = PlacePicker.getPlace(data, getActivity());
 
-                String attributions =PlacePicker.getAttributions(data);
+                String attributions = PlacePicker.getAttributions(data);
                 mParkLocation = place.getAddress().toString();
                 Log.v(LOG_TAG, "location chosen" + mParkLocation);
                 mPlaceTextView.setText(mParkLocation);
@@ -420,33 +332,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             }
         }
     }
-/*
 
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-
-            // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            Log.v("Date Dialog", day + " " + month + "" + year);
-            updateDate(day, month, year);
-        }
-    }
-
-    public static void updateDate(int day, int month, int year) {
-        mDate.setText(day + " " + Utility.months[month] + " " + year);
-    }
-*/
 
     @Override
     public String toString() {
@@ -456,22 +342,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
     private void saveUserData() {
 
-        //   mUser.setPlayingTime(mPlayingTime);
-        /*User user1 = new User("Ruchita", "ruchita.maheshwary@gmail.com", "tennis", 28.6948631, 77.11113064, false, mPlayingTime);
-        DatabaseReference pushRef =    mUrlRef.push();
-        pushRef.setValue(user1);
-        mGeoFire.setLocation(Utility.encodeEmail(user1.getEmail()), new GeoLocation(user1.getLatitude(), user1.getLongitude()));
 
-        User user2 = new User("Rachit", "rachit.maheshwary@gmail.com", "football", 28.6987125, 77.1161068, false, mPlayingTime);
-        pushRef =    mUrlRef.push();
-        pushRef.setValue(user2);
-        mGeoFire.setLocation(Utility.encodeEmail(user2.getEmail()), new GeoLocation(user2.getLatitude(), user2.getLongitude()));
-
-        User user3 = new User("Purnima", "poomah29@gmail.com", "football", 28.6988839,77.1082443, false, mPlayingTime);
-        pushRef =    mUrlRef.push();
-        pushRef.setValue(user3);
-        mGeoFire.setLocation(Utility.encodeEmail(user3.getEmail()), new GeoLocation(user3.getLatitude(), user3.getLongitude()));*/
-        //   alarmReceiver.cancelAlarm();
         DatabaseReference ref = mUrlRef.child("/" + Utility.encodeEmail(mUser.getEmail()));
         //  mUser.setPlayingTime(mTime.getText().toString());
         //ref.child("playingTime").setValue(mPlayingTime);
@@ -484,11 +355,22 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
         // ref.child("sport").setValue(mUser.getSport());
         ref.child(Constants.SPORT).setValue(mUser.getSport());
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.remove(Constants.USER_INFO);
+        editor.commit();
+        try {
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String userJson = ow.writeValueAsString(mUser);
+            editor.putString(Constants.USER_INFO,userJson);
+            editor.commit();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         // Toast.makeText(getContext(), "Profile has been updated successfully!", Toast.LENGTH_LONG).show();
         Toast.makeText(getActivity(), getString(R.string.profile_updated), Toast.LENGTH_LONG).show();
-
-        //  alarmReceiver.setAlarmTime(getActivity(),mUser.getPlayingTime(),mUser.getPlayingPlace());
-
     }
 
     @Override
