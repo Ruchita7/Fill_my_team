@@ -8,11 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.fillmyteam.data.SportsColumns;
+import com.android.fillmyteam.ui.AspectRatioImageViewer;
 import com.android.fillmyteam.util.Constants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -98,12 +98,14 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
 
     public class InfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final ImageView sportsImage;
+      //  public final ImageView sportsImage;
+        public final AspectRatioImageViewer sportsImage;
         public final TextView sportsName;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
-            sportsImage = (ImageView) itemView.findViewById(R.id.sports_image);
+          //  sportsImage = (ImageView) itemView.findViewById(R.id.sports_image);
+            sportsImage = (AspectRatioImageViewer) itemView.findViewById(R.id.sports_image);
             sportsName = (TextView) itemView.findViewById(R.id.sport_name);
             itemView.setOnClickListener(this);
         }

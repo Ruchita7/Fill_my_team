@@ -116,37 +116,50 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        updateNavigationViewHeader();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //for tablet checking
+       /* else {
+            mUser = new User();
+            mUser.setEmail("ruchita.maheshwary@gmail.com");
+            mUser.setLatitude(28.6952431);
+            mUser.setLongitude(77.1134005);
+            mUser.setName("ruchita maheshwary");
+            mUser.setPhotoUrl("https://lh6.googleusercontent.com/-32tmODRPtTw/AAAAAAAAAAI/AAAAAAAABEA/dISvm7M_sKE/s96-c/photo.jpg");
+            mUser.setPlayingPlace("D-105, Tarun Enclave, Pitampura, New Delhi, Delhi 110034, India");
+            mUser.setPlayingTime("4:30 PM");
+            mUser.setSport("Volleyball");
+        }*/
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+            navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+            updateNavigationViewHeader();
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
 
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(
-                                Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(
-                                Stetho.defaultInspectorModulesProvider(this))
-                        .build());
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(
+                                    Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(
+                                    Stetho.defaultInspectorModulesProvider(this))
+                            .build());
 
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
-                    .commit();
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
+                        .commit();
+            }
+
         }
 
-    }
 
+        /**
+         * Update navigation drawer header
+         */
 
-    /**
-     * Update navigation drawer header
-     */
     private void updateNavigationViewHeader() {
         if (mUser != null) {
             TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
@@ -208,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
-       // rightCenterButton.
+        // rightCenterButton.
         switch (id) {
 
             case R.id.learn_play:

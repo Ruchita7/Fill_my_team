@@ -26,14 +26,20 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
-            <ImageView
+            <!--ImageView
                 android:id="@+id/sport_poster"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="400dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" /-->
+            <com.android.fillmyteam.ui.AspectRatioImageViewer
+                android:id="@+id/sport_poster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
-
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar_layout"

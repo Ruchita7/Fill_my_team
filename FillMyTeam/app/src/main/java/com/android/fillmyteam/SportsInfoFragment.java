@@ -11,8 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
@@ -45,7 +45,8 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
     private RecyclerView mRecyclerView;
     SportsInfoAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+ //   private RecyclerView.LayoutManager mLayoutManager;
+    private StaggeredGridLayoutManager mLayoutManager;
 
     static final int COL_SPORT_ID = 0;
     static final int COL_SPORT_NAME = 1;
@@ -116,10 +117,11 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                              Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_sports_info, container, false);
-
+        int columnCount = getResources().getInteger(R.integer.column_count);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.sports_info_recycler_view);
 
-        mLayoutManager = new GridLayoutManager(getActivity(),1);
+    //    mLayoutManager = new GridLayoutManager(getActivity(),columnCount);
+        mLayoutManager = new StaggeredGridLayoutManager(columnCount,StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         TextView textView = (TextView) view.findViewById(R.id.recyclerview_forecast_empty);
         mProgressBar = (ProgressBar) view.findViewById(R.id.loading_indicator);

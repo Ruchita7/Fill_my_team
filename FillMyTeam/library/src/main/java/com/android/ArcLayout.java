@@ -139,9 +139,6 @@ public class ArcLayout extends ViewGroup {
         }
     }
 
-    /**
-     * refers to {@link LayoutAnimationController#getDelayForView(View view)}
-     */
     private static long computeStartOffset(final int childCount, final boolean expanded, final int index,
             final float delayPercent, final long duration, Interpolator interpolator) {
         final float delay = delayPercent * duration;

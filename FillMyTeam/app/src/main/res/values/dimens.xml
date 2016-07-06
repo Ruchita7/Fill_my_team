@@ -18,7 +18,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_detail_min_resize_height">@dimen/widget_detail_default_height</dimen>
     <dimen name="list_icon">40dp</dimen>
     <dimen name="detail_backdrop_height">256dp</dimen>
-
+    <dimen name="recycler_view_side_margin">16dp</dimen>
+    <dimen name="list_item_margin">4dp</dimen>
 
     <dimen name="red_action_button_size">50dp</dimen>
 
