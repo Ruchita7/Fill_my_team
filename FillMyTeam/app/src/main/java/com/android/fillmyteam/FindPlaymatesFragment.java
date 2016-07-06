@@ -580,7 +580,7 @@ ImageView basketBallImageView;
         markerOptions = new MarkerOptions()
                 .position(new LatLng(userObj.getLatitude(), userObj.getLongitude()))
                 .title(userObj.getName())
-                .snippet(time);
+                .snippet(time+"-"+userObj.getSport());
         markerMap.put(userObj.getEmail(), markerOptions);
         mMap.addMarker(markerOptions);
         userLatLngMap.put(new LatLng(userObj.getLatitude(), userObj.getLongitude()), playerParcelable);
@@ -619,26 +619,34 @@ ImageView basketBallImageView;
     }
 
     private void render(Marker marker, View view) {
-        int badge = R.drawable.cricket;
+        String titleText = marker.getTitle();
+        String snippet = marker.getSnippet();
+        String snippets[] = snippet.split("-");
+      /*  int position = titleText.indexOf(":");
+        String title=titleText.substring(0,position);
+        String sport=titleText.substring(position+1,titleText.length());*/
+        int badge = Utility.retrieveSportsIcon(snippets[1]);
         // Use the equals() method on a Marker to check for equals.  Do not use ==.
 
         ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
-        String title = marker.getTitle();
+
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
-        if (title != null) {
+        if (titleText != null) {
             // Spannable string allows us to edit the formatting of the text.
-            SpannableString titleText = new SpannableString(title);
-            titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
+            SpannableString markerTitleText = new SpannableString(titleText);
+            markerTitleText.setSpan(new ForegroundColorSpan(Color.BLACK), 0, titleText.length(), 0);
             titleUi.setText(titleText);
         } else {
             titleUi.setText("");
         }
 
-        String snippet = marker.getSnippet();
+      //  String snippet = marker.getSnippet();
         TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
         SpannableString snippetText = new SpannableString(snippet);
-        snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(), 0);
+      //  snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(), 0);
+        snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(),0);
+        //snippetText.setSpan();
         snippetUi.setText(snippetText);
     }
 

@@ -79,7 +79,9 @@ public class Constants {
     public static final String RUGBY = "Rugby";
     public static final String VOLLEY_BALL = "VolleyBall";
     public static final String BASEBALL = "BaseBall";
-
+    public static final String TABLETENNIS = "Table Tennis";
+    public static final String VOLLEYBALL = "Volleyball";
+    public static final String BASE_BALL = "Baseball";
     //public static final String EMAIL="EMAIL";
 
 

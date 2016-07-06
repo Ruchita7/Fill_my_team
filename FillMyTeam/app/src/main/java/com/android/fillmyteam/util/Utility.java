@@ -170,34 +170,37 @@ public class Utility {
         int sportDrawable = 0;
         switch (sportName) {
 
-            case "Football":
+            case Constants.FOOTBALL:
                 sportDrawable = R.drawable.ic_football;
                 break;
-            case "Cricket":
+            case Constants.CRICKET:
                 sportDrawable = R.drawable.cricket;
                 break;
-            case "Basketball":
+            case Constants.BASKETBALL:
                 sportDrawable = R.drawable.ic_basketball;
                 break;
-            case "Hockey":
+            case Constants.HOCKEY:
                 sportDrawable = R.drawable.ic_hockey;
                 break;
-            case "Tennis":
+            case Constants.TENNIS:
                 sportDrawable = R.drawable.ic_tennis;
                 break;
-            case "Badminton":
+            case Constants.BADMINTON:
                 sportDrawable = R.drawable.ic_badminton;
                 break;
-            case "Baseball":
+            case Constants.BASE_BALL:
+            case Constants.BASEBALL :
                 sportDrawable = R.drawable.ic_baseball;
                 break;
-            case "Rugby":
+            case Constants.RUGBY:
                 sportDrawable = R.drawable.ic_rugby;
                 break;
-            case "Volleyball":
+            case Constants.VOLLEYBALL:
+            case Constants.VOLLEY_BALL:
                 sportDrawable = R.drawable.ic_volleyball;
                 break;
-            case "Table Tennis":
+            case Constants.TABLETENNIS:
+            case Constants.TABLE_TENNIS:
                 sportDrawable = R.drawable.ic_table_tennis;
                 break;
         }
