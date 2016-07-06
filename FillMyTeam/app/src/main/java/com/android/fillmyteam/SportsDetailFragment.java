@@ -56,8 +56,8 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     public static final String LOG_TAG = SportsDetailFragment.class.getSimpleName();
     public static final String POSITION = "position";
 
-    @BindView(R.id.sports_name_text)
-    TextView mSportNameTextView;
+    /*@BindView(R.id.sports_name_text)
+    TextView mSportNameTextView;*/
     @BindView(R.id.objective_text)
     TextView mObjectiveTextView;
     @BindView(R.id.players_text)
@@ -66,7 +66,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     TextView mRulesTextView;
     @BindView(R.id.sport_poster)
     ImageView mSportsImageView;
-    @BindView(R.id.playVideo)
+   @BindView(R.id.playVideo)
     ImageView mVideoPlayImageView;
     @BindView(R.id.video_thumbnail_imageView)
     ImageView mThumbnailImageView;
@@ -213,7 +213,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
-            mSportNameTextView.setText(sportsName);
+       //     mSportNameTextView.setText(sportsName);
             Picasso.with(getActivity()).load(mImageUrl).into(mSportsImageView);
 
             Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView);
@@ -244,7 +244,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     }
 
 
-    @OnClick(R.id.video_thumbnail_imageView)
+   @OnClick(R.id.video_thumbnail_imageView)
     public void playVideo() {
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                 getActivity(), Constants.YOUTUBE_KEY, mVideoKey, 0, true, false);

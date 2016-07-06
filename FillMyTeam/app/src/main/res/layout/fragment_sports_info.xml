@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/list_item_margin"
-        android:paddingLeft="@dimen/recycler_view_side_margin"
-        android:paddingRight="@dimen/recycler_view_side_margin"
+        android:layout_marginLeft="@dimen/side_margin"
+        android:layout_marginRight="@dimen/side_margin"
         android:paddingTop="@dimen/list_item_margin"/>
 
     <ProgressBar

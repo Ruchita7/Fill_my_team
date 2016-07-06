@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -59,64 +58,64 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/side_margin"
+        android:layout_marginStart="@dimen/side_margin"
+        android:layout_marginRight="@dimen/side_margin"
+        android:layout_marginEnd="@dimen/side_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:columnCount="1">
+            app:columnCount="2"
+          >
 
 
-            <TextView
+            <android.support.v7.widget.Space
+                android:layout_marginBottom="@dimen/abc_list_item_padding_horizontal_material"
+                app:layout_columnSpan="2"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1" />
+
+            <!--TextView
                 android:id="@+id/sports_name_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" /-->
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Objective" />
+                android:text="Objective"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:fontFamily="sans-serif-medium"
+
+                app:layout_columnSpan="2"
+                />
+
 
             <TextView
                 android:id="@+id/objective_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/players" />
-
-            <TextView
-                android:id="@+id/players_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/basic_rules" />
-
-            <TextView
-                android:id="@+id/rules_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/video" />
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:fontFamily="sans-serif-regular"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                />
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1">
 
                 <ImageView
                     android:id="@+id/video_thumbnail_imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/image_thumbnail_size"
+                    android:layout_height="@dimen/image_thumbnail_size"
+                    android:layout_gravity="center"
+
                    />
 
                 <ImageView
@@ -126,6 +125,70 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_video_play" />
             </FrameLayout>
+
+            <android.support.v7.widget.Space
+                android:layout_marginBottom="@dimen/abc_list_item_padding_horizontal_material"
+                app:layout_columnSpan="2"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/players"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:fontFamily="sans-serif-medium"
+                app:layout_columnSpan="2"
+
+                />
+
+            <TextView
+                android:id="@+id/players_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:fontFamily="sans-serif-regular"
+
+                app:layout_columnSpan="2"
+              />
+
+            <android.support.v7.widget.Space
+
+                app:layout_columnSpan="2"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                android:layout_marginBottom="@dimen/abc_list_item_padding_horizontal_material"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/basic_rules"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:fontFamily="sans-serif-medium"
+                app:layout_columnSpan="2"
+
+               />
+
+            <TextView
+                android:id="@+id/rules_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:fontFamily="sans-serif-regular"
+                app:layout_columnSpan="2"
+
+             />
+
+            <!--TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/video"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:fontFamily="sans-serif-medium"
+                /-->
+
+
+
         </android.support.v7.widget.GridLayout>
     </android.support.v4.widget.NestedScrollView>
 
