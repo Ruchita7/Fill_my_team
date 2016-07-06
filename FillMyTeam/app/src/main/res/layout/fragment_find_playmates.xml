@@ -9,108 +9,17 @@
     <FrameLayout
         android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
-
-
-    <ImageView
-        android:id="@+id/search_sports_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center_vertical"
-        android:src="@drawable/ic_search" />
-
-    <FrameLayout
-        android:id="@+id/sports_panel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@drawable/gradient_box"
-        android:visibility="invisible">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/badminton_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_badminton" />
-
-            <ImageView
-                android:id="@+id/baseball_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseball" />
-
-            <ImageView
-                android:id="@+id/football_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_football" />
-
-            <ImageView
-                android:id="@+id/cricket_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_cricket" />
-
-            <ImageView
-                android:id="@+id/tennis_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_tennis" />
-
-            <ImageView
-                android:id="@+id/table_tennis_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_table_tennis" />
-
-            <ImageView
-                android:id="@+id/hockey_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_hockey" />
-
-            <ImageView
-                android:id="@+id/rugby_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_rugby" />
-
-            <ImageView
-                android:id="@+id/volleyball_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_volleyball" />
-
-
-            <ImageView
-                android:id="@+id/basketball_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_basketball" />
-
-        </LinearLayout>
+        android:layout_height="match_parent">
     </FrameLayout>
 
-
-    <!--Button
-        android:id="@+id/search_sports_button"
+    <com.android.ArcMenu
+        android:id="@+id/arc_menu"
+        android:layout_gravity="end|center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:drawableLeft="@drawable/ic_search"
-        android:text="@string/locate_players"/>
-
-    <Spinner
-        android:id="@+id/sports_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:visibility="invisible" /-->
+        app:fromDegrees="@dimen/menuFromDegrees"
+        app:toDegrees="@dimen/menuToDegrees"
+        />
 
 </FrameLayout>
 

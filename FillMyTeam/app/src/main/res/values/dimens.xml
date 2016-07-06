@@ -18,4 +18,17 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="widget_detail_min_resize_height">@dimen/widget_detail_default_height</dimen>
     <dimen name="list_icon">40dp</dimen>
     <dimen name="detail_backdrop_height">256dp</dimen>
+
+
+    <dimen name="red_action_button_size">50dp</dimen>
+
+    <dimen name="red_action_button_content_size">16dp</dimen>
+    <dimen name="red_action_button_content_margin">36dp</dimen>
+
+    <dimen name="red_action_menu_radius">96dp</dimen>
+    <dimen name="blue_sub_action_button_size">48dp</dimen>
+    <dimen name="blue_sub_action_button_content_margin">16dp</dimen>
+    <item name="menuFromDegrees" format="float" type="dimen">120.0</item>
+    <item name="menuToDegrees" format="float" type="dimen">270.0</item>
+    <dimen name="menuChildSize">30dp</dimen>
 </resources>

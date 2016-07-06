@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity
     boolean isDrawerLocked;
     View navigationHeader;
 
+    ImageView basketBallImageView;
+    ImageView tennisImageView;
+    ImageView footballImageView;
+    ImageView cricketImageView;
+    ImageView badmintonImageView;
+    ImageView baseballImageView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +69,7 @@ public class MainActivity extends AppCompatActivity
 
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
                 String userJson = ow.writeValueAsString(mUser);
-                editor.putString(Constants.USER_INFO,userJson);
+                editor.putString(Constants.USER_INFO, userJson);
                 editor.commit();
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -101,15 +107,18 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });*/
-            String userJson = sharedPreferences.getString(Constants.USER_INFO,"");
-            if(userJson!=null &&!userJson.isEmpty())    {
+            String userJson = sharedPreferences.getString(Constants.USER_INFO, "");
+            if (userJson != null && !userJson.isEmpty()) {
                 try {
-                    mUser = new ObjectMapper().readValue(userJson,User.class);
+                    mUser = new ObjectMapper().readValue(userJson, User.class);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
         updateNavigationViewHeader();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -126,7 +135,7 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 
-      if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
                     .commit();
@@ -168,6 +177,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -198,6 +208,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
+       // rightCenterButton.
         switch (id) {
 
             case R.id.learn_play:
@@ -227,6 +238,8 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             ft.replace(R.id.content_frame, fragment).commit();
+
+
         }
 
         item.setChecked(true);
