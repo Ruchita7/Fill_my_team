@@ -14,11 +14,12 @@
 
     <com.android.ArcMenu
         android:id="@+id/arc_menu"
-        android:layout_gravity="end|center_vertical"
+        android:layout_gravity="end|bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fromDegrees="@dimen/menuFromDegrees"
         app:toDegrees="@dimen/menuToDegrees"
+        app:childSize="40dp"
         />
 
 </FrameLayout>

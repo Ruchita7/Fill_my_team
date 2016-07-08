@@ -136,6 +136,6 @@ public class Constants {
     public static final String VIDEO_REF = "v";
 
     public static final String USER_INFO = "user_info";
-
+    public static final String IS_USER_LOGGED_IN="is_user_logged_in";
 
 }

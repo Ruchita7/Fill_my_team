@@ -54,8 +54,7 @@ import java.util.Map;
 
 /**
  * @author Ruchita_Maheshwary
- * This is the main launcher activity which logs in the user with Google  using Firebase-Google Authentication
- *
+ *         This is the main launcher activity which logs in the user with Google  using Firebase-Google Authentication
  */
 public class GoogleSignInActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener,
@@ -79,34 +78,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean isLogout=false;
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
-        String userEmailId = sharedPreferences.getString(Constants.EMAIL, "");
-        mUrlRef = FirebaseDatabase.getInstance()
-                .getReferenceFromUrl(Constants.APP_URL);
 
-        if(getIntent().hasExtra(Constants.LOGOUT))
-        {
-            isLogout  = getIntent().getBooleanExtra(Constants.LOGOUT,false);
-        }
-        if(!isLogout) {
-            if (!userEmailId.isEmpty()) {		//If user is already logged in then redirect to MainActivity
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
-
-                startActivity(intent);
-            }
-        }
-
-        if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            View decorView = getWindow().getDecorView();	// Hide the status bar.
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
         setContentView(R.layout.activity_google_sign_in);
         View scrimView = findViewById(R.id.scrim_view);
         scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
@@ -114,24 +86,82 @@ public class GoogleSignInActivity extends BaseActivity implements
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.sign_out_button).setOnClickListener(this);
-        // Configure Google Sign In
+
+
+        Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        Firebase.setAndroidContext(this);
-        mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this , this )
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
-
+        boolean isLogout = false;
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String userEmailId = sharedPreferences.getString(Constants.EMAIL, "");
+        mUrlRef = FirebaseDatabase.getInstance()
+                .getReferenceFromUrl(Constants.APP_URL);
         mAuth = FirebaseAuth.getInstance();
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();    // Hide the status bar.
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+        mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
 
+        boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN,false);
+        if(isUserLoggedIn)  {       //user already logged in
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
+
+            startActivity(intent);
+        }
+
+        else {
+            if (!userEmailId.isEmpty()) {           //returning user
+                initiateAuthentication();
+            } else                //new user
+            {
+                initiateAuthentication();
+            }
+        }
+
+   /*     if (getIntent().hasExtra(Constants.LOGOUT)) {
+            isLogout = getIntent().getBooleanExtra(Constants.LOGOUT, false);
+        }
+        if (!isLogout) {
+            if (!userEmailId.isEmpty()) {        //If user is already logged in then redirect to MainActivity
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
+
+                startActivity(intent);
+            } else {
+
+                // Configure Google Sign In
+                initiateAuthentication();
+
+
+
+
+
+            }
+        }
+        else
+        {
+            initiateAuthentication();
+        }*/
+    }
+
+    private void initiateAuthentication()   {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -173,6 +203,10 @@ public class GoogleSignInActivity extends BaseActivity implements
                             }
                             ref.removeEventListener(this);
                             Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
+                            SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
+                            editor.commit();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra(Constants.USER_CREDENTIALS, mAuthenticatedUser);
 
@@ -198,14 +232,17 @@ public class GoogleSignInActivity extends BaseActivity implements
 
             }
         };
-
     }
-
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+if(mAuthListener!=null)
+{
+    mAuth.addAuthStateListener(mAuthListener);
+}
+
+
     }
 
     public void onStop() {
@@ -218,6 +255,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     /**
      * Activity Result from signIn()
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -243,12 +281,12 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     /**
      * Authenticate with google
+     *
      * @param acct
      */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressDialog();
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -265,6 +303,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                                     Toast.LENGTH_SHORT).show();
                         }
                         hideProgressDialog();
+                //    initiateAuthentication();
                     }
                 });
     }
@@ -278,7 +317,7 @@ public class GoogleSignInActivity extends BaseActivity implements
      * Sign out method
      */
     private void signOut() {
-        mAuth.signOut();	// Firebase sign out
+        mAuth.signOut();    // Firebase sign out
         // Google sign out
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
@@ -306,7 +345,6 @@ public class GoogleSignInActivity extends BaseActivity implements
     }
 
     /**
-     *
      * @param user
      */
     private void updateUI(FirebaseUser user) {
@@ -323,6 +361,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     /**
      * Handle button click listener
+     *
      * @param v
      */
     @Override
@@ -338,7 +377,6 @@ public class GoogleSignInActivity extends BaseActivity implements
     }
 
     /**
-     *
      * @param bundle
      */
     @Override

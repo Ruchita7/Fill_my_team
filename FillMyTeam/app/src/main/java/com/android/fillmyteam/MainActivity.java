@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
+        editor.commit();
         //for tablet checking
        /* else {
             mUser = new User();
@@ -278,6 +282,10 @@ public class MainActivity extends AppCompatActivity
     private void logoutUser() {
 
         FirebaseAuth.getInstance().signOut();
+        SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
+        editor.commit();
         Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
         intent.putExtra(Constants.LOGOUT, true);
         startActivity(intent);

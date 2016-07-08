@@ -14,8 +14,7 @@
         android:orientation="vertical"
         android:paddingStart="@dimen/abc_list_item_padding_horizontal_material"
         android:paddingEnd="@dimen/abc_list_item_padding_horizontal_material"
-        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
-        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material">
+       >
 
         <ImageView
             android:id="@+id/widget_sport_icon"
@@ -25,7 +24,7 @@
             android:paddingStart="@dimen/abc_list_item_padding_horizontal_material"
             android:paddingEnd="@dimen/abc_list_item_padding_horizontal_material"
             android:layout_marginEnd="@dimen/abc_list_item_padding_horizontal_material"
-            android:layout_marginRight="@dimen/abc_list_item_padding_horizontal_material" />
+           />
 
 
         <TextView
@@ -52,7 +51,7 @@
             android:layout_gravity="center"
             android:fontFamily="sans-serif-light"
 
-            android:gravity="right|end"
+            android:gravity="end"
             android:textSize="12dp"
             tools:text="10" />
 
