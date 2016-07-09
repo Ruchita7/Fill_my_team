@@ -79,12 +79,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_google_sign_in);
-        View scrimView = findViewById(R.id.scrim_view);
-        scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
-                0xaa000000, 8, Gravity.BOTTOM));
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
    //     findViewById(R.id.sign_out_button).setOnClickListener(this);
 
 
@@ -133,6 +128,12 @@ public class GoogleSignInActivity extends BaseActivity implements
             }
         }*/
         else {
+            setContentView(R.layout.activity_google_sign_in);
+            View scrimView = findViewById(R.id.scrim_view);
+            scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
+                    0xaa000000, 8, Gravity.BOTTOM));
+
+            findViewById(R.id.sign_in_button).setOnClickListener(this);
             initiateAuthentication(); // for new user or returning user
         }
 

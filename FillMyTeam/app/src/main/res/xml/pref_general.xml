@@ -11,7 +11,7 @@
             android:title="@string/frequency" />
     </PreferenceCategory>
 
-    <!--PreferenceCategory android:title="@string/calendar_event">
+    <PreferenceCategory android:title="@string/calendar_event">
         <CheckBoxPreference
             android:contentDescription="@string/cal_event_desc"
             android:defaultValue="@string/default_notify_choice"
@@ -19,5 +19,5 @@
             android:summaryOff="@string/choice_notify_off"
             android:summaryOn="@string/choice_notify_on"
             android:title="@string/cal_event_title" />
-    </PreferenceCategory-->
+    </PreferenceCategory>
 </PreferenceScreen>

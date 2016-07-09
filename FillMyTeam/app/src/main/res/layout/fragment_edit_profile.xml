@@ -3,88 +3,106 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/side_margin"
     app:columnCount="1"
     tools:context=".EditProfileFragment">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
+            style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="@string/time" />
 
         <EditText
             android:id="@+id/time"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="false" />
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:focusableInTouchMode="false"
+            android:fontFamily="sans-serif" />
 
 
-</LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
+            style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="@string/where" />
 
 
+        <TextView
+            android:id="@+id/place_text_view"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:fontFamily="sans-serif"
+            android:lines="5"
+            android:paddingStart="@dimen/list_margin" />
 
-            <TextView
-                android:id="@+id/place_text_view"
-                android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/picker_image_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_marker" />
 
-                android:paddingStart="8dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:lines="5" />
-
-            <ImageView
-                android:id="@+id/picker_image_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_marker" />
-
-        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <TextView
+            style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
             android:text="@string/sport" />
 
         <Spinner
             android:id="@+id/sports_list_spinner"
+            style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:fontFamily="sans-serif" />
 
 
- </LinearLayout>
+    </LinearLayout>
 
-    <CheckBox
+    <!--CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/calendar_notify"
-        android:text="@string/google_calendar_notification"/>
+        android:text="@string/google_calendar_notification"/-->
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_rowSpan="1" />
+
     <Button
         android:id="@+id/saveUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/update"
-        app:layout_gravity="center_horizontal"/>
+        app:layout_gravity="center_horizontal" />
 
 
 </android.support.v7.widget.GridLayout>

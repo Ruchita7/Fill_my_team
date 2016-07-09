@@ -90,7 +90,7 @@
     <string name="two_hour_value">120</string-->
 
     <string name="cal_event_key" translatable="false">event_key</string>
-    <string name="cal_event_title" translatable="false">Add Calendar Event</string>
+    <string name="cal_event_title" translatable="false">Book calendar for my playing time</string>
     <string name="choice_notify_off" translatable="false">Disabled</string>
     <string name="choice_notify_on" translatable="false">Enabled</string>
     <string name="cal_event_desc" translatable="false">Enable/Disable Calendar Events</string>

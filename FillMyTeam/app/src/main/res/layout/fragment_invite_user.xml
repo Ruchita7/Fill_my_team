@@ -130,7 +130,7 @@
                 android:layout_width="0dp"
                 style="@style/TextAppearance.AppCompat.Body1"
                 android:fontFamily="sans-serif"
-                android:paddingStart="8dp"
+                android:paddingStart="@dimen/list_margin"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:lines="5" />
@@ -148,9 +148,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sport"
             style="@style/TextAppearance.AppCompat.Body2"
-            android:fontFamily="sans-serif"/>
+            android:fontFamily="sans-serif"
+            android:text="@string/sport"/>
 
         <Spinner
             android:id="@+id/invite_sports_list_spinner"
@@ -177,6 +177,7 @@
         android:layout_marginBottom="@dimen/side_margin"
         android:layout_marginStart="@dimen/side_margin"
         android:text="@string/google_calendar_notification"/>
+
     <Button
         android:id="@+id/invite_button"
         android:layout_width="wrap_content"

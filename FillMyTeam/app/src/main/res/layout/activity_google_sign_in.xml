@@ -19,30 +19,29 @@
         android:layout_gravity="bottom" />
 
 
-  >
+    >
 
     <Button
         android:id="@+id/sign_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in"
-        android:layout_margin="16dp"
         android:layout_gravity="bottom|center"
-        android:drawableStart="@drawable/button_custom"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:background="@color/blue_sign_in"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
+        android:drawableStart="@drawable/button_custom"
         android:fontFamily="sans-serif-medium"
-        />
-        <!--Button
-            android:id="@+id/sign_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+    <!--Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-            android:contentDescription="true"
-            android:text="@string/sign_out"
-            android:theme="@style/ThemeOverlay.MyDarkButton" /-->
-
+        android:contentDescription="true"
+        android:text="@string/sign_out"
+        android:theme="@style/ThemeOverlay.MyDarkButton" /-->
 
 
 </FrameLayout>

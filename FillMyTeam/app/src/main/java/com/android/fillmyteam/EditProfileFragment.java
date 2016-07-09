@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -80,9 +79,9 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     Spinner mSportsListSpinner;
     ArrayAdapter<CharSequence> mAdapter;
     //  DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
-    CheckBox mCalendarInviteCheckbox;
+    //CheckBox mCalendarInviteCheckbox;
     public static final String SAVED_USER = "saved_user";
-
+    boolean mIsCalendarInvite;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -145,13 +144,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         submitButton = (Button) view.findViewById(R.id.saveUserButton);
         submitButton.setOnClickListener(this);
 
-        mCalendarInviteCheckbox = (CheckBox) view.findViewById(R.id.calendar_notify);
+        //mCalendarInviteCheckbox = (CheckBox) view.findViewById(R.id.calendar_notify);
         //  calendarInviteCheckbox.setOnClickListener(this);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean isCalendarInvite = sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
-        if (isCalendarInvite) {
+        mIsCalendarInvite= sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
+     /*   if (isCalendarInvite) {
             mCalendarInviteCheckbox.setChecked(true);
-        }
+        }*/
         mSportsListSpinner = (Spinner) view.findViewById(R.id.sports_list_spinner);
         mAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -217,11 +216,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 mPlayingTime = mTime.getText().toString();
                 //    Log.v(LOG_TAG,"playing date is"+date);
                 saveUserData();
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+             /*   SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean(Constants.CALENDAR_EVENT_CREATION, mCalendarInviteCheckbox.isChecked());
-                editor.commit();
-                if (mCalendarInviteCheckbox.isChecked()) {
+                editor.commit();*/
+                if (mIsCalendarInvite) {
 
                     GregorianCalendar gcalendar = new GregorianCalendar();
                     int date = gcalendar.get(Calendar.DATE);
