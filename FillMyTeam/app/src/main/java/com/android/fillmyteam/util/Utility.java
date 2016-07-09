@@ -1,5 +1,8 @@
 package com.android.fillmyteam.util;
 
+import android.app.Activity;
+import android.view.inputmethod.InputMethodManager;
+
 import com.android.fillmyteam.R;
 import com.android.fillmyteam.model.User;
 
@@ -27,12 +30,12 @@ public class Utility {
     }
 
     public static String getCurrentTime(GregorianCalendar gcalendar) {
-        int minute =gcalendar.get(Calendar.MINUTE);
-        String minuteString="";
+        int minute = gcalendar.get(Calendar.MINUTE);
+        String minuteString = "";
         if (minute < 10) {
             minuteString += "0" + minute;
         } else {
-            minuteString +=minute;
+            minuteString += minute;
         }
         String time = gcalendar.get(Calendar.HOUR) + ":" + minuteString + " " + timezone[gcalendar.get(Calendar.AM_PM)];
         return time;
@@ -196,7 +199,7 @@ public class Utility {
                 sportDrawable = R.drawable.ic_badminton;
                 break;
             case Constants.BASE_BALL:
-            case Constants.BASEBALL :
+            case Constants.BASEBALL:
                 sportDrawable = R.drawable.ic_baseball;
                 break;
             case Constants.RUGBY:
@@ -214,30 +217,37 @@ public class Utility {
         return sportDrawable;
     }
 
-    public static  boolean compareDate(int date,int year,int month) {
+    public static boolean compareDate(int date, int year, int month) {
         GregorianCalendar currenDate = new GregorianCalendar();
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.set(Calendar.DATE,date);
-        gregorianCalendar.set(Calendar.MONTH,month);
-        gregorianCalendar.set(Calendar.YEAR,year);
-        if(gregorianCalendar.before(currenDate)) {
+        gregorianCalendar.set(Calendar.DATE, date);
+        gregorianCalendar.set(Calendar.MONTH, month);
+        gregorianCalendar.set(Calendar.YEAR, year);
+        if (gregorianCalendar.before(currenDate)) {
             return true;
         }
         return false;
     }
 
 
-    public static  boolean compareTime(int hour,int minute) {
+    public static boolean compareTime(int hour, int minute) {
         GregorianCalendar currentTime = new GregorianCalendar();
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.set(Calendar.HOUR_OF_DAY,hour);
-        gregorianCalendar.set(Calendar.MINUTE,minute);
-    //    gregorianCalendar.set(Calendar.YEAR,year);
-        if(gregorianCalendar.before(currentTime)) {
+        gregorianCalendar.set(Calendar.HOUR_OF_DAY, hour);
+        gregorianCalendar.set(Calendar.MINUTE, minute);
+        //    gregorianCalendar.set(Calendar.YEAR,year);
+        if (gregorianCalendar.before(currentTime)) {
             return true;
         }
         return false;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        if (activity.getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.android.fillmyteam;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -27,6 +28,7 @@ import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.ui.CircularImageTransform;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.Utility;
 import com.facebook.stetho.Stetho;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     ImageView cricketImageView;
     ImageView badmintonImageView;
     ImageView baseballImageView;
-
+    Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +68,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Utility.hideSoftKeyboard(this);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-
+        mActivity=this;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
@@ -139,7 +141,19 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        {
+                        public void onDrawerClosed(View view) {
+                            // getActionBar().setTitle(mTitle);
+                                   invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                       }
+
+                               public void onDrawerOpened(View drawerView) {
+                           //    getActionBar().setTitle(mDrawerTitle);
+                                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                                   Utility.hideSoftKeyboard(mActivity);
+                        }
+                  };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -221,6 +235,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         Class fragmentClass = null;
+        Utility.hideSoftKeyboard(this);
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();

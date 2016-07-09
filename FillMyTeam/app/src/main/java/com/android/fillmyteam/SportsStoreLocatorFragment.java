@@ -12,10 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.android.fillmyteam.api.StoreDataReceivedListener;
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -92,7 +94,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+     //   getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
     }
 
@@ -110,6 +112,16 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         mAutocompleteView = (AutoCompleteTextView) view.
                 findViewById(R.id.autocomplete_places);
 
+        mAutocompleteView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Utility.hideSoftKeyboard(getActivity());
+                    return true;
+                }
+                return false;
+            }
+        });
         // Register a listener that receives callbacks when a suggestion has been selected
         mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
 
@@ -172,6 +184,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         mGoogleApiClient.connect();
     }
 
+
+
  /*   @Override
     public void onResume() {
         super.onResume();
@@ -206,6 +220,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             final CharSequence primaryText = item.getPrimaryText(null);
 
             Log.i(LOG_TAG, "Autocomplete item selected: " + primaryText);
+            Utility.hideSoftKeyboard(getActivity());
 
             /*
              Issue a request to the Places Geo Data API to retrieve a Place object with additional

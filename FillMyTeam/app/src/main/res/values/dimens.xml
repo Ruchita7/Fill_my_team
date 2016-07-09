@@ -37,4 +37,5 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="detail_view_padding">@dimen/abc_list_item_padding_horizontal_material</dimen>
     <dimen name="image_thumbnail_size">150dp</dimen>
     <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="list_margin">8dp</dimen>
 </resources>

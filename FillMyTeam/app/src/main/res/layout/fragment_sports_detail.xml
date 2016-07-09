@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
@@ -59,16 +58,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:layout_marginStart="@dimen/side_margin"
-
         android:layout_marginEnd="@dimen/side_margin"
+
+        android:layout_marginStart="@dimen/side_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:columnCount="2"
-          >
+            app:columnCount="2">
 
 
             <android.support.v7.widget.Space
@@ -84,25 +82,23 @@
 
 
             <TextView
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/objective"
-                style="@style/TextAppearance.AppCompat.Medium"
                 android:fontFamily="sans-serif-medium"
+                android:text="@string/objective"
 
-                app:layout_columnSpan="2"
-                />
+                app:layout_columnSpan="2" />
 
 
             <TextView
                 android:id="@+id/objective_text"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Body1"
                 android:fontFamily="sans-serif-regular"
                 app:layout_columnSpan="1"
-                app:layout_columnWeight="1"
-                />
+                app:layout_columnWeight="1" />
 
             <FrameLayout
                 android:layout_width="0dp"
@@ -116,13 +112,13 @@
                     android:layout_height="@dimen/image_thumbnail_size"
                     android:layout_gravity="center"
 
-                   />
+                    />
 
                 <ImageView
                     android:id="@+id/playVideo"
-                    android:layout_gravity="center|center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_vertical"
                     android:src="@drawable/ic_video_play" />
             </FrameLayout>
 
@@ -133,51 +129,50 @@
                 app:layout_rowWeight="1" />
 
             <TextView
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/players"
-                style="@style/TextAppearance.AppCompat.Medium"
                 android:fontFamily="sans-serif-medium"
+                android:text="@string/players"
                 app:layout_columnSpan="2"
 
                 />
 
             <TextView
                 android:id="@+id/players_text"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Body1"
                 android:fontFamily="sans-serif-regular"
 
-                app:layout_columnSpan="2"
-              />
+                app:layout_columnSpan="2" />
 
             <android.support.v7.widget.Space
 
+                android:layout_marginBottom="@dimen/abc_list_item_padding_horizontal_material"
                 app:layout_columnSpan="2"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:layout_marginBottom="@dimen/abc_list_item_padding_horizontal_material"/>
+                app:layout_rowWeight="1" />
 
             <TextView
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/basic_rules"
-                style="@style/TextAppearance.AppCompat.Medium"
                 android:fontFamily="sans-serif-medium"
+                android:text="@string/basic_rules"
                 app:layout_columnSpan="2"
 
-               />
+                />
 
             <TextView
                 android:id="@+id/rules_text"
+                style="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Body1"
                 android:fontFamily="sans-serif-regular"
                 app:layout_columnSpan="2"
 
-             />
+                />
 
             <!--TextView
                 android:layout_width="wrap_content"
@@ -186,7 +181,6 @@
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:fontFamily="sans-serif-medium"
                 /-->
-
 
 
         </android.support.v7.widget.GridLayout>
