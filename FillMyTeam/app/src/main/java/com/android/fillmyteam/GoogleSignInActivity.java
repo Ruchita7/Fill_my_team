@@ -85,7 +85,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 0xaa000000, 8, Gravity.BOTTOM));
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
+   //     findViewById(R.id.sign_out_button).setOnClickListener(this);
 
 
         Firebase.setAndroidContext(this);
@@ -118,22 +118,24 @@ public class GoogleSignInActivity extends BaseActivity implements
         }
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
 
-        boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN,false);
-        if(isUserLoggedIn)  {       //user already logged in
+        boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN, false);
+        if (isUserLoggedIn) {       //user already logged in
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
 
             startActivity(intent);
-        }
-
-        else {
+        } /*else {
             if (!userEmailId.isEmpty()) {           //returning user
                 initiateAuthentication();
             } else                //new user
             {
                 initiateAuthentication();
             }
+        }*/
+        else {
+            initiateAuthentication(); // for new user or returning user
         }
+
 
    /*     if (getIntent().hasExtra(Constants.LOGOUT)) {
             isLogout = getIntent().getBooleanExtra(Constants.LOGOUT, false);
@@ -161,7 +163,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         }*/
     }
 
-    private void initiateAuthentication()   {
+    private void initiateAuthentication() {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -203,7 +205,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                             }
                             ref.removeEventListener(this);
                             Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
-                            SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
                             editor.commit();
@@ -237,10 +239,9 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onStart() {
         super.onStart();
-if(mAuthListener!=null)
-{
-    mAuth.addAuthStateListener(mAuthListener);
-}
+        if (mAuthListener != null) {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
 
 
     }
@@ -303,7 +304,7 @@ if(mAuthListener!=null)
                                     Toast.LENGTH_SHORT).show();
                         }
                         hideProgressDialog();
-                //    initiateAuthentication();
+                        //    initiateAuthentication();
                     }
                 });
     }
@@ -366,13 +367,16 @@ if(mAuthListener!=null)
      */
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
                 break;
             case R.id.sign_out_button:
                 signOut();
                 break;
+        }*/
+        if(v.getId()==R.id.sign_in_button)  {
+            signIn();
         }
     }
 

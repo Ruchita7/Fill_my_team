@@ -132,37 +132,37 @@ public class MainActivity extends AppCompatActivity
             mUser.setPlayingTime("4:30 PM");
             mUser.setSport("Volleyball");
         }*/
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-            navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
-            updateNavigationViewHeader();
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        updateNavigationViewHeader();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-            Stetho.initialize(
-                    Stetho.newInitializerBuilder(this)
-                            .enableDumpapp(
-                                    Stetho.defaultDumperPluginsProvider(this))
-                            .enableWebKitInspector(
-                                    Stetho.defaultInspectorModulesProvider(this))
-                            .build());
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+                        .build());
 
-            if (savedInstanceState == null) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
-                        .commit();
-            }
-
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
+                    .commit();
         }
 
+    }
 
-        /**
-         * Update navigation drawer header
-         */
+
+    /**
+     * Update navigation drawer header
+     */
 
     private void updateNavigationViewHeader() {
         if (mUser != null) {
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity
     private void logoutUser() {
 
         FirebaseAuth.getInstance().signOut();
-        SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
         editor.commit();

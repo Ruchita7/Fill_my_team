@@ -18,34 +18,31 @@
         android:layout_height="match_parent"
         android:layout_gravity="bottom" />
 
-    <LinearLayout
+
+  >
+
+    <Button
+        android:id="@+id/sign_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+        android:layout_margin="16dp"
         android:layout_gravity="bottom|center"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:background="@drawable/button_custom"
-
-
-            android:text="@string/sign_in"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"/>
-
-        <Button
+        android:drawableStart="@drawable/button_custom"
+        android:background="@color/blue_sign_in"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-medium"
+        />
+        <!--Button
             android:id="@+id/sign_out_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-
+            android:contentDescription="true"
             android:text="@string/sign_out"
-            android:theme="@style/ThemeOverlay.MyDarkButton" />
-    </LinearLayout>
+            android:theme="@style/ThemeOverlay.MyDarkButton" /-->
+
 
 
 </FrameLayout>

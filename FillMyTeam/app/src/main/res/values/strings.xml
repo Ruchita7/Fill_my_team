@@ -44,7 +44,7 @@
     <string name="google_api_client_connect_error" translatable="false">Could not connect to Google API Client: Error  <xliff:g id="error">%1$s</xliff:g> </string>
     <string name="geo_location" translatable="false">google.navigation:q=<xliff:g id="storeLocation">%1$s</xliff:g></string>
     <string name="fill_my_team" translatable="false">Fill My Team</string>
-    <string name="sign_in" translatable="false">Sign In</string>
+    <string name="sign_in" translatable="false">Sign in with Google</string>
     <string name="sign_out" translatable="false">Sign out</string>
     <string name="where" translatable="false">Where</string>
     <string name="sport" translatable="false">Sport</string>
