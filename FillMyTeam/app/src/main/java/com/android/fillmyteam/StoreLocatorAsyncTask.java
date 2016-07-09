@@ -55,7 +55,8 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
                     appendQueryParameter(Constants.QUERY, mContext.getString(R.string.sport_goods_query)).
                     appendQueryParameter(Constants.LOCATION, location).
                     appendQueryParameter(Constants.RADIUS, Constants.TEN_KM_RADIUS).
-                    appendQueryParameter(Constants.LOCATION_KEY, mContext.getString(R.string.map_key));
+                  //  appendQueryParameter(Constants.LOCATION_KEY, mContext.getString(R.string.map_key));
+                    appendQueryParameter(Constants.LOCATION_KEY, Constants.GOOGLE_MAPS_KEY);
             Uri builtUri = builder.build();
             Log.v(LOG_TAG, "Uri is::" + builtUri.toString());
             URL url = new URL(builtUri.toString());

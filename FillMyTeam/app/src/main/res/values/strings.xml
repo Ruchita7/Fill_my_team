@@ -14,7 +14,8 @@
     <string name="title_activity_detail" translatable="false">DetailActivity</string>
     <string name="error_player" translatable="false">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details" translatable="false">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
-    <string name="map_key" translatable="false">map_key</string>
+    <string name="map_key" translatable="false"></string>
+    <string name="geo_api_key" translatable="false">geo_key</string>
     <string name="sport_goods_query" translatable="false">sports+goods</string>
 
     <string name="loading" translatable="false">Loading…</string>
@@ -110,4 +111,13 @@
     <string name="learn_to_play" translatable="false">Learn to play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="lets_play" translatable="false">Let\'s play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="play_invitation" translatable="false">You are invited to play <xliff:g id="sport">%1$s</xliff:g> with me on <xliff:g id="time">%2$s</xliff:g></string>
+    <string name="invite_player">Invite Player</string>
+    <string name="objective">Objective</string>
+    <string name="when">When</string>
+    <string name="time">Time</string>
+    <string name="invalid_date_chosen">Invalid Date is chosen</string>
+    <string name="invalid_date_time_chosen">Invalid Date/Time</string>
+    <string name="invalid_date_time_message">Date/Time chosen is incorrect. Please try again!</string>
+    <string name="ok_button">OK</string>
+
 </resources>

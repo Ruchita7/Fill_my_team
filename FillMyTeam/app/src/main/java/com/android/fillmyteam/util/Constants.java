@@ -42,7 +42,7 @@ public class Constants {
     public static final String YOUTUBE_KEY = BuildConfig.YOUTUBE_KEY;
     //  public static final String SPORTS="Sport";
 
-
+    public static final String GOOGLE_MAPS_KEY = BuildConfig.MAPS_KEY;
     public static final int REQ_START_STANDALONE_PLAYER = 1;
     public static final int REQ_RESOLVE_SERVICE_MISSING = 2;
 

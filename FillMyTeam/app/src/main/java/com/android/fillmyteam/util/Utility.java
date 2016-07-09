@@ -27,7 +27,14 @@ public class Utility {
     }
 
     public static String getCurrentTime(GregorianCalendar gcalendar) {
-        String time = gcalendar.get(Calendar.HOUR) + ":" + gcalendar.get(Calendar.MINUTE) + " " + timezone[gcalendar.get(Calendar.AM_PM)];
+        int minute =gcalendar.get(Calendar.MINUTE);
+        String minuteString="";
+        if (minute < 10) {
+            minuteString += "0" + minute;
+        } else {
+            minuteString +=minute;
+        }
+        String time = gcalendar.get(Calendar.HOUR) + ":" + minuteString + " " + timezone[gcalendar.get(Calendar.AM_PM)];
         return time;
     }
 
@@ -207,4 +214,30 @@ public class Utility {
         return sportDrawable;
     }
 
+    public static  boolean compareDate(int date,int year,int month) {
+        GregorianCalendar currenDate = new GregorianCalendar();
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.set(Calendar.DATE,date);
+        gregorianCalendar.set(Calendar.MONTH,month);
+        gregorianCalendar.set(Calendar.YEAR,year);
+        if(gregorianCalendar.before(currenDate)) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public static  boolean compareTime(int hour,int minute) {
+        GregorianCalendar currentTime = new GregorianCalendar();
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.set(Calendar.HOUR_OF_DAY,hour);
+        gregorianCalendar.set(Calendar.MINUTE,minute);
+    //    gregorianCalendar.set(Calendar.YEAR,year);
+        if(gregorianCalendar.before(currentTime)) {
+            return true;
+        }
+        return false;
+    }
 }

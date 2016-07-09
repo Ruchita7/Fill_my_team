@@ -72,7 +72,8 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
         Uri.Builder builder = Uri.parse(Constants.PHOTO_URL).buildUpon().
                 appendQueryParameter(Constants.MAX_WIDTH, Constants.WIDTH_VALUE).
                 appendQueryParameter(Constants.REFERENCE_ID, storeLocatorParcelable.getPhotoReference()).
-                appendQueryParameter(Constants.KEY, mContext.getString(R.string.map_key));
+              //  appendQueryParameter(Constants.KEY, mContext.getString(R.string.map_key));
+                      appendQueryParameter(Constants.KEY,Constants.GOOGLE_MAPS_KEY);
         String photoUrl = builder.build().toString();
         Picasso.with(mContext).load(photoUrl).into(viewHolder.storeImageView);
        /* final double latitude = storeLocatorParcelable.getLatitude();

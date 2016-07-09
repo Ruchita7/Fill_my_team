@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -60,13 +61,13 @@ import butterknife.ButterKnife;
 
 
 public class FindPlaymatesFragment extends Fragment implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, OnMarkerClickListener,
-        InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener{
+        InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener {
 
-    private static final int[] ITEM_DRAWABLES = { R.drawable.ic_basketball, R.drawable.ic_tennis,
-            R.drawable.ic_football, R.drawable.ic_cricket, R.drawable.ic_badminton, R.drawable.ic_baseball };
+    private static final int[] ITEM_DRAWABLES = {R.drawable.ic_basketball, R.drawable.ic_tennis,
+            R.drawable.ic_football, R.drawable.ic_cricket, R.drawable.ic_badminton, R.drawable.ic_baseball};
 
-    private static final String[] SPORTS = { Constants.BASKETBALL,Constants.TENNIS,
-            Constants.FOOTBALL, Constants.CRICKET, Constants.BADMINTON, Constants.BASEBALL };
+    private static final String[] SPORTS = {Constants.BASKETBALL, Constants.TENNIS,
+            Constants.FOOTBALL, Constants.CRICKET, Constants.BADMINTON, Constants.BASEBALL};
     private String mLocation;
 
     static TextView mDate;
@@ -139,7 +140,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     ImageView basketballImage;
 */
 
-ImageView basketBallImageView;
+    ImageView basketBallImageView;
     ImageView tennisImageView;
     ImageView footballImageView;
     ImageView cricketImageView;
@@ -208,7 +209,7 @@ ImageView basketBallImageView;
         mContents = getActivity().getLayoutInflater().inflate(R.layout.custom_info_contents, null);
         ButterKnife.bind(this, view);
         ArcMenu arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
-        initArcMenu(arcMenu,ITEM_DRAWABLES);
+        initArcMenu(arcMenu, ITEM_DRAWABLES);
        /* rightCenterButton = (FloatingActionButton) view.findViewWithTag("FAB");
         createFloatingMenu();*/
  /*       panelLayout.setOnClickListener(this);
@@ -252,6 +253,15 @@ ImageView basketBallImageView;
         return view;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
+        ab.show();
+    }
+
+
 /*
     @Override
     public void onDetach() {
@@ -268,48 +278,48 @@ ImageView basketBallImageView;
 //        rightCenterButton.detach();
     }
 
-  /* @Override
-    public void onClick(View v) {
-      String tag= (String)v.getTag();
-        switch (tag)    {
-            case Constants.BASKETBALL:
-                Log.v(LOG_TAG, "basketball clicked");
-                mSport = Constants.BASKETBALL;
-                fireGeoQuery();
-           //     searchFloatingMenu.close(true);
-                break;
-            case Constants.TENNIS:
-                Log.v(LOG_TAG, "table_tennis_image clicked");
-                mSport = Constants.TENNIS;
-                fireGeoQuery();
-             //   searchFloatingMenu.close(true);
-                break;
-            case Constants.FOOTBALL:
-                Log.v(LOG_TAG, "football clicked");
-                mSport = Constants.FOOTBALL;
-                fireGeoQuery();
-                break;
-            case Constants.CRICKET:
-                Log.v(LOG_TAG, "cricket clicked");
-                mSport = Constants.CRICKET;
-                fireGeoQuery();
-            //    searchFloatingMenu.close(true);
-                break;
-            case Constants.BADMINTON:
-                Log.v(LOG_TAG, "badminton clicked");
-                mSport = Constants.BADMINTON;
-                fireGeoQuery();
-              //  searchFloatingMenu.close(true);
-                break;
-            case Constants.BASEBALL:
-                Log.v(LOG_TAG, "baseball clicked");
-                mSport = Constants.BASEBALL;
-                fireGeoQuery();
-            //    searchFloatingMenu.close(true);
-                break;
-        }
-    }
-*/
+    /* @Override
+      public void onClick(View v) {
+        String tag= (String)v.getTag();
+          switch (tag)    {
+              case Constants.BASKETBALL:
+                  Log.v(LOG_TAG, "basketball clicked");
+                  mSport = Constants.BASKETBALL;
+                  fireGeoQuery();
+             //     searchFloatingMenu.close(true);
+                  break;
+              case Constants.TENNIS:
+                  Log.v(LOG_TAG, "table_tennis_image clicked");
+                  mSport = Constants.TENNIS;
+                  fireGeoQuery();
+               //   searchFloatingMenu.close(true);
+                  break;
+              case Constants.FOOTBALL:
+                  Log.v(LOG_TAG, "football clicked");
+                  mSport = Constants.FOOTBALL;
+                  fireGeoQuery();
+                  break;
+              case Constants.CRICKET:
+                  Log.v(LOG_TAG, "cricket clicked");
+                  mSport = Constants.CRICKET;
+                  fireGeoQuery();
+              //    searchFloatingMenu.close(true);
+                  break;
+              case Constants.BADMINTON:
+                  Log.v(LOG_TAG, "badminton clicked");
+                  mSport = Constants.BADMINTON;
+                  fireGeoQuery();
+                //  searchFloatingMenu.close(true);
+                  break;
+              case Constants.BASEBALL:
+                  Log.v(LOG_TAG, "baseball clicked");
+                  mSport = Constants.BASEBALL;
+                  fireGeoQuery();
+              //    searchFloatingMenu.close(true);
+                  break;
+          }
+      }
+  */
     private void initArcMenu(ArcMenu menu, int[] itemDrawables) {
         final int itemCount = itemDrawables.length;
         for (int i = 0; i < itemCount; i++) {
@@ -321,10 +331,10 @@ ImageView basketBallImageView;
 
                 @Override
                 public void onClick(View v) {
-                    String tag = (String)v.getTag();
+                    String tag = (String) v.getTag();
                     mSport = tag;
                     fireGeoQuery();
-               //     Toast.makeText(getActivity(), "position:" + position, Toast.LENGTH_SHORT).show();
+                    //     Toast.makeText(getActivity(), "position:" + position, Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -430,8 +440,6 @@ ImageView basketBallImageView;
         outState.putParcelableArrayList(PLAYERS_NEARBY, mPlayerParcelables);
         outState.putString(SELECTED_SPORT, mSport);
     }
-
-
 
 
     private void fireGeoQuery() {
@@ -580,7 +588,7 @@ ImageView basketBallImageView;
         markerOptions = new MarkerOptions()
                 .position(new LatLng(userObj.getLatitude(), userObj.getLongitude()))
                 .title(userObj.getName())
-                .snippet(time+"-"+userObj.getSport());
+                .snippet(time + "-" + userObj.getSport());
         markerMap.put(userObj.getEmail(), markerOptions);
         mMap.addMarker(markerOptions);
         userLatLngMap.put(new LatLng(userObj.getLatitude(), userObj.getLongitude()), playerParcelable);
@@ -641,11 +649,11 @@ ImageView basketBallImageView;
             titleUi.setText("");
         }
 
-      //  String snippet = marker.getSnippet();
+        //  String snippet = marker.getSnippet();
         TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
         SpannableString snippetText = new SpannableString(snippet);
-      //  snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(), 0);
-        snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(),0);
+        //  snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(), 0);
+        snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, snippet.length(), 0);
         //snippetText.setSpan();
         snippetUi.setText(snippetText);
     }

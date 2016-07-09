@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -129,7 +128,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
+       // AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
         if (toolbar != null) {
