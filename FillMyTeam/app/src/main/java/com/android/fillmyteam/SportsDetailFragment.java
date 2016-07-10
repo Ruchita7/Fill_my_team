@@ -32,6 +32,7 @@ import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
 import com.android.fillmyteam.model.SportParcelable;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.Utility;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.squareup.picasso.Picasso;
@@ -65,7 +66,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     TextView mRulesTextView;
     @BindView(R.id.sport_poster)
     ImageView mSportsImageView;
-   @BindView(R.id.playVideo)
+    @BindView(R.id.playVideo)
     ImageView mVideoPlayImageView;
     @BindView(R.id.video_thumbnail_imageView)
     ImageView mThumbnailImageView;
@@ -128,7 +129,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
 
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
-       // AppCompatActivity activity = (AppCompatActivity) getActivity();
+        // AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
         if (toolbar != null) {
@@ -212,10 +213,13 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
-       //     mSportNameTextView.setText(sportsName);
+            //     mSportNameTextView.setText(sportsName);
             Picasso.with(getActivity()).load(mImageUrl).into(mSportsImageView);
 
             Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView);
+            if (Utility.checkNetworkState(getActivity())) {
+                mVideoPlayImageView.setVisibility(View.VISIBLE);
+            }
             //menuItem.setIntent(createSharedIntent());
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createSharedIntent());
@@ -243,7 +247,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     }
 
 
-   @OnClick(R.id.video_thumbnail_imageView)
+    @OnClick(R.id.video_thumbnail_imageView)
     public void playVideo() {
         Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                 getActivity(), Constants.YOUTUBE_KEY, mVideoKey, 0, true, false);

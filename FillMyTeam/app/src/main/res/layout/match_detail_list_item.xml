@@ -1,36 +1,123 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginStart="@dimen/activity_vertical_margin"
+    android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+   >
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_vertical_margin">
 
-        <ImageView
-            android:id="@+id/game_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/playing_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/game_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@mipmap/ic_launcher" />
 
-        <TextView
-            android:id="@+id/playing_with"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/playing_sport"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/playing_place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/playing_on_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/match_on"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
+                <TextView
+                    android:id="@+id/playing_time"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    tools:text="4:30pm"
+                    android:layout_weight="4"
+                    android:layout_gravity="start"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                   />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/playing_with_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/match_with"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
+                <TextView
+                    android:id="@+id/playing_with"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    tools:text="xyz"
+                    android:layout_gravity="start"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_weight="4"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/playing_where_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/match_at"
+                    android:layout_weight="1"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
+                <TextView
+                    android:id="@+id/playing_place"
+                    android:layout_width="0dp"
+                    android:layout_gravity="start"
+                    android:layout_height="wrap_content"
+                    tools:text="10 Downing Street London"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_weight="3"
+                   />
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
+
 </android.support.v7.widget.CardView>

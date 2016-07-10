@@ -54,7 +54,7 @@
     <string name="players" translatable="false">Players</string>
     <string name="basic_rules" translatable="false">Basic Rules</string>
     <string name="video" translatable="false">Video</string>
-    <string name="data_unavailable" translatable="false">Data unavailable</string>
+    <string name="data_unavailable" translatable="false">Sports Data unavailable</string>
     <string name="autocomplete_hint" translatable="false">Search Sports Stores within 5KM Range</string>
     <string name="daily_notification" translatable="false">Notify 30 minutes before my playing time</string>
     <string name="google_calendar_notification" translatable="false">Book my calendar</string>
@@ -119,5 +119,19 @@
     <string name="invalid_date_time_chosen">Invalid Date/Time</string>
     <string name="invalid_date_time_message">Date/Time chosen is incorrect. Please try again!</string>
     <string name="ok_button">OK</string>
+    <string name="match_on">On: </string>
+    <string name="match_with">With: </string>
+    <string name="match_at">At: </string>
+    <string name="play_sport">Playing  <xliff:g id="sport">%1$s</xliff:g>  </string>
+    <string name="sports_detail">sport detail</string>
+
+
+    <string name="sports_list_unavailable">No Sports Information Available</string>
+    <string name="empty_sports_list_server_down">No sports information available. The server is not returning data.</string>
+    <string name="empty_sports_list_server_error">No sports information available. The server is not returning valid data. Please check for an updated version of Fill My Team.</string>
+    <string name="invalid_information_error">No sports information available. The request is not recognized by the server. </string>
+    <string name="network_unavailable">No sports information available. The network is not available to fetch sports data</string>
+
+
 
 </resources>

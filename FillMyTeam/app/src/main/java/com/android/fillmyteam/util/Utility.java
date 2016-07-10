@@ -1,10 +1,16 @@
 package com.android.fillmyteam.util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.fillmyteam.R;
 import com.android.fillmyteam.model.User;
+import com.android.fillmyteam.sync.SportsSyncAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -249,5 +255,31 @@ public class Utility {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
+    }
+
+
+    public static boolean checkNetworkState(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return ((networkInfo != null && networkInfo.isConnectedOrConnecting()));
+    }
+
+
+    public static void setNetworkState(Context context,  int locationStatus, String key) {
+
+        String syncStatus = key;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(syncStatus, locationStatus);
+        editor.commit();
+    }
+
+
+    public static int getNetworkState(Context context, String key) {
+        //String syncStatus = context.getString(R.string.pref_location_status_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(key, SportsSyncAdapter.STATUS_UNKNOWN);
+
+
     }
 }

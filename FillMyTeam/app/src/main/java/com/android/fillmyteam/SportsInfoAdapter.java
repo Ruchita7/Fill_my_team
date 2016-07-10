@@ -131,6 +131,7 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
+        mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public static  interface SportsAdapterOnClickHandler    {

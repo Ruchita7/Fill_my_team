@@ -5,10 +5,12 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
@@ -27,12 +29,12 @@ import android.widget.TextView;
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.Utility;
 
 
 /**
  * @author Ruchita_Maheshwary
- * This Fragment provides listing of Sports
- *
+ *         This Fragment provides listing of Sports
  */
 public class SportsInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +47,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
     private RecyclerView mRecyclerView;
     SportsInfoAdapter mAdapter;
- //   private RecyclerView.LayoutManager mLayoutManager;
+    //   private RecyclerView.LayoutManager mLayoutManager;
     private StaggeredGridLayoutManager mLayoutManager;
 
     static final int COL_SPORT_ID = 0;
@@ -55,16 +57,17 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     static final int COL_SPORT_RULES = 4;
     static final int COL_SPORT_THUMBNAIL = 5;
     static final int COL_SPORT_POSTER_IMAGE = 6;
-    static final int COL_SPORT_VIDEO_URL= 7;
+    static final int COL_SPORT_VIDEO_URL = 7;
 
     private static final int MY_SPORTS_LOADER_ID = 0;
-    public static final String LOG_TAG=SportsInfoFragment.class.getSimpleName();
+    public static final String LOG_TAG = SportsInfoFragment.class.getSimpleName();
     private boolean mAutoSelectView;
     private int mChoiceMode;
     private int mPosition = RecyclerView.NO_POSITION;
     private static final String SELECTED_KEY = "selected_position";
 
     ProgressBar mProgressBar;
+    SportsInfoFragment mFragment;
 
     public SportsInfoFragment() {
 
@@ -76,7 +79,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
      *
      * @return A new instance of fragment SportsInfoFragment.
      */
-    public static SportsInfoFragment newInstance(double latitude,double longitude)  {
+    public static SportsInfoFragment newInstance(double latitude, double longitude) {
         SportsInfoFragment fragment = new SportsInfoFragment();
         Bundle args = new Bundle();
         args.putDouble(Constants.LATITUDE, latitude);
@@ -116,22 +119,22 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view= inflater.inflate(R.layout.fragment_sports_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_sports_info, container, false);
         int columnCount = getResources().getInteger(R.integer.column_count);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.sports_info_recycler_view);
 
-    //    mLayoutManager = new GridLayoutManager(getActivity(),columnCount);
-        mLayoutManager = new StaggeredGridLayoutManager(columnCount,StaggeredGridLayoutManager.VERTICAL);
+        //    mLayoutManager = new GridLayoutManager(getActivity(),columnCount);
+        mLayoutManager = new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         TextView textView = (TextView) view.findViewById(R.id.recyclerview_forecast_empty);
         mProgressBar = (ProgressBar) view.findViewById(R.id.loading_indicator);
         mProgressBar.setVisibility(View.VISIBLE);
-
+        mFragment = this;
         mAdapter = new SportsInfoAdapter(getActivity(), new SportsInfoAdapter.SportsAdapterOnClickHandler() {
             @Override
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
-                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId,mPosition);
+                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId, mPosition);
                /* setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_exit));
                 setReenterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_reenter));
                 nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_photo));*/
@@ -167,11 +170,11 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                 getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag)
                         .addToBackStack(null)
-                        .addSharedElement(viewHolder.sportsImage,viewHolder.sportsImage.getTransitionName())
+                        .addSharedElement(viewHolder.sportsImage, viewHolder.sportsImage.getTransitionName())
                         .commit();
 
             }
-        }, textView, mProgressBar,mChoiceMode);
+        }, textView, mProgressBar, mChoiceMode);
         mRecyclerView.setAdapter(mAdapter);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SELECTED_KEY)) {
@@ -195,7 +198,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        String sortOrder= SportsColumns._ID+Constants.ASC_ORDER;
+        String sortOrder = SportsColumns._ID + Constants.ASC_ORDER;
         return new CursorLoader(getActivity(),
                 SportsProvider.Sports.CONTENT_URI,
                 null,
@@ -206,16 +209,47 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data.getCount()==0)
-        {
-            SportsAsyncTask asyncTask =new SportsAsyncTask(getActivity());
+        if (data.getCount() == 0) {
+            SportsAsyncTask asyncTask = new SportsAsyncTask(getActivity(), mFragment);
             asyncTask.execute();
-        }
-        else
-        {
+
+        } else {
+            if (!Utility.checkNetworkState(getActivity())) {
+                updateEmptyView();
+                return;
+            }
             mAdapter.swapCursor(data);
         }
-     //   mProgressBar.setVisibility(View.INVISIBLE);
+        //   mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+
+    public void updateEmptyView() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        String sportsKey = getActivity().getString(R.string.sports_detail);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int state = Utility.getNetworkState(getActivity(), sportsKey);
+        TextView textView = (TextView) getView().findViewById(R.id.recyclerview_forecast_empty);
+        textView.setVisibility(View.VISIBLE);
+        if (null != textView) {
+            int message = R.string.sports_list_unavailable;
+            switch (state) {
+                case SportsAsyncTask.SPORTS_STATUS_SERVER_DOWN:
+                    message = R.string.empty_sports_list_server_down;
+                    break;
+                case SportsAsyncTask.SPORTS_INFO_STATUS_SERVER_INVALID:
+                    message = R.string.empty_sports_list_server_error;
+                    break;
+                case SportsAsyncTask.SPORTS_INFO_STATUS_INVALID:
+                    message = R.string.invalid_information_error;
+                default:
+                    if (!Utility.checkNetworkState(getActivity())) {
+                        message = R.string.network_unavailable;
+                    }
+                    break;
+            }
+            textView.setText(message);
+        }
     }
 
     @Override

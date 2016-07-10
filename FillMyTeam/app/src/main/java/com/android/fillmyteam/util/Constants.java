@@ -138,4 +138,7 @@ public class Constants {
     public static final String USER_INFO = "user_info";
     public static final String IS_USER_LOGGED_IN="is_user_logged_in";
 
+ //   public static final int STATUS_OK = 0;
+ //   public static final int STATUS_SERVER_DOWN = 1;
+
 }

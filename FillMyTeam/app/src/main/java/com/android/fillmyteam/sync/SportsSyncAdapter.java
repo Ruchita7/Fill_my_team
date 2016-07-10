@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.android.fillmyteam.R;
@@ -34,8 +33,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -70,16 +67,21 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String ACTION_DATA_UPDATED =
             "com.example.android.weather.ACTION_DATA_UPDATED";
 
-    @IntDef({LOCATION_STATUS_OK, LOCATION_STATUS_SERVER_DOWN, LOCATION_STATUS_SERVER_INVALID, LOCATION_STATUS_UNKNOWN, LOCATION_STATUS_INVALID})
+ /*   @IntDef({STATUS_OK, STATUS_SERVER_DOWN, STATUS_SERVER_INVALID, STATUS_UNKNOWN, STATUS_INVALID})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface LocationStatus {
+    public @interface Status {
     }
+    public static final int STATUS_OK = 0;
+    public static final int STATUS_SERVER_DOWN = 1;
+    public static final int STATUS_SERVER_INVALID = 2;
+    public static final int STATUS_UNKNOWN = 3;
+    public static final int STATUS_INVALID = 4;*/
 
-    public static final int LOCATION_STATUS_OK = 0;
-    public static final int LOCATION_STATUS_SERVER_DOWN = 1;
-    public static final int LOCATION_STATUS_SERVER_INVALID = 2;
-    public static final int LOCATION_STATUS_UNKNOWN = 3;
-    public static final int LOCATION_STATUS_INVALID = 4;
+     public static final int STATUS_OK = 0;
+      public static final int STATUS_SERVER_DOWN = 1;
+    public static final int MATCH_STATUS_SERVER_INVALID = 2;
+      public static final int STATUS_UNKNOWN = 3;
+   public static final int MATCH_STATUS_INVALID = 4;
 
 /*    private static final String[] SPORTS_PROJECTION = new String[]{
             PlayerMatchesColumns._ID,
@@ -148,7 +150,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
-                setNetworkState(getContext(), LOCATION_STATUS_SERVER_DOWN);
+                setNetworkState(getContext(), STATUS_SERVER_DOWN);
                 return;
             }
             forecastJsonStr = buffer.toString();
@@ -156,12 +158,12 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
             getMatchDataFromJson(forecastJsonStr);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            setNetworkState(getContext(), LOCATION_STATUS_SERVER_DOWN);
+            setNetworkState(getContext(),STATUS_SERVER_DOWN);
             // If the code didn't successfully get the weather data, there's no point in attemping
             // to parse it.
             return;
         } catch (JSONException e) {
-            setNetworkState(getContext(), LOCATION_STATUS_SERVER_INVALID);
+            setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         } finally {
@@ -376,7 +378,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
-            setNetworkState(getContext(), LOCATION_STATUS_SERVER_INVALID);
+            setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
         }
 
         // return null;
@@ -567,7 +569,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
         context.sendBroadcast(dataUpdatedIntent);
     }
 
-    private void setNetworkState(Context context, @LocationStatus int locationStatus) {
+    private void setNetworkState(Context context, int locationStatus) {
 
         String syncStatus = getContext().getString(R.string.network_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());

@@ -10,7 +10,9 @@ import android.widget.ProgressBar;
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
 import com.android.fillmyteam.model.SportParcelable;
+import com.android.fillmyteam.sync.SportsSyncAdapter;
 import com.android.fillmyteam.util.Constants;
+import com.android.fillmyteam.util.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,35 +25,45 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * AsyncTask for retrieval
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
 public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
 
     final String LOG_TAG = SportsAsyncTask.class.getSimpleName();
     Context mContext;
     ProgressBar mProgressbar;
+    String sportsKey;
+    public static final int SPORTS_STATUS_SERVER_DOWN = 1;
+    public static final int SPORTS_INFO_STATUS_SERVER_INVALID = 2;
+    public static final int SPORTS_INFO_STATUS_INVALID = 4;
+    SportsInfoFragment mFragment;
 
-    public SportsAsyncTask(Context context) {
-        mContext=context;
+    public SportsAsyncTask(Context context, SportsInfoFragment fragment) {
+        mContext = context;
+        mFragment = fragment;
     }
+
     List<SportParcelable> mSportParcelables;
 
     @Override
     protected Void doInBackground(Void... params) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String sportsData=null;
+        String sportsData = null;
         Uri builtUri = Uri.parse(Constants.SPORTS_URL);
         try {
             URL url = new URL(builtUri.toString());
             mSportParcelables = new ArrayList<>();
             Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+
+            sportsKey = mContext.getString(R.string.sports_detail);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod(Constants.GET_REQUEST);
@@ -73,19 +85,29 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
 
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
+                Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
                 return null;
             }
             sportsData = buffer.toString();
-
+            retrieveSports(sportsData);
             Log.v(LOG_TAG, "Sports string: " + sportsData);
+        } catch (UnknownHostException e) {
+            Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
+            Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
         } catch (MalformedURLException e) {
+            Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
             Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
             Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
-        }
-        finally {
+        } catch (JSONException e) {
+            Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -98,16 +120,11 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             }
         }
 
-        try {
-            retrieveSports(sportsData);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
+
         return null;
     }
 
-    public void retrieveSports(String sportsData)     throws JSONException {
+    public void retrieveSports(String sportsData) throws JSONException {
         String sportName;
         String objective;
         String players;
@@ -119,46 +136,64 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject;
         try {
             JSONObject sportsJson = new JSONObject(sportsData);
+            if (!sportsJson.has(Constants.SPORT)) {
+                /*int errorCode = sportsJson.getInt(Constants.SPORT);
+
+                switch (errorCode) {
+                    case HttpURLConnection.HTTP_OK:
+                        break;
+                    case HttpURLConnection.HTTP_NOT_FOUND:*/
+                Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_INVALID, sportsKey);
+                return;
+               /*     default:
+                        Utility.setNetworkState(mContext, SportsSyncAdapter.STATUS_SERVER_DOWN, sportsKey);
+                        return;
+                }*/
+            }
             JSONArray sportsJsonArray = sportsJson.getJSONObject(Constants.SPORT).getJSONArray(Constants.LIST);
-            for(int i=0;i<sportsJsonArray.length();i++) {
-                jsonObject =sportsJsonArray.getJSONObject(i);
-                sportName=jsonObject.getString(Constants.SPORTS_NAME);
-                objective=jsonObject.getString(Constants.OBJECTIVE);
-                players=jsonObject.getString(Constants.PLAYERS);
-                rules=jsonObject.getString(Constants.RULES);
-                thumbnail=jsonObject.getString(Constants.THUMBNAIL);
-                image=jsonObject.getString(Constants.IMAGE);
-                video=jsonObject.getString(Constants.VIDEO_REFERENCE);
-                sportParcelable = new SportParcelable("",sportName,objective,players,rules,thumbnail,image,video);
+            for (int i = 0; i < sportsJsonArray.length(); i++) {
+                jsonObject = sportsJsonArray.getJSONObject(i);
+                sportName = jsonObject.getString(Constants.SPORTS_NAME);
+                objective = jsonObject.getString(Constants.OBJECTIVE);
+                players = jsonObject.getString(Constants.PLAYERS);
+                rules = jsonObject.getString(Constants.RULES);
+                thumbnail = jsonObject.getString(Constants.THUMBNAIL);
+                image = jsonObject.getString(Constants.IMAGE);
+                video = jsonObject.getString(Constants.VIDEO_REFERENCE);
+                sportParcelable = new SportParcelable("", sportName, objective, players, rules, thumbnail, image, video);
                 mSportParcelables.add(sportParcelable);
 
             }
+            Utility.setNetworkState(mContext, SportsSyncAdapter.STATUS_OK, sportsKey);
         } catch (JSONException e) {
             e.printStackTrace();
+            Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
         }
     }
-
 
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        for(SportParcelable sportParcelable : mSportParcelables)    {
-            insertValues(sportParcelable);
+        if (mSportParcelables != null && !mSportParcelables.isEmpty()) {
+            for (SportParcelable sportParcelable : mSportParcelables) {
+                insertValues(sportParcelable);
+            }
+        } else {
+            mFragment.updateEmptyView();
         }
-
     }
 
-    private void insertValues(SportParcelable sportParcelable)  {
-        ContentValues contentValues=new ContentValues();
-        contentValues.put(SportsColumns.SPORTS_NAME,sportParcelable.getSportsName());
-        contentValues.put(SportsColumns.OBJECTIVE,sportParcelable.getObjective());
-        contentValues.put(SportsColumns.PLAYERS,sportParcelable.getPlayers());
-        contentValues.put(SportsColumns.RULES,sportParcelable.getRules());
-        contentValues.put(SportsColumns.THUMBNAIL,sportParcelable.getThumbnail());
-        contentValues.put(SportsColumns.POSTER_IMAGE,sportParcelable.getPosterImage());
-        contentValues.put(SportsColumns.VIDEO_URL,sportParcelable.getVideoUrl());
-        mContext.getContentResolver().insert(SportsProvider.Sports.CONTENT_URI,contentValues);
+    private void insertValues(SportParcelable sportParcelable) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(SportsColumns.SPORTS_NAME, sportParcelable.getSportsName());
+        contentValues.put(SportsColumns.OBJECTIVE, sportParcelable.getObjective());
+        contentValues.put(SportsColumns.PLAYERS, sportParcelable.getPlayers());
+        contentValues.put(SportsColumns.RULES, sportParcelable.getRules());
+        contentValues.put(SportsColumns.THUMBNAIL, sportParcelable.getThumbnail());
+        contentValues.put(SportsColumns.POSTER_IMAGE, sportParcelable.getPosterImage());
+        contentValues.put(SportsColumns.VIDEO_URL, sportParcelable.getVideoUrl());
+        mContext.getContentResolver().insert(SportsProvider.Sports.CONTENT_URI, contentValues);
     }
 
 }
