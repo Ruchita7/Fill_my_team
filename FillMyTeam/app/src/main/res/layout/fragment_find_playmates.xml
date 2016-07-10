@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".FindPlaymatesFragment">
 
+
+    <TextView
+        android:id="@+id/map_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/activity_vertical_margin"
+        android:text="@string/map_network_unavailable"
+        app:layout_anchor="@+id/recyclerview_forecast"
+        app:layout_anchorGravity="fill"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:visibility="invisible"/>
+
     <FrameLayout
         android:id="@+id/map"
         android:layout_width="match_parent"

@@ -139,6 +139,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @BindView(R.id.basketball_image)
     ImageView basketballImage;
 */
+/*
 
     ImageView basketBallImageView;
     ImageView tennisImageView;
@@ -146,7 +147,9 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     ImageView cricketImageView;
     ImageView badmintonImageView;
     ImageView baseballImageView;
-
+*/
+    @BindView(R.id.map_empty)
+    TextView emptyMap;
 
     public FindPlaymatesFragment() {
         // Required empty public constructor
@@ -210,6 +213,14 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         ButterKnife.bind(this, view);
         ArcMenu arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
         initArcMenu(arcMenu, ITEM_DRAWABLES);
+        emptyMap.setVisibility(View.GONE);
+        frameLayout.setVisibility(View.VISIBLE);
+        arcMenu.setVisibility(View.VISIBLE);
+        if(!Utility.checkNetworkState(getActivity()))   {
+            emptyMap.setVisibility(View.VISIBLE);
+            frameLayout.setVisibility(View.INVISIBLE);
+            arcMenu.setVisibility(View.INVISIBLE);
+        }
        /* rightCenterButton = (FloatingActionButton) view.findViewWithTag("FAB");
         createFloatingMenu();*/
  /*       panelLayout.setOnClickListener(this);

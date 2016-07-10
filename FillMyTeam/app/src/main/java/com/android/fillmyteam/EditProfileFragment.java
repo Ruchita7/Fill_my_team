@@ -6,12 +6,14 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -147,7 +149,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         //mCalendarInviteCheckbox = (CheckBox) view.findViewById(R.id.calendar_notify);
         //  calendarInviteCheckbox.setOnClickListener(this);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mIsCalendarInvite= sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
+        mIsCalendarInvite = sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
      /*   if (isCalendarInvite) {
             mCalendarInviteCheckbox.setChecked(true);
         }*/
@@ -212,6 +214,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
 
             case R.id.saveUserButton:
+                if (!Utility.checkNetworkState(getActivity())) {
+                    DialogFragment dialogFragment = new NetworkMessageDialogFragment();
+                    dialogFragment.show(getFragmentManager(), getString(R.string.no_network));
+                    return;
+                }
                 // mPlayingTime = Utility.getPlayingTimeInfo(mTime.getText().toString());
                 mPlayingTime = mTime.getText().toString();
                 //    Log.v(LOG_TAG,"playing date is"+date);
@@ -260,6 +267,11 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.picker_image_view:
+                if (!Utility.checkNetworkState(getActivity())) {
+                    DialogFragment dialogFragment = new NetworkMessageDialogFragment();
+                    dialogFragment.show(getFragmentManager(), getString(R.string.no_network));
+                    return;
+                }
                 try {
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     Intent intent = intentBuilder.build(getActivity());
@@ -357,13 +369,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor editor=sharedPreferences.edit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(Constants.USER_INFO);
         editor.commit();
         try {
             ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
             String userJson = ow.writeValueAsString(mUser);
-            editor.putString(Constants.USER_INFO,userJson);
+            editor.putString(Constants.USER_INFO, userJson);
             editor.commit();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -382,5 +394,25 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    public static class NetworkMessageDialogFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.no_network_header);
+            builder.setMessage(R.string.no_network)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NetworkMessageDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
     }
 }

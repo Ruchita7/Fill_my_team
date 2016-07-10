@@ -187,6 +187,11 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 newFragment.show(getActivity().getFragmentManager(), Constants.TIME_PICKER);
                 break;
             case R.id.invite_picker_image_view:
+                if (!Utility.checkNetworkState(getActivity())) {
+                    EditProfileFragment.NetworkMessageDialogFragment msgFragment = new EditProfileFragment.NetworkMessageDialogFragment();
+                    msgFragment.show(getFragmentManager(), getString(R.string.no_network));
+                    return;
+                }
                 try {
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     Intent intent = intentBuilder.build(getActivity());
@@ -204,6 +209,11 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 }
                 break;
             case R.id.invite_button:
+                if (!Utility.checkNetworkState(getActivity())) {
+                    EditProfileFragment.NetworkMessageDialogFragment msgFragment = new EditProfileFragment.NetworkMessageDialogFragment();
+                    msgFragment.show(getFragmentManager(), getString(R.string.no_network));
+                    return;
+                }
                 String playTime = mPlayTimeEditText.getText().toString();
                 String playingDate = mDateTextView.getText().toString();
                 GregorianCalendar beginTime = new GregorianCalendar();
@@ -219,11 +229,11 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     e.printStackTrace();
                 }
                 if (beginTime.before(currentDate)) {
-                    Log.v(LOG_TAG,getString(R.string.invalid_date_chosen));
+                    Log.v(LOG_TAG, getString(R.string.invalid_date_chosen));
                     DialogFragment dialogFragment = new MessageDialogFragment();
                     dialogFragment.show(getFragmentManager(), getString(R.string.invalid_date_chosen));
                     //Toast.makeText(getActivity(),"Time has lapse",Toast.LENGTH_LONG).show();
-                   // new MessageDialogFragment().getDialog().show();
+                    // new MessageDialogFragment().getDialog().show();
                 } else {
                     endTime.add(Calendar.HOUR, 1);
 

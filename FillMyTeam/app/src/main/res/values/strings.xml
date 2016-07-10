@@ -111,27 +111,27 @@
     <string name="learn_to_play" translatable="false">Learn to play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="lets_play" translatable="false">Let\'s play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="play_invitation" translatable="false">You are invited to play <xliff:g id="sport">%1$s</xliff:g> with me on <xliff:g id="time">%2$s</xliff:g></string>
-    <string name="invite_player">Invite Player</string>
-    <string name="objective">Objective</string>
-    <string name="when">When</string>
-    <string name="time">Time</string>
-    <string name="invalid_date_chosen">Invalid Date is chosen</string>
-    <string name="invalid_date_time_chosen">Invalid Date/Time</string>
-    <string name="invalid_date_time_message">Date/Time chosen is incorrect. Please try again!</string>
-    <string name="ok_button">OK</string>
-    <string name="match_on">On: </string>
-    <string name="match_with">With: </string>
-    <string name="match_at">At: </string>
-    <string name="play_sport">Playing  <xliff:g id="sport">%1$s</xliff:g>  </string>
-    <string name="sports_detail">sport detail</string>
+    <string name="invite_player" translatable="false">Invite Player</string>
+    <string name="objective" translatable="false">Objective</string>
+    <string name="when" translatable="false">When</string>
+    <string name="time" translatable="false">Time</string>
+    <string name="invalid_date_chosen" translatable="false">Invalid Date is chosen</string>
+    <string name="invalid_date_time_chosen" translatable="false">Invalid Date/Time</string>
+    <string name="invalid_date_time_message" translatable="false">Date/Time chosen is incorrect. Please try again!</string>
+    <string name="ok_button" translatable="false">OK</string>
+    <string name="match_on" translatable="false">On: </string>
+    <string name="match_with" translatable="false">With: </string>
+    <string name="match_at" translatable="false">At: </string>
+    <string name="play_sport" translatable="false">Playing  <xliff:g id="sport">%1$s</xliff:g>  </string>
+    <string name="sports_detail" translatable="false">sport detail</string>
 
 
-    <string name="sports_list_unavailable">No Sports Information Available</string>
-    <string name="empty_sports_list_server_down">No sports information available. The server is not returning data.</string>
-    <string name="empty_sports_list_server_error">No sports information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
-    <string name="invalid_information_error">No sports information available. The request is not recognized by the server. </string>
-    <string name="network_unavailable">No sports information available. The network is not available to fetch sports data</string>
-    <string name="login_network_unavailable">No network available to login</string>
+    <string name="sports_list_unavailable" translatable="false">No Sports Information Available</string>
+    <string name="empty_sports_list_server_down" translatable="false">No sports information available. The server is not returning data.</string>
+    <string name="empty_sports_list_server_error" translatable="false">No sports information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
+    <string name="invalid_information_error" translatable="false">No sports information available. The request is not recognized by the server. </string>
+    <string name="network_unavailable" translatable="false">No sports information available. The network is not available to fetch sports data</string>
+    <string name="login_network_unavailable" translatable="false">No network available to login</string>
 
     <string name="location_data_unavailable" translatable="false">No location information available. The network is not available to fetch location data</string>
     <string name="api_not_connected" translatable="false">Unable to connect to server. Please try again</string>
@@ -140,8 +140,11 @@
     <!--string name="store_network_error" translatable="false"></string-->
     <string name="timeout" translatable="false">The request has timed out. Please try again after some time.</string>
     <string name="no_location_found" translatable="false">Unable to indentify location. Please try again.</string>
-    <string name="empty_store_list_server_down">No Sport store information available. The server is not returning data.</string>
-    <string name="empty_store_list_server_error">No sports store information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
-    <string name="invalid_request_error">No sports store information available. The request is not recognized by the server. </string>
-    <string name="store_network_unavailable">No sports store information available. The network is not available to fetch store data</string>
+    <string name="empty_store_list_server_down" translatable="false">No Sport store information available. The server is not returning data.</string>
+    <string name="empty_store_list_server_error" translatable="false">No sports store information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
+    <string name="invalid_request_error" translatable="false">No sports store information available. The request is not recognized by the server. </string>
+    <string name="store_network_unavailable" translatable="false">No sports store information available. The network is not available to fetch store data</string>
+    <string name="map_network_unavailable" translatable="false">No nearby players information available. The network is not available to fetch nearby players data</string>
+    <string name="no_network" translatable="false">Please check your network connection and try again.</string>
+    <string name="no_network_header" translatable="false">No Network</string>
 </resources>
