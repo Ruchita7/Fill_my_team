@@ -147,4 +147,11 @@
     <string name="map_network_unavailable" translatable="false">No nearby players information available. The network is not available to fetch nearby players data</string>
     <string name="no_network" translatable="false">Please check your network connection and try again.</string>
     <string name="no_network_header" translatable="false">No Network</string>
+
+    <string name="empty_list_server_down" translatable="false">No upcoming match information available. The server is not returning data.</string>
+    <string name="empty_match_list_server_error" translatable="false">No upcoming match information available. The server is not returning valid data. Please check for an updated version of Fill my Team app.</string>
+
+    <string name="list_unavailable" translatable="false">No upcoming match information available</string>
+    <string name="network_unavailable_match" translatable="false">No upcoming match information available. The network is not available to fetch match related data</string>
+    <string name="match_invalid_request_error" translatable="false">No upcoming match  information available. The request is not recognized by the server.</string>
 </resources>

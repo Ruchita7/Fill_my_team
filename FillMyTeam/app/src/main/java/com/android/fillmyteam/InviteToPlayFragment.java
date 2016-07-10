@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -264,18 +265,19 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     playingUserMap.put(Constants.PLAYER_EMAIL, mUser.getEmail());
                     ref.push().setValue(playingUserMap);
 
-
-                    Intent intent = new Intent(Intent.ACTION_INSERT)
-                            .setData(CalendarContract.Events.CONTENT_URI)
-                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                            .putExtra(CalendarContract.Events.TITLE, getString(R.string.lets_play, mUser.getSport()))
-                            .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.play_invitation, mUser.getSport(), playingDate + " " + playTime))
-                            .putExtra(CalendarContract.Events.EVENT_LOCATION, mUser.getPlayingPlace())
-                            .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
-                            .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail() + "," + mPlayWithUser.getEmail());
-                    startActivity(intent);
-
+                    CheckBox checkBoxView = (CheckBox) getView().findViewById(R.id.calendar_notify);
+                    if (checkBoxView.isChecked()) {
+                        Intent intent = new Intent(Intent.ACTION_INSERT)
+                                .setData(CalendarContract.Events.CONTENT_URI)
+                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                                .putExtra(CalendarContract.Events.TITLE, getString(R.string.lets_play, mUser.getSport()))
+                                .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.play_invitation, mUser.getSport(), playingDate + " " + playTime))
+                                .putExtra(CalendarContract.Events.EVENT_LOCATION, mUser.getPlayingPlace())
+                                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+                                .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail() + "," + mPlayWithUser.getEmail());
+                        startActivity(intent);
+                    }
               /*  ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
                 ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
                 ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());

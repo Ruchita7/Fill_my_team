@@ -51,7 +51,7 @@
         <service android:name=".ScheduleDailyAlarmService" />
 
         <provider
-            android:name=".provider.SportsProvider"
+            android:name="com.android.fillmyteam.provider.SportsProvider"
             android:authorities="com.android.fillmyteam.SportsProvider"
             android:exported="false" />
 

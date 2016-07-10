@@ -274,11 +274,22 @@ public class Utility {
         editor.commit();
     }
 
-
     public static int getNetworkState(Context context, String key) {
         //String syncStatus = context.getString(R.string.pref_location_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(key, SportsSyncAdapter.STATUS_UNKNOWN);
+
+
+    }
+
+    @SuppressWarnings("ResourceType")
+    static public @SportsSyncAdapter.MatchStatus
+    int getNetworkState(Context context) {
+        //String syncStatus = context.getString(R.string.pref_location_status_key);
+        String syncStatus = context.getString(R.string.network_status_key);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(syncStatus, SportsSyncAdapter.STATUS_UNKNOWN);
+
 
 
     }

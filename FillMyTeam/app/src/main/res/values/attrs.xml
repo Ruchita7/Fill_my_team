@@ -6,4 +6,8 @@
         <attr name="sharedElementTransitions" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="MatchFragment">
+        <attr name="android:choiceMode" />
+    </declare-styleable>
+
 </resources>

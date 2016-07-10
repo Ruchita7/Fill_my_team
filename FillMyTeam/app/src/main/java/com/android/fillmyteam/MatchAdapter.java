@@ -2,6 +2,7 @@ package com.android.fillmyteam;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.fillmyteam.data.PlayerMatchesColumns;
 import com.android.fillmyteam.model.Match;
 import com.android.fillmyteam.util.Utility;
 
@@ -25,13 +27,21 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     List<Match> matchesList;
     Context mContext;
     Cursor mCursor;
+    ItemChoiceManager mIcm;
+    final MatchAdapterOnClickHandler mClickHandler;
+    final View mEmptyView;
+    int mChoiceMode;
 
-    public MatchAdapter(Context context, List<Match> matches) {
+    public MatchAdapter(Context context, List<Match> matches,MatchAdapterOnClickHandler adapterClickHandler,View emptyView,int choiceMode) {
         matchesList = matches;
         mContext = context;
+        mEmptyView=emptyView;
+        mClickHandler=adapterClickHandler;
+        mIcm = new ItemChoiceManager(this);
+        mIcm.setChoiceMode(choiceMode);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         @BindView(R.id.playing_time)
         TextView playingTime;
         @BindView(R.id.playing_place)
@@ -55,6 +65,21 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mCursor.moveToPosition(position);
+        //    int matchId = mCursor.getColumnIndex(PlayerMatchesColumns._ID);
+            /*int latitude = mCursor.getColumnIndex(PlayerMatchesColumns.LATITUDE);
+            int longitude = mCursor.getColumnIndex(PlayerMatchesColumns.LONGITUDE);
+                mClickHandler.itemClick(mCursor.getDouble(latitude),mCursor.getDouble(longitude),this);*/
+            int location = mCursor.getColumnIndex(PlayerMatchesColumns.PLAYING_PLACE);
+            mClickHandler.itemClick(mCursor.getString(location),this);
+
+            mIcm.onClick(this);
         }
     }
 
@@ -80,6 +105,28 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
             holder.sport.setContentDescription(mContext.getString(R.string.play_sport,sport));
         }
         holder.playingSport.setText(sport);
+        mIcm.onBindViewHolder(holder, position);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mIcm.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public void selectView(RecyclerView.ViewHolder viewHolder) {
+        if ( viewHolder instanceof ViewHolder ) {
+            ViewHolder vh = (ViewHolder)viewHolder;
+            vh.onClick(vh.itemView);
+        }
+    }
+
+
+    public void onSaveInstanceState(Bundle outState) {
+        mIcm.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override
@@ -98,11 +145,16 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     public void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
-        //   mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+           mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public Cursor getCursor() {
         return mCursor;
+    }
+
+    public static  interface MatchAdapterOnClickHandler    {
+       // public void itemClick(double latitude, double longitude,ViewHolder viewHolder);
+        public void itemClick(String location,ViewHolder viewHolder);
     }
 
 }

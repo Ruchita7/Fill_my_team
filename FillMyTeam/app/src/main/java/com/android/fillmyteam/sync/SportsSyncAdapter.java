@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.android.fillmyteam.R;
@@ -33,8 +34,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,11 +82,18 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int STATUS_UNKNOWN = 3;
     public static final int STATUS_INVALID = 4;*/
 
-     public static final int STATUS_OK = 0;
-      public static final int STATUS_SERVER_DOWN = 1;
+
+    @IntDef({STATUS_OK, STATUS_SERVER_DOWN, MATCH_STATUS_SERVER_INVALID, STATUS_UNKNOWN, MATCH_STATUS_INVALID})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface MatchStatus {
+    }
+
+
+    public static final int STATUS_OK = 0;
+    public static final int STATUS_SERVER_DOWN = 1;
     public static final int MATCH_STATUS_SERVER_INVALID = 2;
-      public static final int STATUS_UNKNOWN = 3;
-   public static final int MATCH_STATUS_INVALID = 4;
+    public static final int STATUS_UNKNOWN = 3;
+    public static final int MATCH_STATUS_INVALID = 4;
 
 /*    private static final String[] SPORTS_PROJECTION = new String[]{
             PlayerMatchesColumns._ID,
@@ -156,6 +168,15 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
             forecastJsonStr = buffer.toString();
             getContext().getContentResolver().delete(SportsProvider.UpcomingMatches.CONTENT_URI, null, null);
             getMatchDataFromJson(forecastJsonStr);
+        }catch (UnknownHostException e) {
+            setNetworkState(getContext(), STATUS_SERVER_DOWN);
+            Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+           setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
+            Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             setNetworkState(getContext(),STATUS_SERVER_DOWN);
@@ -255,6 +276,11 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             JSONObject matchJson = new JSONObject(matchJsonStr);
+            if (matchJson==null) {
+
+               setNetworkState(getContext(),MATCH_STATUS_INVALID);
+                return;
+            }
             Iterator<String> matchIterator = matchJson.keys();
             List<Match> matchList = new ArrayList<>();
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
@@ -375,6 +401,8 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.d(LOG_TAG, "Sunshine Service Complete. " + cVVector.size() + " Inserted");
             setNetworkState(getContext(), LOCATION_STATUS_OK);
 */
+
+            setNetworkState(getContext(), STATUS_OK);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -569,12 +597,12 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
         context.sendBroadcast(dataUpdatedIntent);
     }
 
-    private void setNetworkState(Context context, int locationStatus) {
+    private void setNetworkState(Context context, int matchStatus) {
 
         String syncStatus = getContext().getString(R.string.network_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(syncStatus, locationStatus);
+        editor.putInt(syncStatus, matchStatus);
         editor.commit();
     }
 

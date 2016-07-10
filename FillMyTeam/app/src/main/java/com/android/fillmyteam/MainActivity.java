@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
+import com.android.fillmyteam.sync.SportsSyncAdapter;
 import com.android.fillmyteam.ui.CircularImageTransform;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
         editor.commit();
+        SportsSyncAdapter.initializeSyncAdapter(this);
         //for tablet checking
        /* else {
             mUser = new User();
