@@ -128,10 +128,20 @@
 
     <string name="sports_list_unavailable">No Sports Information Available</string>
     <string name="empty_sports_list_server_down">No sports information available. The server is not returning data.</string>
-    <string name="empty_sports_list_server_error">No sports information available. The server is not returning valid data. Please check for an updated version of Fill My Team.</string>
+    <string name="empty_sports_list_server_error">No sports information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
     <string name="invalid_information_error">No sports information available. The request is not recognized by the server. </string>
     <string name="network_unavailable">No sports information available. The network is not available to fetch sports data</string>
+    <string name="login_network_unavailable">No network available to login</string>
 
-
-
+    <string name="location_data_unavailable" translatable="false">No location information available. The network is not available to fetch location data</string>
+    <string name="api_not_connected" translatable="false">Unable to connect to server. Please try again</string>
+    <!--string name="canceled_request" translatable="false">There was some problem in processing this request. Please try again</string-->
+    <string name="location_error" translatable="false">There was some problem in processing this request. Please try again</string>
+    <!--string name="store_network_error" translatable="false"></string-->
+    <string name="timeout" translatable="false">The request has timed out. Please try again after some time.</string>
+    <string name="no_location_found" translatable="false">Unable to indentify location. Please try again.</string>
+    <string name="empty_store_list_server_down">No Sport store information available. The server is not returning data.</string>
+    <string name="empty_store_list_server_error">No sports store information available. The server is not returning valid data. Please check for an updated version of Fill My Team app.</string>
+    <string name="invalid_request_error">No sports store information available. The request is not recognized by the server. </string>
+    <string name="store_network_unavailable">No sports store information available. The network is not available to fetch store data</string>
 </resources>

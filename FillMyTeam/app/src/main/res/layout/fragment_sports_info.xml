@@ -37,7 +37,7 @@
         android:layout_marginTop="@dimen/activity_vertical_margin" />
 
     <TextView
-        android:id="@+id/recyclerview_forecast_empty"
+        android:id="@+id/recyclerview_sports_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"

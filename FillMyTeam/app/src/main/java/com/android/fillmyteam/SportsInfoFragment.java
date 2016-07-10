@@ -126,7 +126,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         //    mLayoutManager = new GridLayoutManager(getActivity(),columnCount);
         mLayoutManager = new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        TextView textView = (TextView) view.findViewById(R.id.recyclerview_forecast_empty);
+        TextView textView = (TextView) view.findViewById(R.id.recyclerview_sports_empty);
         mProgressBar = (ProgressBar) view.findViewById(R.id.loading_indicator);
         mProgressBar.setVisibility(View.VISIBLE);
         mFragment = this;
@@ -229,7 +229,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         String sportsKey = getActivity().getString(R.string.sports_detail);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int state = Utility.getNetworkState(getActivity(), sportsKey);
-        TextView textView = (TextView) getView().findViewById(R.id.recyclerview_forecast_empty);
+        TextView textView = (TextView) getView().findViewById(R.id.recyclerview_sports_empty);
         textView.setVisibility(View.VISIBLE);
         if (null != textView) {
             int message = R.string.sports_list_unavailable;

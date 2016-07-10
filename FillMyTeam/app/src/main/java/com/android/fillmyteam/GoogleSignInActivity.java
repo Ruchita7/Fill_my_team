@@ -80,7 +80,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
 
-   //     findViewById(R.id.sign_out_button).setOnClickListener(this);
+        //     findViewById(R.id.sign_out_button).setOnClickListener(this);
 
 
         Firebase.setAndroidContext(this);
@@ -90,10 +90,10 @@ public class GoogleSignInActivity extends BaseActivity implements
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(LocationServices.API)
                 .build();
 
         boolean isLogout = false;
@@ -126,8 +126,7 @@ public class GoogleSignInActivity extends BaseActivity implements
             {
                 initiateAuthentication();
             }
-        }*/
-        else {
+        }*/ else {
             setContentView(R.layout.activity_google_sign_in);
             View scrimView = findViewById(R.id.scrim_view);
             scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
@@ -240,6 +239,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onStart() {
         super.onStart();
+        mGoogleApiClient.connect();
         if (mAuthListener != null) {
             mAuth.addAuthStateListener(mAuthListener);
         }
@@ -249,6 +249,9 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     public void onStop() {
         super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
 
@@ -376,8 +379,12 @@ public class GoogleSignInActivity extends BaseActivity implements
                 signOut();
                 break;
         }*/
-        if(v.getId()==R.id.sign_in_button)  {
-            signIn();
+        if (v.getId() == R.id.sign_in_button) {
+            if (Utility.checkNetworkState(this)) {
+                signIn();
+            } else {
+                Toast.makeText(this, getString(R.string.login_network_unavailable), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -424,6 +431,8 @@ public class GoogleSignInActivity extends BaseActivity implements
 
                 }
             }
+        } catch (SecurityException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -431,7 +440,8 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d(LOG_TAG, "onConnectionSuspended:" + i);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
 

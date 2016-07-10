@@ -8,5 +8,5 @@ import java.util.List;
  * Created by dgnc on 5/30/2016.
  */
 public interface StoreDataReceivedListener {
-    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables);
+    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables,int status);
 }

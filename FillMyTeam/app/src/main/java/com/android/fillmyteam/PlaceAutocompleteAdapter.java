@@ -27,7 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -59,7 +58,7 @@ public class PlaceAutocompleteAdapter
      * Current results returned by this adapter.
      */
     private ArrayList<AutocompletePrediction> mResultList;
-
+    public static final int NO_RESULTS_FOUND=6;
     /**
      * Handles autocomplete requests.
      */
@@ -75,6 +74,8 @@ public class PlaceAutocompleteAdapter
      */
     private AutocompleteFilter mPlaceFilter;
 
+   // public static final int API_NOT_CONNECTED
+
     /**
      * Initializes with a resource for text rows and autocomplete query bounds.
      *
@@ -87,11 +88,16 @@ public class PlaceAutocompleteAdapter
         mBounds = bounds;
         mPlaceFilter = filter;
     }     */
+
+    SportsStoreLocatorFragment mFragment;
+    int mErrorCode;
+  //  TextView mEmptyTextView;
+
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-                                    AutocompleteFilter filter) {
+                                    AutocompleteFilter filter,SportsStoreLocatorFragment fragment) {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
-
+        mFragment=fragment;
         mPlaceFilter = filter;
     }
 
@@ -107,7 +113,11 @@ public class PlaceAutocompleteAdapter
      */
     @Override
     public int getCount() {
-        return mResultList.size();
+        if(mResultList!=null &&!mResultList.isEmpty())
+        {
+            return mResultList.size();
+        }
+        return 0;
     }
 
     /**
@@ -166,6 +176,7 @@ public class PlaceAutocompleteAdapter
                 } else {
                     // The API did not return any results, invalidate the data set.
                     notifyDataSetInvalidated();
+                    mFragment.updateEmptyView(mErrorCode);
                 }
             }
 
@@ -220,17 +231,26 @@ public class PlaceAutocompleteAdapter
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
+
                // Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
-                Toast.makeText(getContext(), getContext().getString(R.string.place_autocomplete_error, status.toString()),
-                        Toast.LENGTH_SHORT).show();
+            /*    Toast.makeText(getContext(), getContext().getString(R.string.place_autocomplete_error, status.toString()),
+                        Toast.LENGTH_SHORT).show();*/
            //     Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
                 Log.e(TAG, getContext().getString(R.string.place_autocomplete_log_error,status.toString()) + status.toString());
                 autocompletePredictions.release();
+                mErrorCode=status.getStatusCode();
+               // updateEmptyView(status.getStatusCode());
                 return null;
             }
 
           //  Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount() + " predictions.");
-            Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
+            if(autocompletePredictions.getCount()==0)
+            {
+             //  updateEmptyView(NO_RESULTS_FOUND);
+                Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
+                mErrorCode=NO_RESULTS_FOUND;
+            }
+
 
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);
@@ -240,4 +260,35 @@ public class PlaceAutocompleteAdapter
     }
 
 
+  /*  public void updateEmptyView(int statusCode) {
+        // int statusCode = status.getStatusCode();
+        // TextView textView = (TextView) getView().findViewById(R.id.listview_store_empty);
+        mEmptyTextView.setVisibility(View.VISIBLE);
+    //    mListView.setVisibility(View.INVISIBLE);
+        int message = R.string.store_data_unavailable;
+        switch (statusCode) {
+            case CommonStatusCodes.API_NOT_CONNECTED:
+                message = R.string.api_not_connected;
+                break;
+            case CommonStatusCodes.CANCELED:
+            case CommonStatusCodes.ERROR:
+                message = R.string.store_error;
+                break;
+
+            case CommonStatusCodes.NETWORK_ERROR:
+                message = R.string.store_data_unavailable;
+                break;
+            case CommonStatusCodes.TIMEOUT:
+                message = R.string.timeout;
+                break;
+
+            case NO_RESULTS_FOUND :
+                message=R.string.no_stores_found;
+                break;
+            default:
+                message = R.string.store_data_unavailable;
+        }
+        mEmptyTextView.setText(message);
+    }
+*/
 }

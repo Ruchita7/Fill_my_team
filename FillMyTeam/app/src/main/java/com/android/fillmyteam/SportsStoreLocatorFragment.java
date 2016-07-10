@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -67,6 +69,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     public static final String SEARCHED_STORE = "searched_store";
     public static final String SELECTED_ITEM = "selected_item";
     int mIndex;
+    TextView emptyList;
+
 
     public SportsStoreLocatorFragment() {
         // Required empty public constructor
@@ -90,11 +94,11 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
                 .build();
-     //   getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //   getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
     }
 
@@ -106,37 +110,63 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             mLatitude = getArguments().getDouble(Constants.LATITUDE);
             mLongitude = getArguments().getDouble(Constants.LONGITUDE);
         }
+        mFragment = this;
         View view = inflater.inflate(R.layout.fragment_sports_store_locator, container, false);
         mPlaceDetailsText = (TextView) view.findViewById(R.id.place_details);
         //   mPlaceDetailsAttribution = (TextView) view.findViewById(R.id.place_attribution);
         mAutocompleteView = (AutoCompleteTextView) view.
                 findViewById(R.id.autocomplete_places);
 
-        mAutocompleteView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    Utility.hideSoftKeyboard(getActivity());
-                    return true;
-                }
-                return false;
-            }
-        });
-        // Register a listener that receives callbacks when a suggestion has been selected
-        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
-
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
-        // the entire world.
-        mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
-                null);
-        mAutocompleteView.setAdapter(mAdapter);
+        emptyList = (TextView) view.findViewById(R.id.listview_store_empty);
         mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
-        //    mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
-        //  mRecyclerView.setLayoutManager(mLayoutManager);
-        mListView.setOnItemClickListener(this);
-        mFragment = this;
+        ImageView imageView = (ImageView) view.findViewById(R.id.powered_by_google);
+
+        if (!Utility.checkNetworkState(getActivity())) {
+            mAutocompleteView.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
+            mListView.setVisibility(View.INVISIBLE);
+            emptyList.setVisibility(View.VISIBLE);
+        } else {
+            mAutocompleteView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    Log.v(LOG_TAG, "in onEditorAction");
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        Utility.hideSoftKeyboard(getActivity());
+                        //   mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            mAutocompleteView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Log.v(LOG_TAG, "in onItemSelected");
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    Log.v(LOG_TAG, "in onNothingSelected");
+                }
+            });
+            // Register a listener that receives callbacks when a suggestion has been selected
+            mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+
+            // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+            // the entire world.
+            mAdapter = new PlaceAutocompleteAdapter(getActivity(), mGoogleApiClient,
+                    null, mFragment);
+            mAutocompleteView.setAdapter(mAdapter);
+
+            //    mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new LinearLayoutManager(getActivity());
+            mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
+            //  mRecyclerView.setLayoutManager(mLayoutManager);
+            mListView.setOnItemClickListener(this);
+        }
+
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SEARCHED_STORE)) {
                 mPlaceId = savedInstanceState.getString(SEARCHED_STORE);
@@ -156,7 +186,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     }
 
     @Override
-    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables) {
+    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables, int status) {
         Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
         mStoreLocatorParcelables = storeLocatorParcelables;
         mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
@@ -169,6 +199,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 int top = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
                 mListView.setSelectionFromTop(mIndex, top);
             }
+        } else {
+            updateEmptyView(status);
         }
     }
 
@@ -215,6 +247,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
              The adapter stores each Place suggestion in a AutocompletePrediction from which we
              read the place ID and title.
               */
+            Log.v(LOG_TAG, "in onItemClick");
+            emptyList.setVisibility(View.GONE);
             final AutocompletePrediction item = mAdapter.getItem(position);
             mPlaceId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
@@ -244,6 +278,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
+            Log.v(LOG_TAG, "in on result");
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
                 Log.e(LOG_TAG, "Place query did not complete. Error: " + places.getStatus().toString());
@@ -251,6 +286,8 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 return;
             }
             // Get the Place object from the buffer.
+            emptyList.setVisibility(View.GONE);
+            mListView.setVisibility(View.VISIBLE);
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
@@ -316,7 +353,13 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.e(LOG_TAG, "onConnectionSuspended: ConnectionResult.getErrorCode() = "
+                + i);
+        Toast.makeText(getActivity(),
+                // "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                getString(R.string.google_api_client_connect_error),
+                Toast.LENGTH_SHORT).show();
+        mGoogleApiClient.connect();
     }
 
     @Override
@@ -352,6 +395,56 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             mIndex = mListView.getFirstVisiblePosition();
 
             outState.putInt(SELECTED_ITEM, mIndex);
+        }
+    }
+
+    public void updateEmptyView(int statusCode) {
+        // int statusCode = status.getStatusCode();
+        // TextView textView = (TextView) getView().findViewById(R.id.listview_store_empty);
+
+        int message = 0;
+        switch (statusCode) {
+            case CommonStatusCodes.API_NOT_CONNECTED:
+                message = R.string.api_not_connected;
+                break;
+            case CommonStatusCodes.CANCELED:
+            case CommonStatusCodes.ERROR:
+                message = R.string.location_error;
+                break;
+
+            case CommonStatusCodes.NETWORK_ERROR:
+                message = R.string.location_data_unavailable;
+                break;
+            case CommonStatusCodes.TIMEOUT:
+                message = R.string.timeout;
+                break;
+
+            case PlaceAutocompleteAdapter.NO_RESULTS_FOUND:
+                message = R.string.no_location_found;
+                break;
+
+            case StoreLocatorAsyncTask.STORE_STATUS_INVALID:
+                message = R.string.invalid_request_error;
+                break;
+
+
+            case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
+                message = R.string.empty_store_list_server_down;
+                break;
+
+            case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
+                message = R.string.empty_store_list_server_error;
+                break;
+            default:
+                if (!Utility.checkNetworkState(getActivity())) {
+                    message = R.string.store_network_unavailable;
+                }
+
+        }
+        if (message != 0) {
+            emptyList.setVisibility(View.VISIBLE);
+            mListView.setVisibility(View.INVISIBLE);
+            emptyList.setText(message);
         }
     }
 }

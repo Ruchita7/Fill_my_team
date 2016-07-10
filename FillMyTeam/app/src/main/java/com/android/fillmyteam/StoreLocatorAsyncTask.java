@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
     SportsStoreLocatorFragment mFragment;
     public static final String LOG_TAG = StoreLocatorAsyncTask.class.getSimpleName();
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
+    int mStatus;
+    public static final int STORE_STATUS_SERVER_DOWN = 1;
+    public static final int STORE_STATUS_SERVER_INVALID = 2;
+    public static final int STORE_STATUS_INVALID = 4;
 
     public StoreLocatorAsyncTask(Context context, SportsStoreLocatorFragment fragment) {
         super();
@@ -55,8 +60,8 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
                     appendQueryParameter(Constants.QUERY, mContext.getString(R.string.sport_goods_query)).
                     appendQueryParameter(Constants.LOCATION, location).
                     appendQueryParameter(Constants.RADIUS, Constants.TEN_KM_RADIUS).
-                  //  appendQueryParameter(Constants.LOCATION_KEY, mContext.getString(R.string.map_key));
-                    appendQueryParameter(Constants.LOCATION_KEY, Constants.GOOGLE_MAPS_KEY);
+                    //  appendQueryParameter(Constants.LOCATION_KEY, mContext.getString(R.string.map_key));
+                            appendQueryParameter(Constants.LOCATION_KEY, Constants.GOOGLE_MAPS_KEY);
             Uri builtUri = builder.build();
             Log.v(LOG_TAG, "Uri is::" + builtUri.toString());
             URL url = new URL(builtUri.toString());
@@ -87,16 +92,29 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
 
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
+                mStatus = STORE_STATUS_SERVER_DOWN;
                 return null;
             }
             storeLocatorData = buffer.toString();
 
             Log.v(LOG_TAG, "Store Locator string: " + storeLocatorData);
-        } catch (MalformedURLException e) {
+            retrieveStoreLocator(storeLocatorData);
+        } catch (UnknownHostException e) {
+            mStatus = STORE_STATUS_SERVER_DOWN;
             Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
+
+        } catch (MalformedURLException e) {
+            mStatus = STORE_STATUS_SERVER_INVALID;
+            Log.e(LOG_TAG, e.getMessage());
+            e.printStackTrace();
+        } catch (JSONException e) {
+            mStatus = STORE_STATUS_INVALID;
+            Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         } catch (IOException e) {
             Log.e(LOG_TAG, e.getMessage());
+            mStatus = STORE_STATUS_SERVER_DOWN;
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {
@@ -111,12 +129,9 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
             }
         }
 
-        try {
-            retrieveStoreLocator(storeLocatorData);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
+      /*  try {
+
+        }*/
         return null;
         // return new StoreLocator[0];
     }
@@ -132,14 +147,19 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
         JSONObject jsonObject;
         try {
             JSONObject storeJson = new JSONObject(locationData);
+            if (!storeJson.has(Constants.RESULTS)) {
+
+                mStatus = STORE_STATUS_INVALID;
+                return;
+            }
             //   JSONArray storeJsonArray = storeJson.getJSONArray("results");
             JSONArray storeJsonArray = storeJson.getJSONArray(Constants.RESULTS);
             JSONObject latLng;
             JSONObject geometry;
-            String  photoReference=null;
+            String photoReference = null;
             JSONArray photoJsonArray;
             JSONObject photoJson;
-           // String photoRef;
+            // String photoRef;
             for (int i = 0; i < storeJsonArray.length(); i++) {
                 jsonObject = storeJsonArray.getJSONObject(i);
                 /*geometry=jsonObject.getJSONObject("geometry");
@@ -155,12 +175,12 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
                 latitude = latLng.getDouble(Constants.LAT);
                 longitude = latLng.getDouble(Constants.LNG);
                 name = jsonObject.getString(Constants.PLACE_NAME);
-                photoReference=null;
-                if(jsonObject.has(Constants.PHOTOS)) {
+                photoReference = null;
+                if (jsonObject.has(Constants.PHOTOS)) {
                     photoJsonArray = jsonObject.getJSONArray(Constants.PHOTOS);
-                    for (int j = 0; j< photoJsonArray.length();j++) {
+                    for (int j = 0; j < photoJsonArray.length(); j++) {
                         photoJson = photoJsonArray.getJSONObject(j);
-                        if(photoJson.get(Constants.PHOTO_REFERENCE)!=null)   {
+                        if (photoJson.get(Constants.PHOTO_REFERENCE) != null) {
                             photoReference = photoJson.getString(Constants.PHOTO_REFERENCE);
                             Log.v(LOG_TAG, "photo url " + photoReference);
                             break;
@@ -168,12 +188,13 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
                     }
                 }
 
-                storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude,photoReference);
+                storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude, photoReference);
                 mStoreLocatorParcelables.add(storeLocatorParcelable);
             }
             Log.v(LOG_TAG, "List size" + mStoreLocatorParcelables.size());
         } catch (JSONException e) {
             e.printStackTrace();
+            mStatus = STORE_STATUS_SERVER_INVALID;
         }
     }
 
@@ -182,7 +203,7 @@ public class StoreLocatorAsyncTask extends AsyncTask<String, Void, List<StoreLoc
         super.onPostExecute(storeLocators);
         storeLocators = mStoreLocatorParcelables;
         //  mStoreDataReceivedListener.retrieveStoresList(storeLocators);
-        mFragment.retrieveStoresList(storeLocators);
+        mFragment.retrieveStoresList(storeLocators, mStatus);
 
         //mContext.setStoreLocatorParcelables(storeLocators);
       /*  storeLocators= (StoreLocatorParcelable[]) mStoreLocatorParcelables.toArray();
