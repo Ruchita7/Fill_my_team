@@ -7,17 +7,17 @@
         <item
             android:id="@+id/learn_play"
             android:icon="@drawable/ic_reading"
-            android:title="Learn to Play" />
+            android:title="@string/learn_to_play_title" />
         <item
             android:id="@+id/find_playmates"
             android:icon="@drawable/ic_search"
-            android:title="Find Playmates" />
+            android:title="@string/find_playmates" />
 
 
         <item
             android:id="@+id/sports_store_locator"
             android:icon="@drawable/ic_store_mall_directory"
-            android:title="Sports Store Locator" />
+            android:title="@string/sports_store_locator" />
     </group>
 
     <group
@@ -26,17 +26,17 @@
         <item
             android:id="@+id/edit_profile"
             android:icon="@drawable/ic_create"
-            android:title="Edit Profile" />
+            android:title="@string/edit_profile" />
 
         <item
             android:id="@+id/upcoming_matches"
-            android:title="@string/upcoming_matches"
-            android:icon="@drawable/ic_calendar"/>
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/upcoming_matches" />
 
         <item
             android:id="@+id/user_settings"
-            android:title="Settings"
-            android:icon="@drawable/ic_settings"/>
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
 
     </group>
 
@@ -46,7 +46,7 @@
         <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_logout"
-            android:title="Logout" />
+            android:title="@string/logout" />
     </group>
     <!--item
         android:id="@+id/nav_slideshow"

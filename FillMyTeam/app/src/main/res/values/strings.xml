@@ -15,7 +15,7 @@
     <string name="error_player" translatable="false">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details" translatable="false">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="map_key" translatable="false"></string>
-    <string name="geo_api_key" translatable="false">geo_key</string>
+    <string name="geo_api_key" translatable="false">geo_api_key</string>
     <string name="sport_goods_query" translatable="false">sports+goods</string>
 
     <string name="loading" translatable="false">Loading…</string>
@@ -154,4 +154,10 @@
     <string name="list_unavailable" translatable="false">No upcoming match information available</string>
     <string name="network_unavailable_match" translatable="false">No upcoming match information available. The network is not available to fetch match related data</string>
     <string name="match_invalid_request_error" translatable="false">No upcoming match  information available. The request is not recognized by the server.</string>
+    <string name="learn_to_play_title" translatable="false">Learn to Play</string>
+    <string name="edit_profile" translatable="false">Edit Profile</string>
+    <string name="find_playmates" translatable="false">Find Playmates</string>
+    <string name="sports_store_locator" translatable="false">Sports Store Locator</string>
+    <string name="logout" translatable="false">Logout</string>
+
 </resources>

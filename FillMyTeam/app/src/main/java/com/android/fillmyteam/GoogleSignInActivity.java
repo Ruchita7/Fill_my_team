@@ -119,6 +119,7 @@ public class GoogleSignInActivity extends BaseActivity implements
             intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
 
             startActivity(intent);
+            finish();
         } /*else {
             if (!userEmailId.isEmpty()) {           //returning user
                 initiateAuthentication();
@@ -127,6 +128,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 initiateAuthentication();
             }
         }*/ else {
+            mGoogleApiClient.connect();
             setContentView(R.layout.activity_google_sign_in);
             View scrimView = findViewById(R.id.scrim_view);
             scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
@@ -214,7 +216,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
                             startActivity(intent);
 
-
+                            finish();
                         }
 
                         @Override
@@ -239,7 +241,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+
         if (mAuthListener != null) {
             mAuth.addAuthStateListener(mAuthListener);
         }

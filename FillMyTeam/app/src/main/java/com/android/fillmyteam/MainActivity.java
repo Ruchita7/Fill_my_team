@@ -38,6 +38,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     ImageView badmintonImageView;
     ImageView baseballImageView;
     Activity mActivity;
+    List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         Utility.hideSoftKeyboard(this);
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
-        mActivity=this;
+        mActivity = this;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
@@ -143,19 +147,18 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        {
-                        public void onDrawerClosed(View view) {
-                            // getActionBar().setTitle(mTitle);
-                                   invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                       }
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            public void onDrawerClosed(View view) {
+                // getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
 
-                               public void onDrawerOpened(View drawerView) {
-                           //    getActionBar().setTitle(mDrawerTitle);
-                                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                                   Utility.hideSoftKeyboard(mActivity);
-                        }
-                  };
+            public void onDrawerOpened(View drawerView) {
+                //    getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                Utility.hideSoftKeyboard(mActivity);
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -200,15 +203,183 @@ public class MainActivity extends AppCompatActivity
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    /* private boolean onBackPressed(FragmentManager fm) {
+         if (fm != null) {
+             if (fm.getBackStackEntryCount() > 0) {
+                 fm.popBackStack();
+                 return true;
+             }
+
+          //   List<Fragment> fragList = fm.getFragments();
+             if (fragList != null && fragList.size() > 0) {
+                 for (WeakReference<Fragment>  frag : fragList) {
+                     Fragment fragment = frag.get();
+                     if (fragment == null) {
+                         continue;
+                     }
+                     if (fragment.isVisible()) {
+                         if (onBackPressed(fragment.getChildFragmentManager())) {
+                             return true;
+                         }
+                     }
+                 }
+             }
+         }
+         return false;
+     }
+
+
+     @Override
+     public void onAttachFragment (Fragment fragment) {
+         fragList.add(new WeakReference(fragment));
+     }
+
+     public List<Fragment> getActiveFragments() {
+         ArrayList<Fragment> ret = new ArrayList<Fragment>();
+         for(WeakReference<Fragment> ref : fragList) {
+             Fragment f = ref.get();
+             if(f != null) {
+                 if(f.isVisible()) {
+                     ret.add(f);
+                 }
+             }
+         }
+         return ret;
+     }*/
     @Override
+    public void onBackPressed() {
+      /*  DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+
+            FragmentManager.BackStackEntry backStackEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1);
+            String tag = backStackEntry.getName();
+            Fragment fragment = getFragmentManager().findFragmentByTag(tag);
+            if (fragment != null && fragment instanceof MatchesFragment) {
+                finish();
+            } else {
+                try {
+                    getFragmentManager().popBackStack();
+                   // super.onBackPressed();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }*/
+        if (getFragmentManager().getBackStackEntryCount() < 1) {
+            finish();
+        }
+        if (getFragmentManager().getBackStackEntryCount() >= 2) {
+            FragmentManager.BackStackEntry backStackFragment = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2);
+
+            if (backStackFragment != null) {
+                String className = backStackFragment.getName();
+                if (className != null) {
+                    setTitle(className);
+                } /*else {
+                    setTitle(getString(R.string.upcoming_matches));
+                }*/
+            } else {
+                setTitle(getString(R.string.upcoming_matches));
+            }
+        } else {
+            setTitle(getString(R.string.upcoming_matches));
+        }
+        MatchesFragment matchesFragment = (MatchesFragment) getFragmentManager().findFragmentByTag(MatchesFragment.class.getSimpleName());
+        if (matchesFragment != null && matchesFragment.isVisible()) {
+            finish();
+            return;
+        }
+
+
+        SportsInfoFragment sportsInfoFragment = (SportsInfoFragment) getFragmentManager().findFragmentByTag(SportsInfoFragment.class.getSimpleName());
+        FindPlaymatesFragment findPlaymatesFragment = (FindPlaymatesFragment) getFragmentManager().findFragmentByTag(FindPlaymatesFragment.class.getSimpleName());
+        if (sportsInfoFragment != null && sportsInfoFragment.isVisible() || (findPlaymatesFragment != null && findPlaymatesFragment.isVisible())) {
+            // finish();
+            //  return;
+            MatchesFragment fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
+            //getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
+            setTitle(getString(R.string.upcoming_matches));
+        }
+
+
+     /*   if (findPlaymatesFragment != null && findPlaymatesFragment.isVisible()) {
+            // finish();
+            //  return;
+            MatchesFragment  fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
+            getFragmentManager().beginTransaction().replace(R.id.content_frame,fragment,fragment.getClass().getSimpleName()).commit();
+        }
+*/
+        else {
+            super.onBackPressed();
+        }
+        // getFragmentManager().popBackStack();
+                  /*  if (fragment != null && fragment instanceof MatchesFragment) {
+                        finish();
+                    } else {
+                        MatchesFragment matchesFragment = MatchesFragment.newInstance(mUser);
+                        getFragmentManager().beginTransaction().replace(R.id.content_frame, matchesFragment).addToBackStack(matchesFragment.getClass().getSimpleName()).commit();
+                    }*/
+                   /* FragmentManager.BackStackEntry backStackEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1);
+            if(backStackEntry.getName())
+            finish();*/
+       /* FragmentManager fm = getFragmentManager();
+        if (onBackPressed(fm)) {
+            return;
+        }
+        super.onBackPressed();*/
+       /* String tag = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName();
+
+        if( null ==getFragmentManager().findFragmentByTag(tag) || !getFragmentManager().findFragmentByTag(tag).getChildFragmentManager().popBackStackImmediate()) {
+            super.onBackPressed();
+        }*/
+    }
+
+  /*  @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
-    }
+
+            // Else, nothing in the direct fragment back stack
+            else{
+                // Let super handle the back press
+                super.onBackPressed();
+            }
+        }
+    */
+    /* else {
+            int backStackCount = getFragmentManager().getBackStackEntryCount();
+            if (backStackCount > 0) {
+                getFragmentManager().popBackStackImmediate();
+               // super.onBackPressed();
+            }
+*/
+  /*      FragmentManager fragmentManager = getFragmentManager();
+        Log.v(LOG_TAG,"count"+fragmentManager.getBackStackEntryCount());
+        int backStackCount = fragmentManager.getBackStackEntryCount();
+
+        if(backStackCount==0)
+        {
+          //  finish();
+
+            finish();
+            return;
+        }
+        */
+        /* Fragment fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
+            String tag=fragment.getClass().getSimpleName();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment,tag).addToBackStack(tag).commit();*/
+
+        /*FragmentManager.BackStackEntry backStackFragment = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount());
+        if (backStackFragment == null || backStackFragment instanceof MatchesFragment) {
+            finish();
+        }
+    }*/
 
 
     @Override
@@ -271,7 +442,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (fragment != null) {
-            ft.replace(R.id.content_frame, fragment).commit();
+            ft.replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName())
+                    // .addToBackStack(null)
+                    //   .addToBackStack(fragment.getClass().getSimpleName())
+                    .addToBackStack(Utility.getTitle(this, fragment.getClass().getSimpleName()))
+                    .commit();
 
 
         }
@@ -336,7 +511,7 @@ public class MainActivity extends AppCompatActivity
         InviteToPlayFragment fragment = InviteToPlayFragment.newInstance(currentUser, playWithUser);
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .addToBackStack(null)
+                .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
 

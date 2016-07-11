@@ -265,7 +265,7 @@ public class Utility {
     }
 
 
-    public static void setNetworkState(Context context,  int locationStatus, String key) {
+    public static void setNetworkState(Context context, int locationStatus, String key) {
 
         String syncStatus = key;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -283,7 +283,8 @@ public class Utility {
     }
 
     @SuppressWarnings("ResourceType")
-    static public @SportsSyncAdapter.MatchStatus
+    static public
+    @SportsSyncAdapter.MatchStatus
     int getNetworkState(Context context) {
         //String syncStatus = context.getString(R.string.pref_location_status_key);
         String syncStatus = context.getString(R.string.network_status_key);
@@ -291,6 +292,35 @@ public class Utility {
         return prefs.getInt(syncStatus, SportsSyncAdapter.STATUS_UNKNOWN);
 
 
+    }
 
+    static public String getTitle(Context context, String className) {
+        String title = "";
+        switch (className) {
+            case Constants.SPORTS_INFO_FRAGMENT:
+            case Constants.SPORTS_DETAIL_FRAGMENT:
+                title = context.getString(R.string.learn_to_play_title);
+                break;
+            case Constants.MATCH_FRAGMENT:
+                title = context.getString(R.string.upcoming_matches);
+                break;
+            case Constants.EDIT_PROFILE_FRAGMENT:
+                title = context.getString(R.string.edit_profile);
+                break;
+            case Constants.FIND_PLAYMATES_FRAGMENT:
+            case Constants.INVITE_PLAY_FRAGMENT:
+                title = context.getString(R.string.find_playmates);;
+                break;
+            case Constants.STORE_LOCATOR_FRAGMENT:
+                title = context.getString(R.string.sports_store_locator);;
+                break;
+            case Constants.SETTINGS_FRAGMENT:
+                title = context.getString(R.string.settings);;
+                break;
+            default:
+                title = context.getString(R.string.upcoming_matches);
+                break;
+        }
+        return title;
     }
 }

@@ -169,7 +169,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                 }
                 getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag)
-                        .addToBackStack(null)
+                        .addToBackStack(nextFrag.getClass().getSimpleName())
                         .addSharedElement(viewHolder.sportsImage, viewHolder.sportsImage.getTransitionName())
                         .commit();
 
@@ -190,9 +190,18 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onResume() {
         super.onResume();
+      /*  if(!isVisible())
+        {
+            getFragmentManager().popBackStackImmediate();
+        }*/
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
+      /*  if (getChildFragmentManager().getBackStackEntryCount() > 0){
+            // Get the fragment fragment manager - and pop the backstack
+            getChildFragmentManager().popBackStack();
+        }*/
     }
+
 
 
     @Override

@@ -141,4 +141,12 @@ public class Constants {
  //   public static final int STATUS_OK = 0;
  //   public static final int STATUS_SERVER_DOWN = 1;
 
+    public static final String SPORTS_INFO_FRAGMENT="SportsInfoFragment";
+    public static final String SPORTS_DETAIL_FRAGMENT="SportsDetailFragment";
+    public static final String MATCH_FRAGMENT="MatchesFragment";
+    public static final String EDIT_PROFILE_FRAGMENT="EditProfileFragment";
+    public static final String FIND_PLAYMATES_FRAGMENT="FindPlaymatesFragment";
+    public static final String INVITE_PLAY_FRAGMENT="InviteToPlayFragment";
+    public static final String SETTINGS_FRAGMENT="SettingsFragment";
+    public static final String STORE_LOCATOR_FRAGMENT="SportsStoreLocatorFragment";
 }
