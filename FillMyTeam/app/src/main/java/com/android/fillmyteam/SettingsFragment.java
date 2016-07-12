@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
-       ValueEventListener {
+       ValueEventListener,SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String LOG_TAG = SettingsFragment.class.getSimpleName();
     //  com.google.api.services.calendar.Calendar mService;
 
@@ -77,16 +77,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     @Override
     public void onResume() {
-        /*SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sp.registerOnSharedPreferenceChangeListener(this);*/
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
         super.onResume();
     }
 
     // Unregisters a shared preference change listener
     @Override
     public void onPause() {
-/*        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sp.unregisterOnSharedPreferenceChangeListener(this);*/
+       SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
 
@@ -179,6 +179,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }*/
 
 
+
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
@@ -190,6 +191,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.notify_frequency_key)))    {
+            String timeVal=sharedPreferences.getString(key,"");
+                        if(!timeVal.isEmpty())  {
+                            int notifyBeforeInterval = Integer.parseInt(timeVal);
+                            DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
+                            alarmReceiver.cancelAlarm();
+                            alarmReceiver.setAlarmTime(getActivity(), mUser.getPlayingTime(), mUser.getPlayingPlace(), notifyBeforeInterval);
+                        }
+        }
+    }
 }
 
 

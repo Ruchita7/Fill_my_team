@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         app:fromDegrees="@dimen/menuFromDegrees"
         app:toDegrees="@dimen/menuToDegrees"
-        app:childSize="40dp"
+        app:childSize="@dimen/child_size"
         />
 
 </FrameLayout>

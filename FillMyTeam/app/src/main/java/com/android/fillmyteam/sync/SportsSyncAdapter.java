@@ -70,7 +70,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int WEATHER_NOTIFICATION_ID = 3004;*/
     public static final String ACTION_DATA_UPDATED =
-            "com.example.android.weather.ACTION_DATA_UPDATED";
+            "com.android.fillmyteam.ACTION_DATA_UPDATED";
 
  /*   @IntDef({STATUS_OK, STATUS_SERVER_DOWN, STATUS_SERVER_INVALID, STATUS_UNKNOWN, STATUS_INVALID})
     @Retention(RetentionPolicy.SOURCE)

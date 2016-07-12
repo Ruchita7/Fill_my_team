@@ -9,4 +9,6 @@
     <color name="white">#D0FFFFFF</color>
     <color name="grey_ripple">#8ddd</color>
     <color name="blue_sign_in">#4285F4</color>
+    <color name="black">#ff000000</color>
+    <color name="dark_gray">#ff7f7f7f</color>
 </resources>

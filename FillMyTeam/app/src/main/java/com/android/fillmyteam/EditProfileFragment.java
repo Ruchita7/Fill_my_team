@@ -221,6 +221,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 }
                 // mPlayingTime = Utility.getPlayingTimeInfo(mTime.getText().toString());
                 mPlayingTime = mTime.getText().toString();
+                mUser.setPlayingTime(mPlayingTime);
                 //    Log.v(LOG_TAG,"playing date is"+date);
                 saveUserData();
              /*   SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

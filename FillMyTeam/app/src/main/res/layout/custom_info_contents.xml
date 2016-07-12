@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="@dimen/image_margin"
         android:adjustViewBounds="true"/>
 
     <LinearLayout
@@ -38,8 +38,8 @@
             android:layout_gravity="center_horizontal"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff000000"
-            android:textSize="14dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/marker_window_text_size"
             android:textStyle="bold" />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="#ff7f7f7f"
-            android:textSize="14dp" />
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/marker_window_text_size" />
     </LinearLayout>
 </LinearLayout>
