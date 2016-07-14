@@ -271,7 +271,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            //Log.v("Time Dialog", hourOfDay + ":" + minute);
+
             String playingTime = Utility.updateTime(hourOfDay, minute);
             mTime.setText(playingTime);
         }
@@ -289,10 +289,8 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
 
                 String attributions = PlacePicker.getAttributions(data);
                 mParkLocation = place.getAddress().toString();
-                //Log.v(LOG_TAG, "location chosen" + mParkLocation);
                 mPlaceTextView.setText(mParkLocation);
                 LatLng latLng = place.getLatLng();
-                //Log.v(LOG_TAG, "lat lng" + latLng.latitude + "," + latLng.longitude);
                 mUser.setPlayingPlace(mParkLocation);
                 mUser.setLatitude(latLng.latitude);
                 mUser.setLongitude(latLng.longitude);

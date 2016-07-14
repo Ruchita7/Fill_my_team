@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import com.squareup.picasso.Transformation;
 
 /**
- * Created by dgnc on 6/26/2016.
+ * Class for creating circular avtar
  */
 public class CircularImageTransform implements Transformation {
     @Override

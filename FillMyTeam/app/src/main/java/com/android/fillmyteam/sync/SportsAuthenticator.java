@@ -8,10 +8,10 @@ import android.content.Context;
 import android.os.Bundle;
 
 /**
- * Created by dgnc on 12/26/2015.
+ * @author Ruchita
  */
 public class SportsAuthenticator extends AbstractAccountAuthenticator {
-    // Simple constructor
+
     public SportsAuthenticator(Context context) {
         super(context);
     }

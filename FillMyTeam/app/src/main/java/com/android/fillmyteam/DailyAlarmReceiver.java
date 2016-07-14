@@ -41,7 +41,7 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
      * @param playingLocation
      * @param notifyBeforeInterval
      */
-    public void setAlarmTime(Context context, String playingTime, String playingLocation, int notifyBeforeInterval) {
+    public void setAlarmTime(Context context, String playingTime, String sport, String playingLocation, int notifyBeforeInterval) {
         mPlayingTime = playingTime;
         GregorianCalendar time = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
@@ -53,9 +53,7 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
         }
 
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-     /*   String[] timeStamps = Utility.retrieveHourMinute(playingTime);
-        int hour = Integer.parseInt(timeStamps[0]);
-        int minute = Integer.parseInt(timeStamps[1]);*/
+
         int hour = time.get(Calendar.HOUR);
         int minute = time.get(Calendar.MINUTE);
         switch (notifyBeforeInterval) {
@@ -85,7 +83,7 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
         calendar.set(Calendar.MINUTE, minute);
 
         Intent intent = new Intent(context, DailyAlarmReceiver.class);
-        intent.putExtra(Constants.TIME_PLACE, context.getString(R.string.player_time_location, playingLocation, mPlayingTime));
+        intent.putExtra(Constants.TIME_PLACE, context.getString(R.string.player_time_location, sport,playingLocation, mPlayingTime));
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), ALARM_FREQUENCY, alarmIntent);
     }

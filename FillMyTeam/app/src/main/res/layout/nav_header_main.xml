@@ -19,14 +19,6 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@android:drawable/sym_def_app_icon" />
 
-    <!--de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profileImageView"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@android:drawable/sym_def_app_icon"
-        app:civ_border_color="#FF000000" /-->
-
     <TextView
         android:id="@+id/userNameTextView"
         android:layout_width="match_parent"

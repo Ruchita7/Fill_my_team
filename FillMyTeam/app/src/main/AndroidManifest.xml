@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
 
-        <!-- service android:name=".NotificationService" / -->
+
         <receiver android:name=".DailyAlarmReceiver" />
 
         <service android:name=".ScheduleDailyAlarmService" />

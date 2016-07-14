@@ -137,7 +137,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Log.v(LOG_TAG, "on click clicked");
                     getFragmentManager().popBackStackImmediate();
                 }
             });
@@ -152,10 +151,8 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         isDateEarlier = false;
         mDateTextView.setText(Utility.getCurrentDate(gcalendar));
         String playingPlace = mUser.getPlayingPlace().replace(",,", ", <br/>");
-        //Log.v(LOG_TAG, playingPlace);
         String place = Html.fromHtml(playingPlace).toString();
-      //  Log.v(LOG_TAG, place);
-        mPlaceTextView.setText(place);
+       mPlaceTextView.setText(place);
         mInviteButton.setOnClickListener(this);
         mPlaceImageView.setOnClickListener(this);
         mPlayTimeEditText.setOnClickListener(this);
@@ -171,7 +168,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String sport = (String) parent.getItemAtPosition(position);
-        //Log.v(LOG_TAG, "selected item" + sport);
+
         mUser.setSport(sport);
     }
 
@@ -200,7 +197,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     GooglePlayServicesUtil
                             .getErrorDialog(e.getConnectionStatusCode(), getActivity(), 0);
                 } catch (GooglePlayServicesNotAvailableException e) {
-                    //     Toast.makeText(getActivity(), "Google Play Services is not available.",
                     Toast.makeText(getActivity(), getString(R.string.google_services_unavailable),
                             Toast.LENGTH_LONG)
                             .show();
@@ -227,7 +223,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     e.printStackTrace();
                 }
                 if (beginTime.before(currentDate)) {
-                    //Log.v(LOG_TAG, getString(R.string.invalid_date_chosen));
                     DialogFragment dialogFragment = new MessageDialogFragment();
                     dialogFragment.show(getFragmentManager(), getString(R.string.invalid_date_chosen));
                 } else {
@@ -374,7 +369,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 //Log.v(LOG_TAG, "location chosen" + location);
                 mPlaceTextView.setText(location);
                 LatLng latLng = place.getLatLng();
-              //  Log.v(LOG_TAG, "lat lng" + latLng.latitude + "," + latLng.longitude);
                 mUser.setPlayingPlace(location);
                 mUser.setLatitude(latLng.latitude);
                 mUser.setLongitude(latLng.longitude);

@@ -345,8 +345,6 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         if (!Utility.decodeEmail(mUser.getEmail()).equals(emailId)) {
             playerFoundCount++;
 
-          //  Log.d(LOG_TAG, getString(R.string.user_found_latlng, emailId, location.latitude, location.longitude));
-
             findUserByEmailId(emailId);
         }
     }
@@ -354,26 +352,23 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onKeyExited(String key) {
         playerFoundCount--;
-        //Log.d(LOG_TAG, getString(R.string.no_key_found, key));
+
     }
 
     @Override
     public void onGeoQueryReady() {
-        //Log.d(LOG_TAG, "All initial data has been loaded and events have been fired!");
-        if (playerFoundCount <= 0) {
+         if (playerFoundCount <= 0) {
             Toast.makeText(getActivity(), getString(R.string.no_player_found, mSport), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onGeoQueryError(FirebaseError error) {
-      //  Log.e(LOG_TAG, getString(R.string.geo_query_error) + error);
         Toast.makeText(getActivity(), getString(R.string.geo_query_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onKeyMoved(String key, GeoLocation location) {
-     //   Log.d(LOG_TAG, getString(R.string.user_moved, key, location.latitude, location.longitude));
         Toast.makeText(getActivity(), getString(R.string.user_moved), Toast.LENGTH_SHORT).show();
     }
 
@@ -481,18 +476,16 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onInfoWindowClick(final Marker marker) {
-        //Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
                 .make(frameLayout, getString(R.string.invite_user, marker.getTitle()), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.ok), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                      //  Log.v(LOG_TAG, "onClick of onInfoWindowClick");
+
                         LatLng markerLatLng = marker.getPosition();
                         PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
                         User user = playerParcelable.getUser();
 
-                       // Log.v(LOG_TAG, "User's mail::" + user.getEmail());
                         ((Callback) getActivity()).onInviteClick(mUser, user);
 
                     }
@@ -502,7 +495,6 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onInfoWindowLongClick(final Marker marker) {
-        //Log.e(LOG_TAG, "onInfoWindowClick");
         Snackbar snackbar = Snackbar
                 .make(frameLayout, getString(R.string.invite_user, marker.getTitle()), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.ok), new View.OnClickListener() {
@@ -511,7 +503,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                         LatLng markerLatLng = marker.getPosition();
                         PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
                         User user = playerParcelable.getUser();
-                     //   Log.v(LOG_TAG, "User's mail::" + user.getEmail());
+
                         ((Callback) getActivity()).onInviteClick(mUser, user);
                     }
                 });

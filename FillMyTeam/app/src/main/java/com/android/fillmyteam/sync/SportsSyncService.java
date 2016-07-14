@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * Created by dgnc on 12/26/2015.
+ * @author Ruchita
  */
 public class SportsSyncService extends Service {
     // Storage for an instance of the sync adapter

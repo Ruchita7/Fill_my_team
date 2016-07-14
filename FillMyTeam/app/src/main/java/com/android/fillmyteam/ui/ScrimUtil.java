@@ -27,7 +27,7 @@ import android.util.LruCache;
 import android.view.Gravity;
 
 /**
- * Utility methods for creating prettier gradient scrims.
+ * Utility methods for creating prettier gradient scrims. Source https://plus.google.com/+RomanNurik/posts/2QvHVFWrHZf
  */
 public class ScrimUtil {
 
@@ -40,9 +40,7 @@ public class ScrimUtil {
         return Math.max(min, Math.min(max, v));
     }
     /**
-     * Creates an approximated cubic gradient using a multi-stop linear gradient. See
-     * <a href="https://plus.google.com/+RomanNurik/posts/2QvHVFWrHZf">this post</a> for more
-     * details.
+     * Creates an approximated cubic gradient using a multi-stop linear gradient.
      */
     public static Drawable makeCubicGradientScrimDrawable(int baseColor, int numStops, int gravity) {
 

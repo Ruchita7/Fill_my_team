@@ -205,7 +205,6 @@ public class PlaceAutocompleteAdapter
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-                //Log.e(TAG, getContext().getString(R.string.place_autocomplete_log_error,status.toString()) + status.toString());
                 autocompletePredictions.release();
                 mErrorCode=status.getStatusCode();
                 return null;
@@ -213,7 +212,6 @@ public class PlaceAutocompleteAdapter
 
             if(autocompletePredictions.getCount()==0)
             {
-                //Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
                 mErrorCode=NO_RESULTS_FOUND;
             }
 

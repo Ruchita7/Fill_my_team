@@ -23,28 +23,12 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Upcoming matches widget
  */
-
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {
 
     public final String LOG_TAG = DetailWidgetRemoteViewsService.class.getSimpleName();
-   /* private static final String[] FORECAST_COLUMNS = {
-            WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
-            WeatherContract.WeatherEntry.COLUMN_DATE,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
-            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
-            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP
-    };*/
-    // these indices must match the projection
-  /*  static final int INDEX_WEATHER_ID = 0;
-    static final int INDEX_WEATHER_DATE = 1;
-    static final int INDEX_WEATHER_CONDITION_ID = 2;
-    static final int INDEX_WEATHER_DESC = 3;
-    static final int INDEX_WEATHER_MAX_TEMP = 4;
-    static final int INDEX_WEATHER_MIN_TEMP = 5;*/
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -63,19 +47,14 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 if (data != null) {
                     data.close();
                 }
-                // This method is called by the app hosting the widget (e.g., the launcher)
-                // However, our ContentProvider is not exported so it doesn't have access to the
-                // data. Therefore we need to clear (and finally restore) the calling identity so
-                // that calls use our process and permission
+
                 final long identityToken = Binder.clearCallingIdentity();
                 final Calendar c = Calendar.getInstance();
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
                 String currentDate = day + " " + Utility.months[month] + " " + year;
-                //      String email
-                //  String location = Utility.getPreferredLocation(DetailWidgetRemoteViewsService.this);
-                Uri weatherForLocationUri = SportsProvider.UpcomingMatches.CONTENT_URI;
+                 Uri weatherForLocationUri = SportsProvider.UpcomingMatches.CONTENT_URI;
                 String sortOrder= PlayerMatchesColumns.PLAYING_TIME+ Constants.ASC_ORDER;
                 data = getContentResolver().query(weatherForLocationUri,
                         null,
@@ -108,7 +87,6 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                         R.layout.widget_detail_list_item);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
                 String playerName = data.getString(MatchesFragment.COL_PLAYER_NAME);
-     //           String matchDate = data.getString(MatchesFragment.COL_PLAYING_DATE) + " " + data.getString(MatchesFragment.COL_PLAYING_TIME);
                 long matchDate=data.getLong(MatchesFragment.COL_PLAYING_TIME);
                 GregorianCalendar gregorianCalendar = new GregorianCalendar();
                 gregorianCalendar.setTimeInMillis(matchDate);
@@ -127,11 +105,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_time, displayTime);
 
                 final Intent fillInIntent = new Intent();
-               /* String locationSetting =
-                        Utility.getPreferredLocation(DetailWidgetRemoteViewsService.this);
-                Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                        locationSetting,
-                        dateInMillis);*/
+
                 Uri sportUri = SportsProvider.UpcomingMatches.CONTENT_URI;
                 fillInIntent.setData(sportUri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);

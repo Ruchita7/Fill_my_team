@@ -53,6 +53,7 @@
             android:layout_weight="2"
             android:fontFamily="sans-serif"
             android:lines="5"
+            android:paddingEnd="@dimen/list_margin"
             android:paddingStart="@dimen/list_margin" />
 
         <ImageView
@@ -60,8 +61,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_marker"
-            android:contentDescription="@string/location_image"/>
+            android:contentDescription="@string/location_image"
+            android:src="@drawable/ic_marker" />
 
     </LinearLayout>
 

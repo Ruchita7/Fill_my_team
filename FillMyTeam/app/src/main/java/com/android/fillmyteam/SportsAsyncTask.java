@@ -92,19 +92,15 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
            // Log.v(LOG_TAG, "Sports string: " + sportsData);
         } catch (UnknownHostException e) {
             Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
-            //Log.e(LOG_TAG, e.getMessage());
-            e.printStackTrace();
+             e.printStackTrace();
         } catch (MalformedURLException e) {
             Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
-           // Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
-          //  Log.e(LOG_TAG, e.getMessage());
-            e.printStackTrace();
+           e.printStackTrace();
         } catch (JSONException e) {
             Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
-           // Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {

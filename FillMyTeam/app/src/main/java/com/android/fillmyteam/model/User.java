@@ -3,7 +3,7 @@ package com.android.fillmyteam.model;
 import java.io.Serializable;
 
 /**
- * Created by dgnc on 5/14/2016.
+ * User class
  */
 public class User implements Serializable {
 
@@ -12,7 +12,6 @@ public class User implements Serializable {
     private double latitude;
     private double longitude;
     private String sport;
-    //  private boolean playingEveryDay;
     private String playingTime;
     private String photoUrl;
     private String playingPlace;
@@ -28,7 +27,7 @@ public class User implements Serializable {
         this.latitude = latitude;
         this.sport = sport;
         this.longitude = longitude;
-        //   this.playingEveryDay = playingEveryDay;
+
         this.playingTime = playingTime;
         this.photoUrl = photoUrl;
         this.playingPlace = playingPlace;
@@ -54,10 +53,7 @@ public class User implements Serializable {
         return sport;
     }
 
-    /*   public boolean isPlayingEveryDay() {
-           return playingEveryDay;
-       }
-   */
+
     public String getPlayingTime() {
         return playingTime;
     }
@@ -82,10 +78,7 @@ public class User implements Serializable {
         this.sport = sport;
     }
 
-    /* public void setPlayingEveryDay(boolean playingEveryDay) {
-         this.playingEveryDay = playingEveryDay;
-     }
- */
+
     public void setPlayingTime(String playingTime) {
         this.playingTime = playingTime;
     }

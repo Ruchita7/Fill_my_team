@@ -55,20 +55,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         checkBoxPreference.setOnPreferenceChangeListener(this);
     }
 
-/*    @Override
-    public void onResume() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sp.registerOnSharedPreferenceChangeListener(this);
-        super.onResume();
-    }
-
-    // Unregisters a shared preference change listener
-    @Override
-    public void onPause() {
-       SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sp.unregisterOnSharedPreferenceChangeListener(this);
-        super.onPause();
-    }*/
 
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
@@ -110,7 +96,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     int notifyBeforeInterval = Integer.parseInt(interval);
                     DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
                     alarmReceiver.cancelAlarm();
-                    alarmReceiver.setAlarmTime(getActivity(), mUser.getPlayingTime(), mUser.getPlayingPlace(), notifyBeforeInterval);
+                    alarmReceiver.setAlarmTime(getActivity(), mUser.getPlayingTime(), mUser.getSport(), mUser.getPlayingPlace(), notifyBeforeInterval);
                 }
             }
         }
@@ -137,20 +123,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     }
 
-/*
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.notify_frequency_key)))    {
-            String timeVal=sharedPreferences.getString(key,"");
-                        if(!timeVal.isEmpty())  {
-                            int notifyBeforeInterval = Integer.parseInt(timeVal);
-                            DailyAlarmReceiver alarmReceiver = new DailyAlarmReceiver();
-                            alarmReceiver.cancelAlarm();
-                            alarmReceiver.setAlarmTime(getActivity(), mUser.getPlayingTime(), mUser.getPlayingPlace(), notifyBeforeInterval);
-                        }
-        }
-    }*/
+
 }
 
 
-//}

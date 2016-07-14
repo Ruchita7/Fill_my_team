@@ -1,15 +1,14 @@
 package com.android.fillmyteam.model;
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Model class for keeping track of matches
  */
 public class Match {
     double latitude;
     double longitude;
     String playerEmail;
- //   String playingDate;
+
     String playingPlace;
-   // String playingTime;
     long playingTime;
     String playingWith;
     String sport;
@@ -37,14 +36,6 @@ public class Match {
     public void setPlayerEmail(String playerEmail) {
         this.playerEmail = playerEmail;
     }
-//
-//    public String getPlayingDate() {
-//        return playingDate;
-//    }
-//
-//    public void setPlayingDate(String playingDate) {
-//        this.playingDate = playingDate;
-//    }
 
     public String getPlayingPlace() {
         return playingPlace;

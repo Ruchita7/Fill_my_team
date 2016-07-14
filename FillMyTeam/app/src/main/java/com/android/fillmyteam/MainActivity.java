@@ -57,12 +57,7 @@ public class MainActivity extends AppCompatActivity
     boolean isDrawerLocked;
     View navigationHeader;
 
-    ImageView basketBallImageView;
-    ImageView tennisImageView;
-    ImageView footballImageView;
-    ImageView cricketImageView;
-    ImageView badmintonImageView;
-    ImageView baseballImageView;
+
     Activity mActivity;
     List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
 
@@ -82,9 +77,6 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
-
-            //Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
-
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.EMAIL, mUser.getEmail());
             editor.commit();
@@ -98,7 +90,7 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (getIntent().hasExtra(Constants.LOGGED_IN_USER_EMAIL)) {            //User is already logged in
             String email = getIntent().getStringExtra(Constants.LOGGED_IN_USER_EMAIL);
-        
+
             String userJson = sharedPreferences.getString(Constants.USER_INFO, "");
             if (userJson != null && !userJson.isEmpty()) {
                 try {
@@ -114,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
         editor.commit();
         SportsSyncAdapter.initializeSyncAdapter(this);
-        
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
@@ -175,13 +167,14 @@ public class MainActivity extends AppCompatActivity
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
+
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() < 1) {
             finish();
         }
-        
-       //Set correct title for back navigation
+
+        //Set correct title for back navigation
         if (getFragmentManager().getBackStackEntryCount() >= 2) {
             FragmentManager.BackStackEntry backStackFragment = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2);
 
@@ -189,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                 String className = backStackFragment.getName();
                 if (className != null) {
                     setTitle(className);
-                } 
+                }
             } else {
                 setTitle(getString(R.string.upcoming_matches));
             }
@@ -207,15 +200,12 @@ public class MainActivity extends AppCompatActivity
         FindPlaymatesFragment findPlaymatesFragment = (FindPlaymatesFragment) getFragmentManager().findFragmentByTag(FindPlaymatesFragment.class.getSimpleName());
         if (sportsInfoFragment != null && sportsInfoFragment.isVisible() || (findPlaymatesFragment != null && findPlaymatesFragment.isVisible())) {
             MatchesFragment fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-           getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
             setTitle(getString(R.string.upcoming_matches));
-        }
-
-
-        else {
+        } else {
             super.onBackPressed();
         }
-  }
+    }
 
 
     @Override

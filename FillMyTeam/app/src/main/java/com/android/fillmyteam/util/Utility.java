@@ -20,7 +20,8 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**
- * Created by dgnc on 5/8/2016.
+ * Utility class
+ * @author Ruchita
  */
 public class Utility {
     public static final String months[] = {
@@ -140,7 +141,7 @@ public class Utility {
             timeInterval = playingTime[1];
             timeStamps = playingTime[0].split(":");
             if (timeStamps.length == 2) {
-                if (timeInterval.equalsIgnoreCase("PM")) {
+                if (timeInterval.equalsIgnoreCase(Constants.PM)) {
                     timeStamps[0] = String.valueOf(Integer.parseInt(timeStamps[0]) + 12);
                 }
             }
@@ -170,16 +171,15 @@ public class Utility {
         }
         String playingTime;
         if (hourOfDay >= 12) {
-            //     playingTime = time + " PM";
             playingTime = time + Constants.PM;
 
         } else {
-            //    playingTime = time + " AM";
+
             playingTime = time + Constants.AM;
         }
 
         return playingTime;
-        //  mUser.setPlayingTime(playingTime);
+
     }
 
     public static int retrieveSportsIcon(String sportName) {
@@ -275,7 +275,6 @@ public class Utility {
     }
 
     public static int getNetworkState(Context context, String key) {
-        //String syncStatus = context.getString(R.string.pref_location_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(key, SportsSyncAdapter.STATUS_UNKNOWN);
 
@@ -286,8 +285,7 @@ public class Utility {
     static public
     @SportsSyncAdapter.MatchStatus
     int getNetworkState(Context context) {
-        //String syncStatus = context.getString(R.string.pref_location_status_key);
-        String syncStatus = context.getString(R.string.network_status_key);
+         String syncStatus = context.getString(R.string.network_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(syncStatus, SportsSyncAdapter.STATUS_UNKNOWN);
 

@@ -3,18 +3,8 @@ package com.android.fillmyteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.android.fillmyteam.SportsAsyncTask;
-import com.android.fillmyteam.data.SportsProvider;
-
-import net.simonvt.schematic.annotation.AutoIncrement;
-import net.simonvt.schematic.annotation.DataType;
-import net.simonvt.schematic.annotation.PrimaryKey;
-
-import static net.simonvt.schematic.annotation.DataType.Type.INTEGER;
-import static net.simonvt.schematic.annotation.DataType.Type.TEXT;
-
 /**
- * Created by dgnc on 5/22/2016.
+ * Sports Parcelable reference class
  */
 public class SportParcelable implements Parcelable {
 

@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginEnd="@dimen/image_margin"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"

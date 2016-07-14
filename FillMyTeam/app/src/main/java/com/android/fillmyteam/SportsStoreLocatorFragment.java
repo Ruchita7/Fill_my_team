@@ -275,14 +275,6 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         }
     };
 
-/*    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        Log.e(LOG_TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }*/
 
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager

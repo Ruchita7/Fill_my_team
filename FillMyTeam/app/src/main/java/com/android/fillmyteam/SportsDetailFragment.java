@@ -130,7 +130,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Log.v(LOG_TAG, "on click clicked");
+
                     getFragmentManager().popBackStackImmediate();
                 }
             });

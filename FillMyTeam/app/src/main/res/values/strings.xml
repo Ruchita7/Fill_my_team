@@ -27,8 +27,8 @@
     <string name="map_not_ready" translatable="false">Map is not ready yet</string>
     <string name="clear_map" translatable="false">Clear</string>
     <string name="reset_map" translatable="false">Reset</string>
-    <string name="player_time_location" translatable="false"><xliff:g id="location">%1$s</xliff:g> at <xliff:g id="time">%2$s</xliff:g></string>
-    <string name="playing_message" translatable="false">You are scheduled to play in <xliff:g id="place">%1$s</xliff:g> </string>
+    <string name="player_time_location" translatable="false"><xliff:g id="sport">%1$s</xliff:g> in <xliff:g id="location">%2$s</xliff:g> at <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="playing_message" translatable="false">You are scheduled to play  <xliff:g id="place">%1$s</xliff:g> </string>
     <string name="google_services_unavailable" translatable="false">Google Play Services is not available.</string>
     <string name="profile_updated" translatable="false">Profile has been updated successfully!</string>
     <string name="user_found_latlng" translatable="false">Key <xliff:g id="key">%1$s</xliff:g> entered the search area at <xliff:g id="lat">%2$f</xliff:g>,<xliff:g id="lng">%3$f</xliff:g></string>

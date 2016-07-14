@@ -146,7 +146,6 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     }
 
     public static  interface MatchAdapterOnClickHandler    {
-       // public void itemClick(double latitude, double longitude,ViewHolder viewHolder);
         public void itemClick(String location, ViewHolder viewHolder);
     }
 

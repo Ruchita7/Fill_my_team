@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * Created by dgnc on 12/26/2015.
+ * Sync service
  */
 public class SportAuthenticatorService extends Service {
 
@@ -13,7 +13,7 @@ public class SportAuthenticatorService extends Service {
     private SportsAuthenticator mAuthenticator;
     @Override
     public void onCreate() {
-        // Create a new authenticator object
+
         mAuthenticator = new SportsAuthenticator(this);
     }
     /*

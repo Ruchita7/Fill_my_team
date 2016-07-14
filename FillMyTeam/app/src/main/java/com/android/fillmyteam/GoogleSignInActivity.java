@@ -161,8 +161,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
-                                            //Log.e(LOG_TAG, "Error in updating child");
-                                                    Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
+                                                   Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
                                         } else {
                                             mGeoFire.setLocation(Utility.encodeEmail(mAuthenticatedUser.getEmail()), new GeoLocation(mAuthenticatedUser.getLatitude(), mAuthenticatedUser.getLongitude()));
                                         }
@@ -170,7 +169,6 @@ public class GoogleSignInActivity extends BaseActivity implements
                                 });
                             }
                             ref.removeEventListener(this);
-                            //Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
@@ -185,10 +183,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                        /*    Log.e(LOG_TAG,
-                                    getString(R.string.log_error_the_read_failed) +
-                                            databaseError.getMessage());*/
-                            Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
+                          Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -257,20 +252,18 @@ public class GoogleSignInActivity extends BaseActivity implements
      * @param acct
      */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        //Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressDialog();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                    //    Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            //Log.w(LOG_TAG, "signInWithCredential", task.getException());
+
                             Toast.makeText(GoogleSignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -327,7 +320,6 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        //Log.d(LOG_TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
@@ -399,7 +391,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        //Log.d(LOG_TAG, "onConnectionSuspended:" + i);
+
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 

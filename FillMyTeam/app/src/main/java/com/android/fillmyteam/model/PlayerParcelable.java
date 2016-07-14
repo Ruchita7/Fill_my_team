@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by dgnc on 5/15/2016.
+ * Parcelable class for storing user related details
  */
 public class PlayerParcelable implements Parcelable{
     User user;

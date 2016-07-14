@@ -5,27 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".SportsInfoFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <!--TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-    <Button android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/button"
-        android:text="Insert into DB" /-->
-
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sports_info_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/list_item_margin"
-
         android:layout_marginStart="@dimen/side_margin"
-
         android:layout_marginEnd="@dimen/side_margin"
         android:paddingTop="@dimen/list_item_margin"/>
 
