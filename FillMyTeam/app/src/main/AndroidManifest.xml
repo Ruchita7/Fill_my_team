@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.fillmyteam">
+    package="com.android.fillmyteam" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,7 +16,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -24,14 +24,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/geo_api_key" />
 
-        <activity android:name=".MainActivity">
-
-
+        <activity android:name=".MainActivity" >
         </activity>
         <activity
             android:name=".GoogleSignInActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,41 +37,39 @@
             </intent-filter>
         </activity>
 
-
         <receiver android:name=".DailyAlarmReceiver" />
 
         <service android:name=".ScheduleDailyAlarmService" />
 
         <provider
-            android:name="com.android.fillmyteam.provider.SportsProvider"
+            android:name=".provider.SportsProvider"
             android:authorities="com.android.fillmyteam.SportsProvider"
             android:exported="false" />
 
-        <service android:name=".sync.SportAuthenticatorService">
+        <service android:name=".sync.SportAuthenticatorService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-
-
         <service
             android:name=".sync.SportsSyncService"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
 
-
         <receiver
             android:name=".widget.MatchDetailWidgetProvider"
-            android:label="@string/title_widget_detail">
+            android:label="@string/title_widget_detail" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -86,8 +82,6 @@
         <service
             android:name=".widget.DetailWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-
     </application>
 
 </manifest>

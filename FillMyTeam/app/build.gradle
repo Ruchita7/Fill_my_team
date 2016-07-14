@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 23
@@ -8,7 +11,17 @@ android {
 
     def RootUrl = '"' + AppRootUrl + '"' ?: '"Define Firebase Url"';
     def YoutubeKey = '"' + YoutubeKey + '"' ?: '"Youtube Key"';
-    def MapKey='"'+GoogleMapsKey+'"'?:'"Geoogle Map Key"';
+    def MapKey = '"' + GoogleMapsKey + '"' ?: '"Geoogle Map Key"';
+
+
+    signingConfigs {
+        config {
+            storeFile  file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword  keystoreProperties['keyPassword']
+        }
+    }
 
     defaultConfig {
         applicationId "com.android.fillmyteam"
@@ -22,13 +35,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 
     buildTypes.each {
         it.buildConfigField 'String', 'APP_ROOT_URL', RootUrl
         it.buildConfigField 'String', 'YOUTUBE_KEY', YoutubeKey
-        it.buildConfigField 'String', 'MAPS_KEY',MapKey
+        it.buildConfigField 'String', 'MAPS_KEY', MapKey
     }
     configurations {
         compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
@@ -42,6 +56,8 @@ dependencies {
     apt 'net.simonvt.schematic:schematic-compiler:0.6.3'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile group: 'joda-time', name: 'joda-time', version: '2.3'
+    compile project(':library')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:design:23.4.0'
@@ -61,8 +77,6 @@ dependencies {
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
     compile 'com.google.firebase:firebase-auth:9.0.2'
     compile 'com.google.android.gms:play-services-auth:9.0.2'
-    compile group: 'joda-time', name: 'joda-time', version: '2.3'
-    compile project(':library')
 }
 
 apply plugin: 'com.google.gms.google-services'

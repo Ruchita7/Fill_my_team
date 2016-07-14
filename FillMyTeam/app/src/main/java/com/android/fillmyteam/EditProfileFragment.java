@@ -43,20 +43,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import retrofit.Retrofit;
 
 
 /**
  * Edit user profile fragment
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
 public class EditProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-   
-    
+
+
     private String mParam1;
     private String mParam2;
     Context mContext;
@@ -80,10 +83,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public static final String SAVED_USER = "saved_user";
     boolean mIsCalendarInvite;
 
-    private static final String TIME="T000000Z";
+    private static final String TIME = "T000000Z";
     private static final String FREQUENCY = "FREQ=DAILY;";
-    private static final String UNTIL="UNTIL=";
-    
+    private static final String UNTIL = "UNTIL=";
+
     public EditProfileFragment() {
         // Required empty public constructor
     }
@@ -125,7 +128,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         submitButton = (Button) view.findViewById(R.id.saveUserButton);
         submitButton.setOnClickListener(this);
 
-       
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mIsCalendarInvite = sharedPreferences.getBoolean(Constants.CALENDAR_EVENT_CREATION, false);
         mSportsListSpinner = (Spinner) view.findViewById(R.id.sports_list_spinner);
@@ -205,25 +208,33 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     }
                     int year = gcalendar.get(Calendar.YEAR);
 
-                    String[] timeStamps = Utility.retrieveHourMinute(mPlayingTime);
-                    Calendar beginTime = Calendar.getInstance();
-                    beginTime.set(year, month, date, Integer.parseInt(timeStamps[0]), Integer.parseInt(timeStamps[1]));
+
+                    Calendar beginTime =Calendar.getInstance();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.ENGLISH);
                     Calendar endTime = Calendar.getInstance();
-                    endTime.set(year, month, date, Integer.parseInt(timeStamps[0]) + 1, Integer.parseInt(timeStamps[1]));
+                    String timeToPlay = dateString+"-"+monthString+"-"+year+" "+mPlayingTime;
+                    try {
+                        beginTime.setTime(sdf.parse(timeToPlay));
+                        endTime.setTime(sdf.parse(timeToPlay));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    endTime.add(Calendar.HOUR,1);
 
                     String recurrent = FREQUENCY + UNTIL + (year + 1) + monthString + dateString + TIME;
                     Intent intent = new Intent(Intent.ACTION_INSERT)
                             .setData(CalendarContract.Events.CONTENT_URI)
                             .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
                             .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                            .putExtra(CalendarContract.Events.TITLE, "Recurrent event test")
+                            .putExtra(CalendarContract.Events.TITLE, getString(R.string.daily_reminder))
                             .putExtra(CalendarContract.Events.RRULE, recurrent)
-//                            .putExtra(CalendarContract.Events.DESCRIPTION, "Let's play " + mUser.getSport())
-                               .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.lets_play,mUser.getSport()))
-                           
+                            .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail())
+                            .putExtra(CalendarContract.Events.DESCRIPTION, getString(R.string.time_to_play, mUser.getSport()))
                             .putExtra(CalendarContract.Events.EVENT_LOCATION, mUser.getPlayingPlace())
                             .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
-           
+
                     startActivity(intent);
                 }
                 break;
@@ -238,7 +249,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
                     Intent intent = intentBuilder.build(getActivity());
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-                 
+
                     startActivityForResult(intent, REQUEST_PLACE_PICKER);
 
                 } catch (GooglePlayServicesRepairableException e) {

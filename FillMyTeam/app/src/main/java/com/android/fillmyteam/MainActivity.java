@@ -144,6 +144,25 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String userJson = sharedPreferences.getString(Constants.USER_INFO, null);
+        if (userJson != null) {
+            if (userJson != null && !userJson.isEmpty()) {
+                try {
+                    mUser = new ObjectMapper().readValue(userJson, User.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            updateNavigationViewHeader();
+        }
+        //Log.v(LOG_TAG, "mUser" + sharedPreferences.getString(Constants.USER_INFO, null));
+    }
+
     /**
      * Update navigation drawer header
      */

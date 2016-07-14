@@ -58,8 +58,8 @@ import butterknife.ButterKnife;
 
 /**
  * Invite players to play fragment
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
 public class InviteToPlayFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public static final String LOG_TAG = InviteToPlayFragment.class.getSimpleName();
@@ -82,7 +82,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     Spinner mSportsListSpinner;
     @BindView(R.id.invite_button)
     Button mInviteButton;
-    
+
     ArrayAdapter<CharSequence> mAdapter;
     static EditText mPlayTimeEditText;
     DatabaseReference matchRef;
@@ -152,7 +152,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         mDateTextView.setText(Utility.getCurrentDate(gcalendar));
         String playingPlace = mUser.getPlayingPlace().replace(",,", ", <br/>");
         String place = Html.fromHtml(playingPlace).toString();
-       mPlaceTextView.setText(place);
+        mPlaceTextView.setText(place);
         mInviteButton.setOnClickListener(this);
         mPlaceImageView.setOnClickListener(this);
         mPlayTimeEditText.setOnClickListener(this);
@@ -268,7 +268,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                                 .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail() + "," + mPlayWithUser.getEmail());
                         startActivity(intent);
                     }
-                        Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
                 }
                 break;
 

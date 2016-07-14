@@ -163,5 +163,7 @@
     <string name="watch_video" translatable="false">Watch video</string>
     <string name="sports_button" translatable="false"> <xliff:g id="sport">%1$s</xliff:g> players</string>
     <string name="location_image" translatable="false">Search maps for nearby playing locations</string>
+    <string name="time_to_play" translatable="false">Time to play <xliff:g id="sport">%1$s</xliff:g></string>
+    <string name="daily_reminder" translatable="false">Daily playing reminder</string>
 
 </resources>
