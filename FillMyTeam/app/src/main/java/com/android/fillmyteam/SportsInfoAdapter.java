@@ -98,14 +98,13 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
 
     public class InfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-      //  public final ImageView sportsImage;
+     
         public final AspectRatioImageViewer sportsImage;
         public final TextView sportsName;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
-          //  sportsImage = (ImageView) itemView.findViewById(R.id.sports_image);
-            sportsImage = (AspectRatioImageViewer) itemView.findViewById(R.id.sports_image);
+           sportsImage = (AspectRatioImageViewer) itemView.findViewById(R.id.sports_image);
             sportsName = (TextView) itemView.findViewById(R.id.sport_name);
             itemView.setOnClickListener(this);
         }
@@ -135,7 +134,7 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
     }
 
     public static  interface SportsAdapterOnClickHandler    {
-        public void itemClick(String id,InfoViewHolder viewHolder);
+        public void itemClick(String id, InfoViewHolder viewHolder);
     }
 
 }

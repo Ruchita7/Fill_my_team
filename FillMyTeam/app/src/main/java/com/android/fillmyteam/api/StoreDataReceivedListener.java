@@ -5,8 +5,10 @@ import com.android.fillmyteam.model.StoreLocatorParcelable;
 import java.util.List;
 
 /**
- * Created by dgnc on 5/30/2016.
+ * Interface for returning sports store
+ * @author Ruchita_Maheshwary
+ *
  */
 public interface StoreDataReceivedListener {
-    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables,int status);
+    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables, int status);
 }

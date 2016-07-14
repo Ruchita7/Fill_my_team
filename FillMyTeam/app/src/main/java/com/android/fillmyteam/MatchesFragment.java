@@ -36,7 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Upcoming matches fragment
+ * @author Ruchita_Maheshwary
+ *
  */
 public class MatchesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -57,7 +59,7 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     public static final int COL_PLAYER_EMAIL = 3;
     public static final int COL_PLAYING_TIME = 4;
     public static final int COL_PLAYING_PLACE = 5;
-    //  public  static final int COL_PLAYING_TIME = 6;
+   
     public static final int COL_PLAYER_NAME = 6;
     public static final int COL_PLAYING_SPORT = 7;
     public  static final String SELECTED_MATCH="selected_match";
@@ -75,9 +77,6 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
-         /*   mRef = FirebaseDatabase.getInstance()
-                    .getReferenceFromUrl(Constants.PLAYERS_MATCHES);
-            mRef = mRef.child("/" + Utility.encodeEmail(mUser.getEmail()));*/
         }
     }
 
@@ -87,7 +86,6 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
         TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.SportInfoFragment,
                 +0, 0);
         mChoiceMode = a.getInt(R.styleable.MatchFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
-        // mAutoSelectView = a.getBoolean(R.styleable.MatchFragment_autoSelectView, false);
         a.recycle();
     }
 
@@ -105,7 +103,6 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mUserMatches = new ArrayList<>();
         View view = inflater.inflate(R.layout.match_fragment, container, false);
-        //    mRef.addValueEventListener(this);
         TextView emptyTextView = (TextView) view.findViewById(R.id.recyclerview_empty_matches);
         SportsSyncAdapter.syncImmediately(getActivity());
 
@@ -138,9 +135,6 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         matchAdapter.swapCursor(data);
-      /*  if (mPosition != RecyclerView.NO_POSITION) {
-            mRecyclerView.smoothScrollToPosition(mPosition);
-        }*/
         updateEmptyView();
     }
 
@@ -206,38 +200,4 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
             }
         }
     }
-    /* @Override
-    public void onCancelled(DatabaseError databaseError) {
-
-    }
-
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        Map<String, Object> objectMap = (HashMap<String, Object>) dataSnapshot.getValue();
-        for (Object obj : objectMap.values()) {
-            if (obj instanceof Map) {
-                Map<String, Object> mapObj = (Map<String, Object>) obj;
-                Match match = new Match();
-                match.setPlayingTime((String) mapObj.get(Constants.PLAY_TIME));
-                match.setPlayingDate((String) mapObj.get(Constants.PLAY_DATE));
-                match.setPlayingPlace((String) mapObj.get(Constants.PLAYING_PLACE));
-                match.setLatitude((Double) mapObj.get(Constants.LATITUDE));
-                match.setLongitude((Double) mapObj.get(Constants.LONGITUDE));
-                match.setSport((String) mapObj.get(Constants.SPORT));
-                match.setPlayingWith((String) mapObj.get(Constants.PLAYING_WITH));
-                match.setPlayerEmail((String) mapObj.get(Constants.PLAYER_EMAIL));
-                mUserMatches.add(match);
-            }
-        }
-
-        matchAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mRef != null) {
-            mRef.removeEventListener(this);
-        }
-        super.onDestroy();
-    }*/
-}
+   }

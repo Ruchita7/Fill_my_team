@@ -123,6 +123,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_player, playerName);
                 views.setTextViewText(R.id.widget_place, playingLocation);
                 views.setImageViewResource(R.id.widget_sport_icon, Utility.retrieveSportsIcon(playingSport));
+                views.setTextViewText(R.id.widget_playing_sport,playingSport);
                 views.setTextViewText(R.id.widget_time, displayTime);
 
                 final Intent fillInIntent = new Intent();

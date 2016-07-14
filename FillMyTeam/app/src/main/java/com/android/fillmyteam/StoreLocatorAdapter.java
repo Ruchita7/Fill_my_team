@@ -16,7 +16,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by dgnc on 5/31/2016.
+ * Adapter for sports store
+ * @author Ruchita_Maheshwary
+ *
  */
 public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
 
@@ -43,7 +45,6 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
             //  super(v);
             addressTextView = (TextView) v.findViewById(R.id.address);
             nameTextView = (TextView) v.findViewById(R.id.name);
-           // locatorImageView = (ImageView) v.findViewById(R.id.locator_imageView);
             storeImageView=(ImageView) v.findViewById(R.id.store_image_view);
         }
     }
@@ -59,9 +60,7 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
             convertView = inflater.inflate(R.layout.store_locator_list_item, parent, false);
             viewHolder.addressTextView = (TextView) convertView.findViewById(R.id.address);
             viewHolder.nameTextView = (TextView) convertView.findViewById(R.id.name);
-        //    viewHolder.locatorImageView = (ImageView) convertView.findViewById(R.id.locator_imageView);
             viewHolder.storeImageView=(ImageView) convertView.findViewById(R.id.store_image_view);
-            // viewHolder.home = (TextView) convertView.findViewById(R.id.tvHome);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -72,7 +71,6 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
         Uri.Builder builder = Uri.parse(Constants.PHOTO_URL).buildUpon().
                 appendQueryParameter(Constants.MAX_WIDTH, Constants.WIDTH_VALUE).
                 appendQueryParameter(Constants.REFERENCE_ID, storeLocatorParcelable.getPhotoReference()).
-              //  appendQueryParameter(Constants.KEY, mContext.getString(R.string.map_key));
                       appendQueryParameter(Constants.KEY,Constants.GOOGLE_MAPS_KEY);
         String photoUrl = builder.build().toString();
         if(photoUrl!=null &&!photoUrl.isEmpty())
@@ -80,35 +78,9 @@ public class StoreLocatorAdapter extends ArrayAdapter<StoreLocatorParcelable>  {
             viewHolder.storeImageView.setVisibility(View.VISIBLE);
             Picasso.with(mContext).load(photoUrl).into(viewHolder.storeImageView);
         }
-       /* final double latitude = storeLocatorParcelable.getLatitude();
-        final double longitude = storeLocatorParcelable.getLongitude();
-        final String storeName = storeLocatorParcelable.getName();
-        final String address = storeLocatorParcelable.getAddress();
-*/
-      /*  viewHolder.locatorImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClick(v, latitude, longitude, storeName, address);
-            }
-        });*/
-        return convertView;
+         return convertView;
     }
 
 
-   /* public void onItemClick(View view, double latitude, double longitude, String storeName, String address) {
-
-        //launch map
-
-
-        //directions
-        String geoLocation = "google.navigation:" + "q=" + storeName + address;
-
-        Uri geoIntentUri = Uri.parse(geoLocation);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(mContext.getPackageManager()) != null) {
-            mContext.startActivity(mapIntent);
-        }
-    }*/
-
+   
 }

@@ -5,13 +5,14 @@ import android.os.Parcel;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.widget.AbsListView;
 import android.widget.Checkable;
 
 /**
- * Created by dgnc on 2/26/2016.
+ * Handle recycler view item selection
+ * @author Ruchita_Maheshwary
+ *
  */
 public class ItemChoiceManager {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -64,7 +65,7 @@ public class ItemChoiceManager {
         int position = vh.getAdapterPosition();
 
         if (position == RecyclerView.NO_POSITION) {
-            Log.d(LOG_TAG, "Unable to Set Item State");
+            //Log.d(LOG_TAG, "Unable to Set Item State");
             return;
         }
 

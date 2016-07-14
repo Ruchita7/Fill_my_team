@@ -25,7 +25,8 @@
             android:layout_gravity="center"
             android:duplicateParentState="true"
             android:src="@drawable/ic_search_white"
-            android:stateListAnimator="@drawable/fab_raise"/>
+            android:stateListAnimator="@drawable/fab_raise"
+            android:contentDescription="@string/search_button"/>
     </FrameLayout>
 
 </merge>

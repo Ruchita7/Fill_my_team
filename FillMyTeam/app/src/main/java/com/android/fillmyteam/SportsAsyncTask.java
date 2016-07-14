@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.android.fillmyteam.data.SportsColumns;
@@ -61,7 +60,7 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
         try {
             URL url = new URL(builtUri.toString());
             mSportParcelables = new ArrayList<>();
-            Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+            //Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
             sportsKey = mContext.getString(R.string.sports_detail);
 
@@ -90,22 +89,22 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
             }
             sportsData = buffer.toString();
             retrieveSports(sportsData);
-            Log.v(LOG_TAG, "Sports string: " + sportsData);
+           // Log.v(LOG_TAG, "Sports string: " + sportsData);
         } catch (UnknownHostException e) {
             Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
-            Log.e(LOG_TAG, e.getMessage());
+            //Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (MalformedURLException e) {
             Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
-            Log.e(LOG_TAG, e.getMessage());
+           // Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             Utility.setNetworkState(mContext, SPORTS_STATUS_SERVER_DOWN, sportsKey);
-            Log.e(LOG_TAG, e.getMessage());
+          //  Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (JSONException e) {
             Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_SERVER_INVALID, sportsKey);
-            Log.e(LOG_TAG, e.getMessage(), e);
+           // Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {
@@ -115,7 +114,7 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
+                    //Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
         }
@@ -137,19 +136,10 @@ public class SportsAsyncTask extends AsyncTask<Void, Void, Void> {
         try {
             JSONObject sportsJson = new JSONObject(sportsData);
             if (!sportsJson.has(Constants.SPORT)) {
-                /*int errorCode = sportsJson.getInt(Constants.SPORT);
-
-                switch (errorCode) {
-                    case HttpURLConnection.HTTP_OK:
-                        break;
-                    case HttpURLConnection.HTTP_NOT_FOUND:*/
+             
                 Utility.setNetworkState(mContext, SPORTS_INFO_STATUS_INVALID, sportsKey);
                 return;
-               /*     default:
-                        Utility.setNetworkState(mContext, SportsSyncAdapter.STATUS_SERVER_DOWN, sportsKey);
-                        return;
-                }*/
-            }
+                        }
             JSONArray sportsJsonArray = sportsJson.getJSONObject(Constants.SPORT).getJSONArray(Constants.LIST);
             for (int i = 0; i < sportsJsonArray.length(); i++) {
                 jsonObject = sportsJsonArray.getJSONObject(i);

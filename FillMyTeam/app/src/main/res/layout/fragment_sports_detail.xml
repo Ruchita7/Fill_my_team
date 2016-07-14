@@ -111,7 +111,7 @@
                     android:layout_width="@dimen/image_thumbnail_size"
                     android:layout_height="@dimen/image_thumbnail_size"
                     android:layout_gravity="center"
-
+                    android:contentDescription="@string/watch_video"
                     />
 
                 <ImageView
@@ -120,7 +120,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_vertical"
                     android:visibility="invisible"
-                    android:src="@drawable/ic_video_play" />
+                    android:src="@drawable/ic_video_play"
+                    android:contentDescription="@string/watch_video"/>
             </FrameLayout>
 
             <android.support.v7.widget.Space

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -67,32 +66,17 @@ public class PlaceAutocompleteAdapter
     /**
      * The bounds used for Places Geo Data autocomplete API requests.
      */
-    //  private LatLngBounds mBounds;
-
+   
     /**
      * The autocomplete filter used to restrict queries to a specific set of place types.
      */
     private AutocompleteFilter mPlaceFilter;
 
-   // public static final int API_NOT_CONNECTED
-
-    /**
-     * Initializes with a resource for text rows and autocomplete query bounds.
-     *
-     * @see ArrayAdapter#ArrayAdapter(Context, int)
-     */
- /*   public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-            LatLngBounds bounds, AutocompleteFilter filter) {
-        super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
-        mGoogleApiClient = googleApiClient;
-        mBounds = bounds;
-        mPlaceFilter = filter;
-    }     */
-
+   
+ 
     SportsStoreLocatorFragment mFragment;
     int mErrorCode;
-  //  TextView mEmptyTextView;
-
+ 
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
                                     AutocompleteFilter filter,SportsStoreLocatorFragment fragment) {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
@@ -101,13 +85,7 @@ public class PlaceAutocompleteAdapter
         mPlaceFilter = filter;
     }
 
-    /**
-     * Sets the bounds for all subsequent queries.
-     */
- /*   public void setBounds(LatLngBounds bounds) {
-        mBounds = bounds;
-    }*/
-
+ 
     /**
      * Returns the number of results received in the last autocomplete query.
      */
@@ -210,14 +188,10 @@ public class PlaceAutocompleteAdapter
      */
     private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient.isConnected()) {
-            Log.i(TAG, "Starting autocomplete query for: " + constraint);
+            //Log.i(TAG, "Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
             // contain the results when the query completes.
-          /*  PendingResult<AutocompletePredictionBuffer> results =
-                    Places.GeoDataApi
-                            .getAutocompletePredictions(mGoogleApiClient, constraint.toString(),
-                                    mBounds, mPlaceFilter);*/
             PendingResult<AutocompletePredictionBuffer> results =
                     Places.GeoDataApi
                             .getAutocompletePredictions(mGoogleApiClient, constraint.toString(),
@@ -231,23 +205,15 @@ public class PlaceAutocompleteAdapter
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-
-               // Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
-            /*    Toast.makeText(getContext(), getContext().getString(R.string.place_autocomplete_error, status.toString()),
-                        Toast.LENGTH_SHORT).show();*/
-           //     Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
-                Log.e(TAG, getContext().getString(R.string.place_autocomplete_log_error,status.toString()) + status.toString());
+                //Log.e(TAG, getContext().getString(R.string.place_autocomplete_log_error,status.toString()) + status.toString());
                 autocompletePredictions.release();
                 mErrorCode=status.getStatusCode();
-               // updateEmptyView(status.getStatusCode());
                 return null;
             }
 
-          //  Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount() + " predictions.");
             if(autocompletePredictions.getCount()==0)
             {
-             //  updateEmptyView(NO_RESULTS_FOUND);
-                Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
+                //Log.i(TAG, getContext().getString(R.string.place_autocomplete_no_result, autocompletePredictions.getCount()));
                 mErrorCode=NO_RESULTS_FOUND;
             }
 
@@ -255,40 +221,10 @@ public class PlaceAutocompleteAdapter
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);
         }
-        Log.e(TAG, "Google API client is not connected for autocomplete query.");
+        //Log.e(TAG, "Google API client is not connected for autocomplete query.");
         return null;
     }
 
 
-  /*  public void updateEmptyView(int statusCode) {
-        // int statusCode = status.getStatusCode();
-        // TextView textView = (TextView) getView().findViewById(R.id.listview_store_empty);
-        mEmptyTextView.setVisibility(View.VISIBLE);
-    //    mListView.setVisibility(View.INVISIBLE);
-        int message = R.string.store_data_unavailable;
-        switch (statusCode) {
-            case CommonStatusCodes.API_NOT_CONNECTED:
-                message = R.string.api_not_connected;
-                break;
-            case CommonStatusCodes.CANCELED:
-            case CommonStatusCodes.ERROR:
-                message = R.string.store_error;
-                break;
 
-            case CommonStatusCodes.NETWORK_ERROR:
-                message = R.string.store_data_unavailable;
-                break;
-            case CommonStatusCodes.TIMEOUT:
-                message = R.string.timeout;
-                break;
-
-            case NO_RESULTS_FOUND :
-                message=R.string.no_stores_found;
-                break;
-            default:
-                message = R.string.store_data_unavailable;
-        }
-        mEmptyTextView.setText(message);
-    }
-*/
 }

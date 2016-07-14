@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
 
-            Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
+            //Log.v(LOG_TAG, mUser.getEmail() + "," + mUser.getName() + "," + mUser.getPhotoUrl());
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.EMAIL, mUser.getEmail());
@@ -99,21 +98,7 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (getIntent().hasExtra(Constants.LOGGED_IN_USER_EMAIL)) {            //User is already logged in
             String email = getIntent().getStringExtra(Constants.LOGGED_IN_USER_EMAIL);
-          /*  final DatabaseReference ref = FirebaseDatabase.getInstance()
-                    .getReferenceFromUrl((Constants.APP_URL_USERS) + "/" + Utility.encodeEmail(email));
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    mUser = dataSnapshot.getValue(User.class);
-                    updateNavigationViewHeader();
-                    ref.removeEventListener(this);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });*/
+        
             String userJson = sharedPreferences.getString(Constants.USER_INFO, "");
             if (userJson != null && !userJson.isEmpty()) {
                 try {
@@ -124,22 +109,12 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
         editor.commit();
         SportsSyncAdapter.initializeSyncAdapter(this);
-        //for tablet checking
-       /* else {
-            mUser = new User();
-            mUser.setEmail("ruchita.maheshwary@gmail.com");
-            mUser.setLatitude(28.6952431);
-            mUser.setLongitude(77.1134005);
-            mUser.setName("ruchita maheshwary");
-            mUser.setPhotoUrl("https://lh6.googleusercontent.com/-32tmODRPtTw/AAAAAAAAAAI/AAAAAAAABEA/dISvm7M_sKE/s96-c/photo.jpg");
-            mUser.setPlayingPlace("D-105, Tarun Enclave, Pitampura, New Delhi, Delhi 110034, India");
-            mUser.setPlayingTime("4:30 PM");
-            mUser.setSport("Volleyball");
-        }*/
+        
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
@@ -149,12 +124,10 @@ public class MainActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
-                // getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                //    getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                 Utility.hideSoftKeyboard(mActivity);
             }
@@ -202,75 +175,13 @@ public class MainActivity extends AppCompatActivity
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
-
-    /* private boolean onBackPressed(FragmentManager fm) {
-         if (fm != null) {
-             if (fm.getBackStackEntryCount() > 0) {
-                 fm.popBackStack();
-                 return true;
-             }
-
-          //   List<Fragment> fragList = fm.getFragments();
-             if (fragList != null && fragList.size() > 0) {
-                 for (WeakReference<Fragment>  frag : fragList) {
-                     Fragment fragment = frag.get();
-                     if (fragment == null) {
-                         continue;
-                     }
-                     if (fragment.isVisible()) {
-                         if (onBackPressed(fragment.getChildFragmentManager())) {
-                             return true;
-                         }
-                     }
-                 }
-             }
-         }
-         return false;
-     }
-
-
-     @Override
-     public void onAttachFragment (Fragment fragment) {
-         fragList.add(new WeakReference(fragment));
-     }
-
-     public List<Fragment> getActiveFragments() {
-         ArrayList<Fragment> ret = new ArrayList<Fragment>();
-         for(WeakReference<Fragment> ref : fragList) {
-             Fragment f = ref.get();
-             if(f != null) {
-                 if(f.isVisible()) {
-                     ret.add(f);
-                 }
-             }
-         }
-         return ret;
-     }*/
     @Override
     public void onBackPressed() {
-      /*  DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-
-            FragmentManager.BackStackEntry backStackEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1);
-            String tag = backStackEntry.getName();
-            Fragment fragment = getFragmentManager().findFragmentByTag(tag);
-            if (fragment != null && fragment instanceof MatchesFragment) {
-                finish();
-            } else {
-                try {
-                    getFragmentManager().popBackStack();
-                   // super.onBackPressed();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-
-                }
-            }
-        }*/
         if (getFragmentManager().getBackStackEntryCount() < 1) {
             finish();
         }
+        
+       //Set correct title for back navigation
         if (getFragmentManager().getBackStackEntryCount() >= 2) {
             FragmentManager.BackStackEntry backStackFragment = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 2);
 
@@ -278,9 +189,7 @@ public class MainActivity extends AppCompatActivity
                 String className = backStackFragment.getName();
                 if (className != null) {
                     setTitle(className);
-                } /*else {
-                    setTitle(getString(R.string.upcoming_matches));
-                }*/
+                } 
             } else {
                 setTitle(getString(R.string.upcoming_matches));
             }
@@ -293,93 +202,20 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-
+        //Redirect to upcoming matches fragment from learn to play and find playmates fragment
         SportsInfoFragment sportsInfoFragment = (SportsInfoFragment) getFragmentManager().findFragmentByTag(SportsInfoFragment.class.getSimpleName());
         FindPlaymatesFragment findPlaymatesFragment = (FindPlaymatesFragment) getFragmentManager().findFragmentByTag(FindPlaymatesFragment.class.getSimpleName());
         if (sportsInfoFragment != null && sportsInfoFragment.isVisible() || (findPlaymatesFragment != null && findPlaymatesFragment.isVisible())) {
-            // finish();
-            //  return;
             MatchesFragment fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-            //getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
+           getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName()).commit();
             setTitle(getString(R.string.upcoming_matches));
         }
 
 
-     /*   if (findPlaymatesFragment != null && findPlaymatesFragment.isVisible()) {
-            // finish();
-            //  return;
-            MatchesFragment  fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-            getFragmentManager().beginTransaction().replace(R.id.content_frame,fragment,fragment.getClass().getSimpleName()).commit();
-        }
-*/
         else {
             super.onBackPressed();
         }
-        // getFragmentManager().popBackStack();
-                  /*  if (fragment != null && fragment instanceof MatchesFragment) {
-                        finish();
-                    } else {
-                        MatchesFragment matchesFragment = MatchesFragment.newInstance(mUser);
-                        getFragmentManager().beginTransaction().replace(R.id.content_frame, matchesFragment).addToBackStack(matchesFragment.getClass().getSimpleName()).commit();
-                    }*/
-                   /* FragmentManager.BackStackEntry backStackEntry = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1);
-            if(backStackEntry.getName())
-            finish();*/
-       /* FragmentManager fm = getFragmentManager();
-        if (onBackPressed(fm)) {
-            return;
-        }
-        super.onBackPressed();*/
-       /* String tag = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName();
-
-        if( null ==getFragmentManager().findFragmentByTag(tag) || !getFragmentManager().findFragmentByTag(tag).getChildFragmentManager().popBackStackImmediate()) {
-            super.onBackPressed();
-        }*/
-    }
-
-  /*  @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-
-            // Else, nothing in the direct fragment back stack
-            else{
-                // Let super handle the back press
-                super.onBackPressed();
-            }
-        }
-    */
-    /* else {
-            int backStackCount = getFragmentManager().getBackStackEntryCount();
-            if (backStackCount > 0) {
-                getFragmentManager().popBackStackImmediate();
-               // super.onBackPressed();
-            }
-*/
-  /*      FragmentManager fragmentManager = getFragmentManager();
-        Log.v(LOG_TAG,"count"+fragmentManager.getBackStackEntryCount());
-        int backStackCount = fragmentManager.getBackStackEntryCount();
-
-        if(backStackCount==0)
-        {
-          //  finish();
-
-            finish();
-            return;
-        }
-        */
-        /* Fragment fragment = (MatchesFragment) MatchesFragment.newInstance(mUser);
-            String tag=fragment.getClass().getSimpleName();
-            fragmentManager.beginTransaction().replace(R.id.content_frame,fragment,tag).addToBackStack(tag).commit();*/
-
-        /*FragmentManager.BackStackEntry backStackFragment = getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount());
-        if (backStackFragment == null || backStackFragment instanceof MatchesFragment) {
-            finish();
-        }
-    }*/
+  }
 
 
     @Override
@@ -388,8 +224,6 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.share_action) {
             return true;
         }
@@ -413,7 +247,6 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
-        // rightCenterButton.
         switch (id) {
 
             case R.id.learn_play:
@@ -443,8 +276,6 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             ft.replace(R.id.content_frame, fragment, fragment.getClass().getSimpleName())
-                    // .addToBackStack(null)
-                    //   .addToBackStack(fragment.getClass().getSimpleName())
                     .addToBackStack(Utility.getTitle(this, fragment.getClass().getSimpleName()))
                     .commit();
 
@@ -483,22 +314,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-
-    /**
-     * Called when SportsInfoFragment list item is clicked. This will then replace the fragment with SportsDetailFragment
-     * @param sportId
-     * @param vh
-     */
-   /* @Override
-    public void onItemSelected(String sportId, SportsInfoAdapter.InfoViewHolder vh) {
-
-        SportsDetailFragment fragment = SportsDetailFragment.newInstance(sportId);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, fragment)
-
-                .commit();
-    }
-*/
 
     /**
      * Called when user needs to be invited to play from FindPlaymatesFragment

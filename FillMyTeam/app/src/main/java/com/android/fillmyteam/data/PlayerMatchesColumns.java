@@ -9,7 +9,9 @@ import static net.simonvt.schematic.annotation.DataType.Type.REAL;
 import static net.simonvt.schematic.annotation.DataType.Type.TEXT;
 
 /**
- * Created by dgnc on 6/21/2016.
+ * Interface for creating playing time related table
+ * @author Ruchita_Maheshwary
+ *
  */
 public interface PlayerMatchesColumns {
 
@@ -30,19 +32,11 @@ public interface PlayerMatchesColumns {
     String PLAYER_EMAIL="player_email";
 
 
-/*    @DataType(TEXT)
-    String PLAYING_DATE="playing_date";*/
-
     @DataType(INTEGER)
     String PLAYING_TIME="playing_time";
 
     @DataType(TEXT)
     String PLAYING_PLACE="playing_place";
-
-
-/*    @DataType(TEXT)
-    String PLAYING_TIME="playing_time";*/
-
 
 
     @DataType(TEXT)

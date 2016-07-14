@@ -7,18 +7,24 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.android.fillmyteam.util.Constants;
-import com.android.fillmyteam.util.Utility;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
- * Created by dgnc on 6/5/2016.
+ * Class for creating inexact repeating alarm at players playing time
+ *
+ * @author Ruchita_Maheshwary
  */
 public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
 
     private AlarmManager alarmManager;
     private PendingIntent alarmIntent;
     String mPlayingTime;
+    public static final int ALARM_FREQUENCY = 24 * 1000 * 60 * 60;
 
     public void cancelAlarm() {
         if (alarmManager != null) {
@@ -27,30 +33,49 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
 
     }
 
+    /**
+     * set alarm to notify user about his playing time
+     *
+     * @param context
+     * @param playingTime
+     * @param playingLocation
+     * @param notifyBeforeInterval
+     */
     public void setAlarmTime(Context context, String playingTime, String playingLocation, int notifyBeforeInterval) {
         mPlayingTime = playingTime;
+        GregorianCalendar time = new GregorianCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+
+        try {
+            time.setTime(sdf.parse(playingTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        String[] timeStamps = Utility.retrieveHourMinute(playingTime);
+     /*   String[] timeStamps = Utility.retrieveHourMinute(playingTime);
         int hour = Integer.parseInt(timeStamps[0]);
-        int minute = Integer.parseInt(timeStamps[1]);
+        int minute = Integer.parseInt(timeStamps[1]);*/
+        int hour = time.get(Calendar.HOUR);
+        int minute = time.get(Calendar.MINUTE);
         switch (notifyBeforeInterval) {
-            case 15:
-                if (minute < 15) {
+            case Constants.FIFTEEN_MINUTES:
+                if (minute < Constants.FIFTEEN_MINUTES) {
                     hour = hour - 1;
                 }
-                minute = minute - 15;
+                minute = minute - Constants.FIFTEEN_MINUTES;
                 break;
-            case 30:
-                if (minute < 30) {
-                    hour = hour - 1;
+            case Constants.THIRTY_MINUTES:
+                if (minute < Constants.THIRTY_MINUTES) {
+                    hour = hour - Constants.ONE_HOUR;
                 }
-                minute = minute - 30;
+                minute = minute - Constants.THIRTY_MINUTES;
                 break;
-            case 60:
-                hour = hour - 1;
+            case Constants.SIXTY_MINUTES:
+                hour = hour - Constants.ONE_HOUR;
                 break;
-            case 120:
-                hour = hour - 2;
+            case Constants.ONE_TWENTY_MINUTES:
+                hour = hour - Constants.TWO_HOUR;
                 break;
         }
 
@@ -58,20 +83,17 @@ public class DailyAlarmReceiver extends WakefulBroadcastReceiver {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minute);
-        //    calendar.add(Calendar.MINUTE,-30);
+
         Intent intent = new Intent(context, DailyAlarmReceiver.class);
-        //  intent.putExtra(Constants.TIME_PLACE,playingLocation+" at "+mPlayingTime);
         intent.putExtra(Constants.TIME_PLACE, context.getString(R.string.player_time_location, playingLocation, mPlayingTime));
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), (24 * 1000 * 60 * 60), alarmIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), ALARM_FREQUENCY, alarmIntent);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //  String timePlace = intent.getStringExtra("time_place");
         String timePlace = intent.getStringExtra(Constants.TIME_PLACE);
         Intent alarmIntent = new Intent(context, ScheduleDailyAlarmService.class);
-        // alarmIntent.putExtra("MSG", "You are scheduled to play in "+timePlace);
         alarmIntent.putExtra(Constants.MESSAGE, context.getString(R.string.playing_message, timePlace));
         startWakefulService(context, alarmIntent);
     }

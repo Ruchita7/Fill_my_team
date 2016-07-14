@@ -10,7 +10,9 @@ import android.support.v4.app.NotificationCompat;
 import com.android.fillmyteam.util.Constants;
 
 /**
- * Created by dgnc on 6/5/2016.
+ * Service to notify user about upcoming matches
+ * @author Ruchita_Maheshwary
+ *
  */
 public class ScheduleDailyAlarmService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
@@ -21,9 +23,7 @@ public class ScheduleDailyAlarmService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-      //  if (intent.hasExtra("MSG")) {
         if (intent.hasExtra(Constants.MESSAGE)) {
-        //    String msg = intent.getStringExtra("MSG");
             String msg = intent.getStringExtra(Constants.MESSAGE);
             sendNotification(msg);
         }
@@ -40,7 +40,6 @@ public class ScheduleDailyAlarmService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                  //      .setContentTitle("match scheduled")
                         .setContentTitle(Constants.MATCH_SCHEDULED)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(message))

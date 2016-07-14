@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +57,9 @@ import butterknife.ButterKnife;
 
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Invite players to play fragment
+ * @author Ruchita_Maheshwary
+ *
  */
 public class InviteToPlayFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public static final String LOG_TAG = InviteToPlayFragment.class.getSimpleName();
@@ -81,13 +82,10 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     Spinner mSportsListSpinner;
     @BindView(R.id.invite_button)
     Button mInviteButton;
-    /* @BindView(R.id.cancel_button)
-     Button mCancelButton;*/
+    
     ArrayAdapter<CharSequence> mAdapter;
-    //   @BindView(R.id.invite_time)
     static EditText mPlayTimeEditText;
     DatabaseReference matchRef;
-    //   @BindView(R.id.invite_date)
     static TextView mDateTextView;
     static boolean isDateEarlier;
 
@@ -135,11 +133,11 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.invite_toolbar_layout);
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.ic_action_ic_arrow_back);
-            //finishCreatingMenu(toolbarView.getMenu());
+            toolbar.setNavigationContentDescription(getString(R.string.back_button));
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(LOG_TAG, "on click clicked");
+                    //Log.v(LOG_TAG, "on click clicked");
                     getFragmentManager().popBackStackImmediate();
                 }
             });
@@ -154,10 +152,9 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         isDateEarlier = false;
         mDateTextView.setText(Utility.getCurrentDate(gcalendar));
         String playingPlace = mUser.getPlayingPlace().replace(",,", ", <br/>");
-        Log.v(LOG_TAG, playingPlace);
+        //Log.v(LOG_TAG, playingPlace);
         String place = Html.fromHtml(playingPlace).toString();
-        Log.v(LOG_TAG, place);
-        // String place = Html.fromHtml(playingPlace).toString();
+      //  Log.v(LOG_TAG, place);
         mPlaceTextView.setText(place);
         mInviteButton.setOnClickListener(this);
         mPlaceImageView.setOnClickListener(this);
@@ -174,7 +171,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String sport = (String) parent.getItemAtPosition(position);
-        Log.v(LOG_TAG, "selected item" + sport);
+        //Log.v(LOG_TAG, "selected item" + sport);
         mUser.setSport(sport);
     }
 
@@ -230,11 +227,9 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     e.printStackTrace();
                 }
                 if (beginTime.before(currentDate)) {
-                    Log.v(LOG_TAG, getString(R.string.invalid_date_chosen));
+                    //Log.v(LOG_TAG, getString(R.string.invalid_date_chosen));
                     DialogFragment dialogFragment = new MessageDialogFragment();
                     dialogFragment.show(getFragmentManager(), getString(R.string.invalid_date_chosen));
-                    //Toast.makeText(getActivity(),"Time has lapse",Toast.LENGTH_LONG).show();
-                    // new MessageDialogFragment().getDialog().show();
                 } else {
                     endTime.add(Calendar.HOUR, 1);
 
@@ -278,21 +273,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                                 .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail() + "," + mPlayWithUser.getEmail());
                         startActivity(intent);
                     }
-              /*  ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
-                ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
-                ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());
-                ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
-                ref.child(Constants.SPORT).setValue(mUser.getSport());
-                ref.child(Constants.PLAYING_WITH).setValue(mPlayWithUser.getName());
-
-
-                ref.child(Constants.PLAY_TIME).setValue(mUser.getPlayingTime());
-                ref.child(Constants.PLAYING_PLACE).setValue(mUser.getPlayingPlace());
-                ref.child(Constants.LATITUDE).setValue(mUser.getLatitude());
-                ref.child(Constants.LONGITUDE).setValue(mUser.getLongitude());
-                ref.child(Constants.SPORT).setValue(mUser.getSport());
-                ref.child(Constants.PLAYING_WITH).setValue(mUser.getName());*/
-                    Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -314,7 +295,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //  matchRef.removeEventListener(this);
     }
 
     public static class TimePickerFragment extends DialogFragment
@@ -333,11 +313,6 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-          /*  boolean isTimeBefore = Utility.compareTime(hourOfDay,minute);
-            if(isTimeBefore)
-            {
-                Toast.makeText(getActivity(),"Time is earlier",Toast.LENGTH_SHORT).show();
-            }*/
             String playingTime = Utility.updateTime(hourOfDay, minute);
             mPlayTimeEditText.setText(playingTime);
         }
@@ -359,7 +334,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            Log.v("Date Dialog", day + " " + month + "" + year);
+            //Log.v("Date Dialog", day + " " + month + "" + year);
             boolean isDateBefore = Utility.compareDate(day, year, month);
             if (isDateBefore) {
                 isDateEarlier = true;
@@ -396,10 +371,10 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                  */
                 final Place place = PlacePicker.getPlace(data, getActivity());
                 String location = place.getAddress().toString();
-                Log.v(LOG_TAG, "location chosen" + location);
+                //Log.v(LOG_TAG, "location chosen" + location);
                 mPlaceTextView.setText(location);
                 LatLng latLng = place.getLatLng();
-                Log.v(LOG_TAG, "lat lng" + latLng.latitude + "," + latLng.longitude);
+              //  Log.v(LOG_TAG, "lat lng" + latLng.latitude + "," + latLng.longitude);
                 mUser.setPlayingPlace(location);
                 mUser.setLatitude(latLng.latitude);
                 mUser.setLongitude(latLng.longitude);

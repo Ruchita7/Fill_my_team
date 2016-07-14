@@ -15,7 +15,7 @@
     <string name="error_player" translatable="false">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details" translatable="false">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="map_key" translatable="false"></string>
-    <string name="geo_api_key" translatable="false">geo_api_key</string>
+    <string name="geo_api_key" translatable="false">geo_key</string>
     <string name="sport_goods_query" translatable="false">sports+goods</string>
 
     <string name="loading" translatable="false">Loading…</string>
@@ -159,5 +159,9 @@
     <string name="find_playmates" translatable="false">Find Playmates</string>
     <string name="sports_store_locator" translatable="false">Sports Store Locator</string>
     <string name="logout" translatable="false">Logout</string>
+    <string name="back_button" translatable="false">Back button</string>
+    <string name="watch_video" translatable="false">Watch video</string>
+    <string name="sports_button" translatable="false"> <xliff:g id="sport">%1$s</xliff:g> players</string>
+    <string name="location_image" translatable="false">Search maps for nearby playing locations</string>
 
 </resources>

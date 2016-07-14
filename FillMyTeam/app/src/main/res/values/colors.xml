@@ -11,4 +11,9 @@
     <color name="blue_sign_in">#4285F4</color>
     <color name="black">#ff000000</color>
     <color name="dark_gray">#ff7f7f7f</color>
+    <color name="light_blue_500">#03A9F4</color>
+    <color name="light_blue_700">#0288D1</color>
+
+    <color name="teal700">#00796B</color>
+    <color name="teal500">#009688</color>
 </resources>

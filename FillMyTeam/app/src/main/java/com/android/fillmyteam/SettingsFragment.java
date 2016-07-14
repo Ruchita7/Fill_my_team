@@ -18,40 +18,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 /**
- * Created by dgnc on 6/17/2016.
+ * Fragment to handle user settings
+ * @author Ruchita_Maheshwary
+ *
  */
 
-
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
-       ValueEventListener,SharedPreferences.OnSharedPreferenceChangeListener {
+       ValueEventListener {
     public static final String LOG_TAG = SettingsFragment.class.getSimpleName();
-    //  com.google.api.services.calendar.Calendar mService;
-
-    //  Context mContext;
-    // GoogleAccountCredential credential;
-
-    // Activity mActivity;
-
+    
     public static SettingsFragment newInstance() {
         SettingsFragment settingsFragment = new SettingsFragment();
 
         return settingsFragment;
     }
 
-/*  @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//        mContext = getContext();
-        mActivity = getActivity();
-        getActivity().getFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, new SettingsPrefFragment())
-       // .addToBackStack(null)
-                .commit();
-    }*/
-
-
-    /*    private class SettingsPrefFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener,
-                SharedPreferences.OnSharedPreferenceChangeListener, ValueEventListener {*/
     DatabaseReference mUrlRef;
     String mEmail;
     DatabaseReference ref;
@@ -72,10 +53,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         CheckBoxPreference checkBoxPreference = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.cal_event_key));
         checkBoxPreference.setOnPreferenceChangeListener(this);
-      //  bindPreferenceSummaryToValue(findPreference(getString(R.string.cal_event_key)));
     }
 
-    @Override
+/*    @Override
     public void onResume() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.registerOnSharedPreferenceChangeListener(this);
@@ -88,7 +68,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
-    }
+    }*/
 
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
@@ -102,14 +82,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
 
         }
-        // Trigger the listener immediately with the preference's
-        // current value.
-     /*   else {
-            String value = PreferenceManager
-                    .getDefaultSharedPreferences(preference.getContext())
-                    .getString(preference.getKey(), "");
-            preference.setSummary(value);
-        }*/
     }
 
 
@@ -128,17 +100,11 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             // the preference's 'entries' list.
             ListPreference listPreference = (ListPreference) preference;
             int index = listPreference.findIndexOfValue(interval);
-
-            // ref.child(Constants.PLAYING_PLACE).
-            // Set the summary to reflect the new value.
             preference.setSummary(
                     index >= 0
                             ? listPreference.getEntries()[index]
                             : null);
 
-
-            //    String playingLocation=mUser.getPlayingPlace();
-            //  String playingTime=mUser.getPlayingTime();
             if (mUser != null) {
                 if (interval != null && !interval.isEmpty()) {
                     int notifyBeforeInterval = Integer.parseInt(interval);
@@ -157,27 +123,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             editor.putBoolean(Constants.CALENDAR_EVENT_CREATION,(Boolean)newValue);
             editor.commit();
         }
-//                preference.setSummary(stringValue);
-
-
-
         return true;
     }
-
-/*    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //findPreference(getString(R.string.notify_frequency_key)).getSummary()
-       *//* if (key.equals(getString(R.string.notify_frequency_key))) {
-            Log.v("SettingsPrefFragment", "notify_frequency_key");
-        } else if (key.equals(getString(R.string.cal_event_key))) {
-            Log.v("SettingsPrefFragment", "cal_event_key");
-        }*//*
-
-
-
-
-    }*/
-
 
 
     @Override
@@ -190,7 +137,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     }
 
-
+/*
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals(getString(R.string.notify_frequency_key)))    {
@@ -202,7 +149,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                             alarmReceiver.setAlarmTime(getActivity(), mUser.getPlayingTime(), mUser.getPlayingPlace(), notifyBeforeInterval);
                         }
         }
-    }
+    }*/
 }
 
 

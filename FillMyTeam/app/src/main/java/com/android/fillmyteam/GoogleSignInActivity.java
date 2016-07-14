@@ -10,15 +10,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.android.fillmyteam.model.User;
-import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.ui.ScrimUtil;
+import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.Firebase;
@@ -80,9 +79,6 @@ public class GoogleSignInActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
 
-        //     findViewById(R.id.sign_out_button).setOnClickListener(this);
-
-
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -120,14 +116,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
             startActivity(intent);
             finish();
-        } /*else {
-            if (!userEmailId.isEmpty()) {           //returning user
-                initiateAuthentication();
-            } else                //new user
-            {
-                initiateAuthentication();
-            }
-        }*/ else {
+        }  else {
             mGoogleApiClient.connect();
             setContentView(R.layout.activity_google_sign_in);
             View scrimView = findViewById(R.id.scrim_view);
@@ -138,31 +127,6 @@ public class GoogleSignInActivity extends BaseActivity implements
             initiateAuthentication(); // for new user or returning user
         }
 
-
-   /*     if (getIntent().hasExtra(Constants.LOGOUT)) {
-            isLogout = getIntent().getBooleanExtra(Constants.LOGOUT, false);
-        }
-        if (!isLogout) {
-            if (!userEmailId.isEmpty()) {        //If user is already logged in then redirect to MainActivity
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
-
-                startActivity(intent);
-            } else {
-
-                // Configure Google Sign In
-                initiateAuthentication();
-
-
-
-
-
-            }
-        }
-        else
-        {
-            initiateAuthentication();
-        }*/
     }
 
     private void initiateAuthentication() {
@@ -172,7 +136,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    //Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     final String userEmailAddress = user.getEmail();
 
                     final DatabaseReference ref = mUrlRef.child("/" + Constants.LOCATION_USERS + "/" + Utility.encodeEmail(userEmailAddress));
@@ -197,8 +161,8 @@ public class GoogleSignInActivity extends BaseActivity implements
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
-                                            Log.e(LOG_TAG, "Error in updating child");
-
+                                            //Log.e(LOG_TAG, "Error in updating child");
+                                                    Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
                                         } else {
                                             mGeoFire.setLocation(Utility.encodeEmail(mAuthenticatedUser.getEmail()), new GeoLocation(mAuthenticatedUser.getLatitude(), mAuthenticatedUser.getLongitude()));
                                         }
@@ -206,7 +170,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                                 });
                             }
                             ref.removeEventListener(this);
-                            Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
+                            //Log.v(LOG_TAG, userEmailAddress + "," + mAuthenticatedUser.getName() + "," + mAuthenticatedUser.getPhotoUrl());
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
@@ -221,15 +185,16 @@ public class GoogleSignInActivity extends BaseActivity implements
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Log.e(LOG_TAG,
+                        /*    Log.e(LOG_TAG,
                                     getString(R.string.log_error_the_read_failed) +
-                                            databaseError.getMessage());
+                                            databaseError.getMessage());*/
+                            Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
                         }
                     });
 
                 } else {
                     // User is signed out
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
+                    //Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                 }
 
                 updateUI(user);
@@ -292,20 +257,20 @@ public class GoogleSignInActivity extends BaseActivity implements
      * @param acct
      */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        //Log.d(LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressDialog();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                    //    Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Log.w(LOG_TAG, "signInWithCredential", task.getException());
+                            //Log.w(LOG_TAG, "signInWithCredential", task.getException());
                             Toast.makeText(GoogleSignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -362,7 +327,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-        Log.d(LOG_TAG, "onConnectionFailed:" + connectionResult);
+        //Log.d(LOG_TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
@@ -373,14 +338,6 @@ public class GoogleSignInActivity extends BaseActivity implements
      */
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-            case R.id.sign_out_button:
-                signOut();
-                break;
-        }*/
         if (v.getId() == R.id.sign_in_button) {
             if (Utility.checkNetworkState(this)) {
                 signIn();
@@ -442,7 +399,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(LOG_TAG, "onConnectionSuspended:" + i);
+        //Log.d(LOG_TAG, "onConnectionSuspended:" + i);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 

@@ -4,7 +4,9 @@ import com.android.fillmyteam.SportsInfoAdapter;
 import com.android.fillmyteam.model.User;
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Callback interface
+ * @author Ruchita_Maheshwary
+ *
  */
 public interface Callback {
 

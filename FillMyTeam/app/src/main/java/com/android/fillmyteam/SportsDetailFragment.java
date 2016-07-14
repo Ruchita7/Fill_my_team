@@ -17,7 +17,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,8 +55,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     public static final String LOG_TAG = SportsDetailFragment.class.getSimpleName();
     public static final String POSITION = "position";
 
-    /*@BindView(R.id.sports_name_text)
-    TextView mSportNameTextView;*/
+   
     @BindView(R.id.objective_text)
     TextView mObjectiveTextView;
     @BindView(R.id.players_text)
@@ -76,7 +74,6 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     CollapsingToolbarLayout collapsingToolbar;
     String mImageUrl;
     String mThumbnailUrl;
-    // MenuItem menuItem;
     String mSportId;
     public static final int DETAIL_LOADER = 0;
     ShareActionProvider mShareActionProvider;
@@ -108,44 +105,32 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
         inflater.inflate(R.menu.main, menu);
     }
 
-    /*  @Override
-      public boolean onOptionsItemSelected(MenuItem item) {
-          if(item.getItemId()==R.id.share_action)
-          {
-              Log.v(LOG_TAG,"share menu clicked");
-          }
-          return super.onOptionsItemSelected(item);
-      }
-  */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if (getArguments() != null) {
             mSportId = getArguments().getString(Constants.SPORT_ID);
-            Log.v(LOG_TAG, "sport id is ::" + mSportId);
+            //Log.v(LOG_TAG, "sport id is ::" + mSportId);
             mPosition = getArguments().getInt(POSITION);
         }
 
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_sports_detail, container, false);
-        // AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
+           final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_layout);
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.ic_action_ic_arrow_back);
-
+            toolbar.setNavigationContentDescription(getString(R.string.back_button));
             Menu menu = toolbar.getMenu();
             if (null != menu) menu.clear();
             toolbar.inflateMenu(R.menu.main);
-            //finishCreatingMenu(toolbarView.getMenu());
             MenuItem menuItem = menu.findItem(R.id.share_action);
 
             mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(LOG_TAG, "on click clicked");
+                    //Log.v(LOG_TAG, "on click clicked");
                     getFragmentManager().popBackStackImmediate();
                 }
             });
@@ -205,7 +190,6 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mImageUrl = data.getString(data.getColumnIndex(SportsColumns.POSTER_IMAGE));
             String objective = data.getString(data.getColumnIndex(SportsColumns.OBJECTIVE));
             String rules = data.getString(data.getColumnIndex(SportsColumns.RULES));
-            //  String videoReference = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
             mVideoKey = data.getString(data.getColumnIndex(SportsColumns.VIDEO_URL));
             Uri.Builder builder = Uri.parse(Constants.IMAGE_THUMBNAIL).buildUpon().appendPath(mVideoKey).appendPath(Constants.DEFAULT_IMG);
             mThumbnailUrl = builder.toString();
@@ -213,14 +197,12 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mObjectiveTextView.setText(objective);
             mPlayersTextView.setText(players);
             mRulesTextView.setText(rules);
-            //     mSportNameTextView.setText(sportsName);
             Picasso.with(getActivity()).load(mImageUrl).into(mSportsImageView);
-
+            mSportsImageView.setContentDescription(sportsName);
             Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView);
             if (Utility.checkNetworkState(getActivity())) {
                 mVideoPlayImageView.setVisibility(View.VISIBLE);
             }
-            //menuItem.setIntent(createSharedIntent());
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createSharedIntent());
             }
@@ -266,7 +248,7 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
     public void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v(LOG_TAG, "In on activity result");
+        //Log.v(LOG_TAG, "In on activity result");
         if (requestCode == Constants.REQ_START_STANDALONE_PLAYER && resultCode != Activity.RESULT_OK) {
             YouTubeInitializationResult errorReason =
                     YouTubeStandalonePlayer.getReturnedInitializationResult(data);

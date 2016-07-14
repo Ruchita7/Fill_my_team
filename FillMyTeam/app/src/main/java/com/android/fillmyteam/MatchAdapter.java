@@ -21,7 +21,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by dgnc on 6/19/2016.
+ * Adapter for handling upcoming matches
+ * @author Ruchita_Maheshwary
+ *
  */
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
     List<Match> matchesList;
@@ -72,10 +74,6 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-        //    int matchId = mCursor.getColumnIndex(PlayerMatchesColumns._ID);
-            /*int latitude = mCursor.getColumnIndex(PlayerMatchesColumns.LATITUDE);
-            int longitude = mCursor.getColumnIndex(PlayerMatchesColumns.LONGITUDE);
-                mClickHandler.itemClick(mCursor.getDouble(latitude),mCursor.getDouble(longitude),this);*/
             int location = mCursor.getColumnIndex(PlayerMatchesColumns.PLAYING_PLACE);
             mClickHandler.itemClick(mCursor.getString(location),this);
 
@@ -86,15 +84,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
-        // Match match = matchesList.get(position);
         holder.player.setText(mCursor.getString(MatchesFragment.COL_PLAYER_NAME));
-        //   holder.playingTime.setText(mCursor.getString(MatchesFragment.COL_PLAYING_DATE) + " " + mCursor.getString(MatchesFragment.COL_PLAYING_TIME));
-        //   SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.ENGLISH);
         long time = mCursor.getLong(MatchesFragment.COL_PLAYING_TIME);
-        //   Calendar calendar = Calendar.getInstance();
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         gregorianCalendar.setTimeInMillis(time);
-        //   String displayTime = sdf.format(gregorianCalendar);
         String displayTime = Utility.getCurrentDate(gregorianCalendar) + " " + Utility.getCurrentTime(gregorianCalendar);
         holder.playingTime.setText(displayTime);
         holder.playingPlace.setText(mCursor.getString(MatchesFragment.COL_PLAYING_PLACE));
@@ -154,7 +147,7 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> 
 
     public static  interface MatchAdapterOnClickHandler    {
        // public void itemClick(double latitude, double longitude,ViewHolder viewHolder);
-        public void itemClick(String location,ViewHolder viewHolder);
+        public void itemClick(String location, ViewHolder viewHolder);
     }
 
 }

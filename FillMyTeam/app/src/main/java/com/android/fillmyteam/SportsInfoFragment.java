@@ -47,7 +47,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
     private RecyclerView mRecyclerView;
     SportsInfoAdapter mAdapter;
-    //   private RecyclerView.LayoutManager mLayoutManager;
+   
     private StaggeredGridLayoutManager mLayoutManager;
 
     static final int COL_SPORT_ID = 0;
@@ -123,7 +123,6 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         int columnCount = getResources().getInteger(R.integer.column_count);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.sports_info_recycler_view);
 
-        //    mLayoutManager = new GridLayoutManager(getActivity(),columnCount);
         mLayoutManager = new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         TextView textView = (TextView) view.findViewById(R.id.recyclerview_sports_empty);
@@ -135,31 +134,8 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
                 Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId, mPosition);
-               /* setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_exit));
-                setReenterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.grid_reenter));
-                nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.shared_photo));*/
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                   /* setSharedElementReturnTransition(TransitionInflater.from(
-                            getActivity()).inflateTransition(R.transition.change_image_trans));
-                    setExitTransition(TransitionInflater.from(
-                            getActivity()).inflateTransition(android.R.transition.fade));
-
-                    nextFrag.setSharedElementEnterTransition(TransitionInflater.from(
-                            getActivity()).inflateTransition(R.transition.change_image_trans));
-                    nextFrag.setEnterTransition(TransitionInflater.from(
-                            getActivity()).inflateTransition(android.R.transition.fade));*/
-
-                   /* setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
-                    setExitTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.explode));
-                    nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
-                    nextFrag.setEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.explode));*/
-
-                    /*nextFrag.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform));
-                    setExitTransition(new Explode());
-
-                    nextFrag.setSharedElementReturnTransition((TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_image_transform)));
-                    nextFrag.setEnterTransition(new Explode());*/
-
+   
                     setExitTransition(new Fade());
 
                     nextFrag.setEnterTransition(new Explode());
@@ -178,8 +154,6 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView.setAdapter(mAdapter);
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SELECTED_KEY)) {
-                // The listview probably hasn't even been populated yet.  Actually perform the
-                // swapout in onLoadFinished.
                 mPosition = savedInstanceState.getInt(SELECTED_KEY);
             }
             mAdapter.onRestoreInstanceState(savedInstanceState);
@@ -190,16 +164,9 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onResume() {
         super.onResume();
-      /*  if(!isVisible())
-        {
-            getFragmentManager().popBackStackImmediate();
-        }*/
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
-      /*  if (getChildFragmentManager().getBackStackEntryCount() > 0){
-            // Get the fragment fragment manager - and pop the backstack
-            getChildFragmentManager().popBackStack();
-        }*/
+   
     }
 
 
@@ -229,7 +196,6 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
             }
             mAdapter.swapCursor(data);
         }
-        //   mProgressBar.setVisibility(View.INVISIBLE);
     }
 
 

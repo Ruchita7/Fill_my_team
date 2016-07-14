@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
-import android.util.Log;
 
 import com.android.fillmyteam.R;
 import com.android.fillmyteam.data.PlayerMatchesColumns;
@@ -111,7 +110,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
-        Log.d(LOG_TAG, "In onPerformSync");
+        //Log.d(LOG_TAG, "In onPerformSync");
         //    String locationQuery = Utility.getPreferredLocation(getContext());
 
         Context context = getContext();
@@ -170,22 +169,22 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
             getMatchDataFromJson(forecastJsonStr);
         }catch (UnknownHostException e) {
             setNetworkState(getContext(), STATUS_SERVER_DOWN);
-            Log.e(LOG_TAG, e.getMessage());
+            //Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
         } catch (MalformedURLException e) {
            setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
-            Log.e(LOG_TAG, e.getMessage());
+            //Log.e(LOG_TAG, e.getMessage());
             e.printStackTrace();
 
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
+            //Log.e(LOG_TAG, "Error ", e);
             setNetworkState(getContext(),STATUS_SERVER_DOWN);
             // If the code didn't successfully get the weather data, there's no point in attemping
             // to parse it.
             return;
         } catch (JSONException e) {
             setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
-            Log.e(LOG_TAG, e.getMessage(), e);
+            //Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {
@@ -195,7 +194,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
+                    //Log.e(LOG_TAG, "Error closing stream", e);
                 }
             }
         }
@@ -404,7 +403,7 @@ public class SportsSyncAdapter extends AbstractThreadedSyncAdapter {
 
             setNetworkState(getContext(), STATUS_OK);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            //Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
             setNetworkState(getContext(), MATCH_STATUS_SERVER_INVALID);
         }

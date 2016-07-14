@@ -3,7 +3,9 @@ package com.android.fillmyteam.util;
 import com.android.fillmyteam.BuildConfig;
 
 /**
- * Created by dgnc on 5/9/2016.
+ * Constants
+ * @author Ruchita_Maheshwary
+ *
  */
 public class Constants {
 
@@ -36,12 +38,10 @@ public class Constants {
     public static final String PLAYERS_NOTIFICATIONS = APP_URL + "/" + NOTIFY;
     public static final String NOTIFY_USER = "NOTIFY_USER";
 
-    //public static final String SPORTS_URL = "https://api.myjson.com/bins/5alsc";
     public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
     public static final String LIST = "list";
     public static final String YOUTUBE_KEY = BuildConfig.YOUTUBE_KEY;
-    //  public static final String SPORTS="Sport";
-
+    
     public static final String GOOGLE_MAPS_KEY = BuildConfig.MAPS_KEY;
     public static final int REQ_START_STANDALONE_PLAYER = 1;
     public static final int REQ_RESOLVE_SERVICE_MISSING = 2;
@@ -66,7 +66,6 @@ public class Constants {
     public static final String PLAY_DATE = "playingDate";
     public static final String PLAYING_PLACE = "playingPlace";
     public static final String PLAYER_EMAIL = "playerEmail";
-//    public static final String SPORT="Sport";
 
     public static final String ALL = "All";
     public static final String BASKETBALL = "Basketball";
@@ -82,7 +81,6 @@ public class Constants {
     public static final String TABLETENNIS = "Table Tennis";
     public static final String VOLLEYBALL = "Volleyball";
     public static final String BASE_BALL = "Baseball";
-    //public static final String EMAIL="EMAIL";
 
 
     public static final String SEND_NOTIFICATION = "SEND NOTIFICATION";
@@ -101,7 +99,6 @@ public class Constants {
     public static final String SPORT_ID = "ID";
     public static final String ICON_VIEW = "iconView";
     public static final String ASC_ORDER = " ASC";
-    //   public static final String GEO_LOCATION= "google.navigation:q=";
     public static final String GOOGLE_MAPS_PACKAGE = "com.google.android.apps.maps";
 
     public static final String RESULTS = "results";
@@ -121,7 +118,6 @@ public class Constants {
     public static final String LOGOUT = "logout";
 
 
-    // public static final String REFERENCE="reference";
     public static final String PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo";
     public static final String MAX_WIDTH = "maxwidth";
     public static final String REFERENCE_ID = "photoreference";
@@ -138,9 +134,6 @@ public class Constants {
     public static final String USER_INFO = "user_info";
     public static final String IS_USER_LOGGED_IN="is_user_logged_in";
 
- //   public static final int STATUS_OK = 0;
- //   public static final int STATUS_SERVER_DOWN = 1;
-
     public static final String SPORTS_INFO_FRAGMENT="SportsInfoFragment";
     public static final String SPORTS_DETAIL_FRAGMENT="SportsDetailFragment";
     public static final String MATCH_FRAGMENT="MatchesFragment";
@@ -149,4 +142,11 @@ public class Constants {
     public static final String INVITE_PLAY_FRAGMENT="InviteToPlayFragment";
     public static final String SETTINGS_FRAGMENT="SettingsFragment";
     public static final String STORE_LOCATOR_FRAGMENT="SportsStoreLocatorFragment";
+    public static final int FIFTEEN_MINUTES=15;
+    public static final int THIRTY_MINUTES=30;
+    public static final int SIXTY_MINUTES=60;
+    public static final int ONE_TWENTY_MINUTES=120;
+    public static final int ONE_HOUR=1;
+    public static final int TWO_HOUR=2;
+    public static final String ZERO="0";
 }
