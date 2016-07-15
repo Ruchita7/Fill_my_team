@@ -16,6 +16,8 @@ If you are looking for sports equipments, using the **Find sports store** featur
 * Schematic for content provider
 * Geofire for realtime location queries
 * Butterknife for field and method binding for android views
+* Firebase authentication with Google
+* Sthetho for debugging purposes
 
 
 **Installation instructions**
