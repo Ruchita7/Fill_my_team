@@ -1,1 +1,6 @@
-FillMyTeam/app/keystore/keystore.properties
+/FillMyTeam/*.iml
+/FillMyTeam//local.properties
+/FillMyTeam//.idea/workspace.xml
+/FillMyTeam//.idea/libraries
+/FillMyTeam/app/keystore/keystore.properties
+/FillMyTeam/app/*.json

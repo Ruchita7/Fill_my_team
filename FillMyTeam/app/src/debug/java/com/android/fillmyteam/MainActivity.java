@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity
     boolean isDrawerLocked;
     View navigationHeader;
 
-
     Activity mActivity;
     List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
 
