@@ -5,8 +5,7 @@ Sports lovers are generally for the look out for sports enthusiasts like them so
 
 **Installation instructions**
 
-  * Get Google Maps Key and put in Android Manifest
-  * Get Google Location API key and put it in strings.xml
-  * Get Youtube api key and put it in gradle.properties 
-  * Also get google-services.json from developer's console and place in app folder of the project
+  * Get Google Maps Key and put in gradle.properties for GoogleMapsKey. Refer <a href="https://developers.google.com/maps/documentation/android-api/signup/></a>
+  * Get Google Location API key and Youtube api key and put it under gradle.properties(YoutubeKey) and in strings.xml(geo_api_key) respectively . You can get the api key referring <a href="https://developers.google.com/youtube/android/player/register"></a> and places api referring <a href="https://developers.google.com/places/android-api/signup"/>
+ 
 
