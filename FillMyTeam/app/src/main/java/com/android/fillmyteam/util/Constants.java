@@ -38,7 +38,9 @@ public class Constants {
     public static final String PLAYERS_NOTIFICATIONS = APP_URL + "/" + NOTIFY;
     public static final String NOTIFY_USER = "NOTIFY_USER";
 
-    public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
+  //  public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
+  //  public static final String SPORTS_URL = "https://api.myjson.com/bins/14b15";
+  public static final String SPORTS_URL = "https://api.myjson.com/bins/";
     public static final String LIST = "list";
     public static final String YOUTUBE_KEY = BuildConfig.YOUTUBE_KEY;
     

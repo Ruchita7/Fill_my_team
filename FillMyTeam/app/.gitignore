@@ -1,7 +1,1 @@
-*.iml
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-FillMyTeam/app/keystore/keystore.properties
-FillMyTeam/app/*.json
-FillMyTeam/app/src/debug/*.json
+/build

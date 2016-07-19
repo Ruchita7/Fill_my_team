@@ -9,33 +9,36 @@ import android.os.Parcelable;
 public class SportParcelable implements Parcelable {
 
     String id;
-    String sportsName;
+ //   String sportsName;
+    String name;
     String objective;
     String players;
     String rules;
     String thumbnail;
-    String posterImage;
-    String videoUrl;
+  //  String posterImage;
+    String image;
+ //   String videoUrl;
+    String video_reference;
 
     private SportParcelable(Parcel in)  {
         id=in.readString();
-        sportsName=in.readString();
+        name=in.readString();
         objective=in.readString();
         players=in.readString();
         rules=in.readString();
         thumbnail=in.readString();
-        posterImage=in.readString();
-        videoUrl=in.readString();
+        image=in.readString();
+        video_reference=in.readString();
     }
     public SportParcelable(String id, String sportsName, String objective, String players, String rules, String thumbnail, String posterImage, String videoUrl) {
         this.id = id;
-        this.sportsName = sportsName;
+        this.name = sportsName;
         this.objective = objective;
         this.players = players;
         this.rules = rules;
         this.thumbnail = thumbnail;
-        this.posterImage = posterImage;
-        this.videoUrl = videoUrl;
+        this.image = posterImage;
+        this.video_reference = videoUrl;
     }
 
     @Override
@@ -46,13 +49,13 @@ public class SportParcelable implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(sportsName);
+        dest.writeString(name);
         dest.writeString(objective);
         dest.writeString(players);
         dest.writeString(rules);
         dest.writeString(thumbnail);
-        dest.writeString(posterImage);
-        dest.writeString(videoUrl);
+        dest.writeString(image);
+        dest.writeString(video_reference);
     }
 
     public String getId() {
@@ -63,13 +66,7 @@ public class SportParcelable implements Parcelable {
         this.id = id;
     }
 
-    public String getSportsName() {
-        return sportsName;
-    }
 
-    public void setSportsName(String sportsName) {
-        this.sportsName = sportsName;
-    }
 
     public String getObjective() {
         return objective;
@@ -95,20 +92,28 @@ public class SportParcelable implements Parcelable {
         this.thumbnail = thumbnail;
     }
 
-    public String getVideoUrl() {
-        return videoUrl;
+    public String getImage() {
+        return image;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getPosterImage() {
-        return posterImage;
+    public String getVideo_reference() {
+        return video_reference;
     }
 
-    public void setPosterImage(String posterImage) {
-        this.posterImage = posterImage;
+    public void setVideo_reference(String video_reference) {
+        this.video_reference = video_reference;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPlayers() {

@@ -3,6 +3,7 @@ package com.android.fillmyteam;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +28,24 @@ import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.fillmyteam.api.RestService;
 import com.android.fillmyteam.data.SportsColumns;
 import com.android.fillmyteam.data.SportsProvider;
+import com.android.fillmyteam.model.SportParcelable;
+import com.android.fillmyteam.model.SportsResult;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
+import com.squareup.okhttp.ResponseBody;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.List;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 /**
@@ -186,9 +202,9 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 0) {
-            SportsAsyncTask asyncTask = new SportsAsyncTask(getActivity(), mFragment);
-            asyncTask.execute();
-
+        /*    SportsAsyncTask asyncTask = new SportsAsyncTask(getActivity(), mFragment);
+            asyncTask.execute();*/
+            retrieveSportsList();
         } else {
             if (!Utility.checkNetworkState(getActivity())) {
                 updateEmptyView();
@@ -198,6 +214,62 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         }
     }
 
+    private void retrieveSportsList()   {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.SPORTS_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RestService service =  retrofit.create(RestService.class);
+
+        Call<SportsResult> call = service.retrieveSportsDetails("14b15");
+            call.enqueue(new Callback<SportsResult>() {
+                @Override
+                public void onResponse(Response<SportsResult> response, Retrofit retrofit) {
+                    SportsResult sportsList = response.body();
+                    String  sportsKey = getActivity().getString(R.string.sports_detail);
+                   // List<SportParcelable> sportsList = response.body();
+                    if(sportsList==null)  {
+                        ResponseBody responseErrBody = response.errorBody();
+                      //  response.code()
+
+                        if (responseErrBody != null) {
+
+                            try {
+                                Utility.setNetworkState(getActivity(), response.code(), sportsKey);
+                                String str = responseErrBody.string();
+                            } catch (IOException e) {
+                                Log.e(LOG_TAG, e.getMessage());
+                                return;
+                            }
+                        }
+                    }
+                 List<SportParcelable> sportParcelables =sportsList.getList();
+                    insertValues(sportParcelables);
+                }
+
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.e(LOG_TAG, t.getMessage());
+                }
+            });
+
+         //   Response<ResponseBody> response = service.retrieveSportsDetails("432j9").execute();
+        }
+
+    private void insertValues(List<SportParcelable> sportParcelables) {
+        for(SportParcelable sportParcelable : sportParcelables) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(SportsColumns.SPORTS_NAME, sportParcelable.getName());
+            contentValues.put(SportsColumns.OBJECTIVE, sportParcelable.getObjective());
+            contentValues.put(SportsColumns.PLAYERS, sportParcelable.getPlayers());
+            contentValues.put(SportsColumns.RULES, sportParcelable.getRules());
+            contentValues.put(SportsColumns.THUMBNAIL, sportParcelable.getThumbnail());
+            contentValues.put(SportsColumns.POSTER_IMAGE, sportParcelable.getImage());
+            contentValues.put(SportsColumns.VIDEO_URL, sportParcelable.getVideo_reference());
+            getActivity().getContentResolver().insert(SportsProvider.Sports.CONTENT_URI, contentValues);
+        }
+    }
 
     public void updateEmptyView() {
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -209,13 +281,21 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         if (null != textView) {
             int message = R.string.sports_list_unavailable;
             switch (state) {
-                case SportsAsyncTask.SPORTS_STATUS_SERVER_DOWN:
+               /* case SportsAsyncTask.SPORTS_STATUS_SERVER_DOWN:
                     message = R.string.empty_sports_list_server_down;
                     break;
                 case SportsAsyncTask.SPORTS_INFO_STATUS_SERVER_INVALID:
                     message = R.string.empty_sports_list_server_error;
                     break;
                 case SportsAsyncTask.SPORTS_INFO_STATUS_INVALID:
+                    message = R.string.invalid_information_error;*/
+                 case HttpURLConnection.HTTP_BAD_REQUEST:
+                    message = R.string.empty_sports_list_server_down;
+                    break;
+                case HttpURLConnection.HTTP_INTERNAL_ERROR:
+                    message = R.string.empty_sports_list_server_error;
+                    break;
+                case HttpURLConnection.HTTP_NO_CONTENT :
                     message = R.string.invalid_information_error;
                 default:
                     if (!Utility.checkNetworkState(getActivity())) {
