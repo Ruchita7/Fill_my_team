@@ -4,8 +4,8 @@ import com.android.fillmyteam.BuildConfig;
 
 /**
  * Constants
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
 public class Constants {
 
@@ -38,12 +38,13 @@ public class Constants {
     public static final String PLAYERS_NOTIFICATIONS = APP_URL + "/" + NOTIFY;
     public static final String NOTIFY_USER = "NOTIFY_USER";
 
-  //  public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
-  //  public static final String SPORTS_URL = "https://api.myjson.com/bins/14b15";
-  public static final String SPORTS_URL = "https://api.myjson.com/bins/";
+    //  public static final String SPORTS_URL = "https://api.myjson.com/bins/432j9";
+    //  public static final String SPORTS_URL = "https://api.myjson.com/bins/14b15";
+    public static final String SPORTS_URL = "https://api.myjson.com/bins/";
     public static final String LIST = "list";
+    public static final String SPORTS_URL_PARAM = "14b15";
     public static final String YOUTUBE_KEY = BuildConfig.YOUTUBE_KEY;
-    
+
     public static final String GOOGLE_MAPS_KEY = BuildConfig.MAPS_KEY;
     public static final int REQ_START_STANDALONE_PLAYER = 1;
     public static final int REQ_RESOLVE_SERVICE_MISSING = 2;
@@ -134,21 +135,21 @@ public class Constants {
     public static final String VIDEO_REF = "v";
 
     public static final String USER_INFO = "user_info";
-    public static final String IS_USER_LOGGED_IN="is_user_logged_in";
+    public static final String IS_USER_LOGGED_IN = "is_user_logged_in";
 
-    public static final String SPORTS_INFO_FRAGMENT="SportsInfoFragment";
-    public static final String SPORTS_DETAIL_FRAGMENT="SportsDetailFragment";
-    public static final String MATCH_FRAGMENT="MatchesFragment";
-    public static final String EDIT_PROFILE_FRAGMENT="EditProfileFragment";
-    public static final String FIND_PLAYMATES_FRAGMENT="FindPlaymatesFragment";
-    public static final String INVITE_PLAY_FRAGMENT="InviteToPlayFragment";
-    public static final String SETTINGS_FRAGMENT="SettingsFragment";
-    public static final String STORE_LOCATOR_FRAGMENT="SportsStoreLocatorFragment";
-    public static final int FIFTEEN_MINUTES=15;
-    public static final int THIRTY_MINUTES=30;
-    public static final int SIXTY_MINUTES=60;
-    public static final int ONE_TWENTY_MINUTES=120;
-    public static final int ONE_HOUR=1;
-    public static final int TWO_HOUR=2;
-    public static final String ZERO="0";
+    public static final String SPORTS_INFO_FRAGMENT = "SportsInfoFragment";
+    public static final String SPORTS_DETAIL_FRAGMENT = "SportsDetailFragment";
+    public static final String MATCH_FRAGMENT = "MatchesFragment";
+    public static final String EDIT_PROFILE_FRAGMENT = "EditProfileFragment";
+    public static final String FIND_PLAYMATES_FRAGMENT = "FindPlaymatesFragment";
+    public static final String INVITE_PLAY_FRAGMENT = "InviteToPlayFragment";
+    public static final String SETTINGS_FRAGMENT = "SettingsFragment";
+    public static final String STORE_LOCATOR_FRAGMENT = "SportsStoreLocatorFragment";
+    public static final int FIFTEEN_MINUTES = 15;
+    public static final int THIRTY_MINUTES = 30;
+    public static final int SIXTY_MINUTES = 60;
+    public static final int ONE_TWENTY_MINUTES = 120;
+    public static final int ONE_HOUR = 1;
+    public static final int TWO_HOUR = 2;
+    public static final String ZERO = "0";
 }

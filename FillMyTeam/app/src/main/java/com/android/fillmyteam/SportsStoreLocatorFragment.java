@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.fillmyteam.api.StoreDataReceivedListener;
+import com.android.fillmyteam.api.RestService;
+import com.android.fillmyteam.model.LocationResponse;
+import com.android.fillmyteam.model.Photo;
+import com.android.fillmyteam.model.Result;
 import com.android.fillmyteam.model.StoreLocatorParcelable;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
@@ -34,17 +38,26 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.okhttp.ResponseBody;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 /**
  * Fragment for finding nearby sports stores
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
-public class SportsStoreLocatorFragment extends Fragment implements StoreDataReceivedListener, GoogleApiClient.ConnectionCallbacks,
+public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemClickListener {
 
     double mLatitude;
@@ -55,7 +68,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     private PlaceAutocompleteAdapter mAdapter;
     private TextView mPlaceDetailsText;
     SportsStoreLocatorFragment mFragment;
-    
+
     String mPlaceId;
     ListView mListView;
     private RecyclerView.Adapter mRecyclerViewAdapter;
@@ -74,7 +87,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
         // Required empty public constructor
     }
 
-     public static SportsStoreLocatorFragment newInstance(double latitude, double longitude) {
+    public static SportsStoreLocatorFragment newInstance(double latitude, double longitude) {
         SportsStoreLocatorFragment fragment = new SportsStoreLocatorFragment();
         Bundle args = new Bundle();
         args.putDouble(Constants.LATITUDE, latitude);
@@ -92,7 +105,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 .addOnConnectionFailedListener(this)
                 .addApi(Places.GEO_DATA_API)
                 .build();
- 
+
     }
 
     @Override
@@ -166,14 +179,14 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                     placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
                     if (savedInstanceState.containsKey(SELECTED_ITEM)) {
                         mIndex = savedInstanceState.getInt(SELECTED_ITEM);
-                     }
+                    }
                 }
             }
         }
         return view;
     }
 
-    @Override
+    /*@Override
     public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables, int status) {
         //Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
         mStoreLocatorParcelables = storeLocatorParcelables;
@@ -191,7 +204,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             updateEmptyView(status);
         }
     }
-
+*/
     @Override
     public void onStop() {
         super.onStop();
@@ -205,8 +218,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     }
 
 
-
-     /**
+    /**
      * Listener that handles selections from suggestions from the AutoCompleteTextView that
      * displays Place suggestions.
      * Gets the place id of the selected item and issues a request to the Places Geo Data API
@@ -266,15 +278,85 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
-            String latitude = placeLatLng.latitude + "," + placeLatLng.longitude;
-            StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getActivity(), mFragment);
-            storeLocatorAsyncTask.execute(latitude);
+            String coordinates = placeLatLng.latitude + "," + placeLatLng.longitude;
+        /*    StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getActivity(), mFragment);
+            storeLocatorAsyncTask.execute(latitude);*/
+            retrieveStoreResult(coordinates);
             //Log.i(LOG_TAG, "Place details received: " + place.getName());
 
             places.release();
         }
     };
 
+    private void retrieveStoreResult(String coordinates) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.STORE_LOCATOR_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RestService service = retrofit.create(RestService.class);
+        Call<LocationResponse> response = service.retrieveSportsStores(this.getString(R.string.sport_goods_query), coordinates, Constants.TEN_KM_RADIUS, Constants.GOOGLE_MAPS_KEY);
+        response.enqueue(new Callback<LocationResponse>() {
+            @Override
+            public void onResponse(Response<LocationResponse> response, Retrofit retrofit) {
+                LocationResponse locationResponse = response.body();
+                if (locationResponse == null) {
+                    ResponseBody responseErrBody = response.errorBody();
+                    //  response.code()
+
+                    if (responseErrBody != null) {
+
+                        try {
+                            updateEmptyView(response.code());
+                            String str = responseErrBody.string();
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                            return;
+                        }
+                    }
+                }
+                List<Result> resultList = locationResponse.getResults();
+                String name;
+                String address;
+                String photoReference = null;
+                double latitude;
+                double longitude;
+                List<Photo> photos;
+                StoreLocatorParcelable storeLocatorParcelable = null;
+                for (Result result : resultList) {
+                    name = result.getName();
+                    photoReference="";
+                    address = result.getFormatted_address();
+                    latitude = result.getGeometry().getLocation().getLat();
+                    longitude = result.getGeometry().getLocation().getLng();
+                    photos = result.getPhotos();
+                    for (Photo photo : photos) {
+                        if (photo.getPhoto_reference() != null) {
+                            photoReference = photo.getPhoto_reference();
+                            break;
+                        }
+                    }
+                    storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude, photoReference);
+                    mStoreLocatorParcelables.add(storeLocatorParcelable);
+                }
+                mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
+                mListView.setAdapter(mStoreLocatorAdapter);
+                mStoreLocatorAdapter.notifyDataSetChanged();
+
+                if (mStoreLocatorAdapter != null && mStoreLocatorAdapter.getCount() != 0) {
+                    if (mIndex != 0) {
+                        View v = mListView.getChildAt(0);
+                        int top = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
+                        mListView.setSelectionFromTop(mIndex, top);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    }
 
     /**
      * Called when the Activity could not connect to Google Play services and the auto manager
@@ -286,7 +368,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-      //  Log.e(LOG_TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+        //  Log.e(LOG_TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
         Toast.makeText(getActivity(),
                 getString(R.string.google_api_client_connect_error, connectionResult.getErrorCode()),
                 Toast.LENGTH_SHORT).show();
@@ -295,7 +377,7 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
 
     @Override
     public void onConnectionSuspended(int i) {
-       // Log.e(LOG_TAG, "onConnectionSuspended: ConnectionResult.getErrorCode() = " + i);
+        // Log.e(LOG_TAG, "onConnectionSuspended: ConnectionResult.getErrorCode() = " + i);
         Toast.makeText(getActivity(),
                 getString(R.string.google_api_client_connect_error),
                 Toast.LENGTH_SHORT).show();
@@ -357,16 +439,19 @@ public class SportsStoreLocatorFragment extends Fragment implements StoreDataRec
                 message = R.string.no_location_found;
                 break;
 
-            case StoreLocatorAsyncTask.STORE_STATUS_INVALID:
+            //case StoreLocatorAsyncTask.STORE_STATUS_INVALID:
+            case HttpURLConnection.HTTP_NO_CONTENT:
                 message = R.string.invalid_request_error;
                 break;
 
 
-            case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
+         //   case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
+            case HttpURLConnection.HTTP_BAD_REQUEST:
                 message = R.string.empty_store_list_server_down;
                 break;
 
-            case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
+          //  case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
+           case HttpURLConnection.HTTP_INTERNAL_ERROR:
                 message = R.string.empty_store_list_server_error;
                 break;
             default:

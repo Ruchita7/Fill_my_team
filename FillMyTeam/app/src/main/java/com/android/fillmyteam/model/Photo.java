@@ -11,7 +11,8 @@ public class Photo {
 
     private Integer height;
     private List<String> htmlAttributions = new ArrayList<String>();
-    private String photoReference;
+  //  private String photoReference;
+    private String photo_reference;
     private Integer width;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -51,22 +52,12 @@ public class Photo {
         this.htmlAttributions = htmlAttributions;
     }
 
-    /**
-     * 
-     * @return
-     *     The photoReference
-     */
-    public String getPhotoReference() {
-        return photoReference;
+    public String getPhoto_reference() {
+        return photo_reference;
     }
 
-    /**
-     * 
-     * @param photoReference
-     *     The photo_reference
-     */
-    public void setPhotoReference(String photoReference) {
-        this.photoReference = photoReference;
+    public void setPhoto_reference(String photo_reference) {
+        this.photo_reference = photo_reference;
     }
 
     /**

@@ -221,7 +221,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                 .build();
         RestService service =  retrofit.create(RestService.class);
 
-        Call<SportsResult> call = service.retrieveSportsDetails("14b15");
+        Call<SportsResult> call = service.retrieveSportsDetails(Constants.SPORTS_URL_PARAM);
             call.enqueue(new Callback<SportsResult>() {
                 @Override
                 public void onResponse(Response<SportsResult> response, Retrofit retrofit) {
