@@ -2,6 +2,7 @@ package com.android.fillmyteam;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fillmyteam.model.User;
@@ -73,12 +75,13 @@ public class GoogleSignInActivity extends BaseActivity implements
     double mLatitude;
     GeoFire mGeoFire;
     String mPlayingLocation = "";
+    Typeface mSouthernAire;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        mSouthernAire=  Typeface.createFromAsset(getAssets(),"SouthernAire_Personal_Use_Only.ttf");
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -118,12 +121,17 @@ public class GoogleSignInActivity extends BaseActivity implements
             finish();
         }  else {
             mGoogleApiClient.connect();
+
             setContentView(R.layout.activity_google_sign_in);
+            TextView appTitleTextView = (TextView)findViewById(R.id.app_title);
+            appTitleTextView.setTypeface(mSouthernAire);
+
             View scrimView = findViewById(R.id.scrim_view);
             scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
                     0xaa000000, 8, Gravity.BOTTOM));
 
-            findViewById(R.id.sign_in_button).setOnClickListener(this);
+           findViewById(R.id.sign_in_button).setOnClickListener(this);
+
             initiateAuthentication(); // for new user or returning user
         }
 
@@ -201,6 +209,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onStart() {
         super.onStart();
+
 
         if (mAuthListener != null) {
             mAuth.addAuthStateListener(mAuthListener);

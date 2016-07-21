@@ -188,7 +188,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
             frameLayout.setVisibility(View.INVISIBLE);
             arcMenu.setVisibility(View.INVISIBLE);
         }
-  
+
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(PANEL_CLICK) && (savedInstanceState.containsKey(IMAGE_CLICK))) {
@@ -246,13 +246,13 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                     String tag = (String) v.getTag();
                     mSport = tag;
                     fireGeoQuery();
-                  
+
                 }
             });
         }
     }
 
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -357,7 +357,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onGeoQueryReady() {
-         if (playerFoundCount <= 0) {
+        if (playerFoundCount <= 0) {
             Toast.makeText(getActivity(), getString(R.string.no_player_found, mSport), Toast.LENGTH_SHORT).show();
         }
     }
@@ -447,7 +447,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         String snippet = marker.getSnippet();
         String snippets[] = snippet.split("-");
         int badge = Utility.retrieveSportsIcon(snippets[1]);
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+        ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
 
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
