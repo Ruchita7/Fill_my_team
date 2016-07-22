@@ -5,7 +5,7 @@ Sports lovers are generally for the look out for sports enthusiasts like them so
 
 **Installation instructions**
 
-  * Get Google Maps Key and put in gradle.properties for GoogleMapsKey. Refer <a href="https://developers.google.com/maps/documentation/android-api/signup/></a>
-  * Get Google Location API key and Youtube api key and put it under gradle.properties(YoutubeKey) and in strings.xml(geo_api_key) respectively . You can get the api key referring <a href="https://developers.google.com/youtube/android/player/register"></a> and places api referring <a href="https://developers.google.com/places/android-api/signup"/>
- 
-
+  * Get [Google Maps Key](https://developers.google.com/maps/documentation/android-api/signup)  and put in gradle.properties for GoogleMapsKey. 
+  * Get [Google Location API key](https://developers.google.com/places/android-api/signup) and [Youtube api key](https://developers.google.com/youtube/android/player/register) and put it under gradle.properties(YoutubeKey) and in strings.xml(geo_api_key) respectively .
+   
+  [Refer](https://github.com/Ruchita7/Capstone-Project) for further documentation 
