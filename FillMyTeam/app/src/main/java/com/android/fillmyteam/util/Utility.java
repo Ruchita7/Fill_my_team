@@ -1,11 +1,24 @@
 package com.android.fillmyteam.util;
 
+import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.annotation.IntRange;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.fillmyteam.R;
@@ -320,5 +333,40 @@ public class Utility {
                 break;
         }
         return title;
+    }
+
+    /**
+     * Creates interpolator.
+     *
+     * @param interpolatorType
+     * @return
+     */
+    public static TimeInterpolator createInterpolator(@IntRange(from = 0, to = 10) final int interpolatorType) {
+        switch (interpolatorType) {
+            case Constants.ACCELERATE_DECELERATE_INTERPOLATOR:
+                return new AccelerateDecelerateInterpolator();
+            case Constants.ACCELERATE_INTERPOLATOR:
+                return new AccelerateInterpolator();
+            case Constants.ANTICIPATE_INTERPOLATOR:
+                return new AnticipateInterpolator();
+            case Constants.ANTICIPATE_OVERSHOOT_INTERPOLATOR:
+                return new AnticipateOvershootInterpolator();
+            case Constants.BOUNCE_INTERPOLATOR:
+                return new BounceInterpolator();
+            case Constants.DECELERATE_INTERPOLATOR:
+                return new DecelerateInterpolator();
+            case Constants.FAST_OUT_LINEAR_IN_INTERPOLATOR:
+                return new FastOutLinearInInterpolator();
+            case Constants.FAST_OUT_SLOW_IN_INTERPOLATOR:
+                return new FastOutSlowInInterpolator();
+            case Constants.LINEAR_INTERPOLATOR:
+                return new LinearInterpolator();
+            case Constants.LINEAR_OUT_SLOW_IN_INTERPOLATOR:
+                return new LinearOutSlowInInterpolator();
+            case Constants.OVERSHOOT_INTERPOLATOR:
+                return new OvershootInterpolator();
+            default:
+                return new LinearInterpolator();
+        }
     }
 }

@@ -47,6 +47,8 @@ import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+//import android.support.v4.app.Fragment;
+
 
 /**
  * @author Ruchita_Maheshwary
@@ -63,7 +65,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
 
     private RecyclerView mRecyclerView;
     SportsInfoAdapter mAdapter;
-   
+
     private StaggeredGridLayoutManager mLayoutManager;
 
     static final int COL_SPORT_ID = 0;
@@ -81,7 +83,6 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
     private int mChoiceMode;
     private int mPosition = RecyclerView.NO_POSITION;
     private static final String SELECTED_KEY = "selected_position";
-
     ProgressBar mProgressBar;
     SportsInfoFragment mFragment;
 
@@ -145,13 +146,14 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         mProgressBar = (ProgressBar) view.findViewById(R.id.loading_indicator);
         mProgressBar.setVisibility(View.VISIBLE);
         mFragment = this;
+
         mAdapter = new SportsInfoAdapter(getActivity(), new SportsInfoAdapter.SportsAdapterOnClickHandler() {
             @Override
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
-                Fragment nextFrag = (SportsDetailFragment) SportsDetailFragment.newInstance(sportId, mPosition);
+                Fragment nextFrag = SportsDetailFragment.newInstance(sportId, mPosition);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-   
+
                     setExitTransition(new Fade());
 
                     nextFrag.setEnterTransition(new Explode());
@@ -164,6 +166,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                         .addToBackStack(nextFrag.getClass().getSimpleName())
                         .addSharedElement(viewHolder.sportsImage, viewHolder.sportsImage.getTransitionName())
                         .commit();
+
 
             }
         }, textView, mProgressBar, mChoiceMode);
@@ -182,9 +185,8 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         super.onResume();
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
-   
-    }
 
+    }
 
 
     @Override
@@ -214,51 +216,51 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         }
     }
 
-    private void retrieveSportsList()   {
+    private void retrieveSportsList() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.SPORTS_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RestService service =  retrofit.create(RestService.class);
+        RestService service = retrofit.create(RestService.class);
 
         Call<SportsResult> call = service.retrieveSportsDetails(Constants.SPORTS_URL_PARAM);
-            call.enqueue(new Callback<SportsResult>() {
-                @Override
-                public void onResponse(Response<SportsResult> response, Retrofit retrofit) {
-                    SportsResult sportsList = response.body();
-                    String  sportsKey = getActivity().getString(R.string.sports_detail);
-                   // List<SportParcelable> sportsList = response.body();
-                    if(sportsList==null)  {
-                        ResponseBody responseErrBody = response.errorBody();
-                      //  response.code()
+        call.enqueue(new Callback<SportsResult>() {
+            @Override
+            public void onResponse(Response<SportsResult> response, Retrofit retrofit) {
+                SportsResult sportsList = response.body();
+                String sportsKey = getActivity().getString(R.string.sports_detail);
+                // List<SportParcelable> sportsList = response.body();
+                if (sportsList == null) {
+                    ResponseBody responseErrBody = response.errorBody();
+                    //  response.code()
 
-                        if (responseErrBody != null) {
+                    if (responseErrBody != null) {
 
-                            try {
-                                Utility.setNetworkState(getActivity(), response.code(), sportsKey);
-                                String str = responseErrBody.string();
-                            } catch (IOException e) {
-                                Log.e(LOG_TAG, e.getMessage());
-                                return;
-                            }
+                        try {
+                            Utility.setNetworkState(getActivity(), response.code(), sportsKey);
+                            String str = responseErrBody.string();
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                            return;
                         }
                     }
-                 List<SportParcelable> sportParcelables =sportsList.getList();
-                    insertValues(sportParcelables);
                 }
+                List<SportParcelable> sportParcelables = sportsList.getList();
+                insertValues(sportParcelables);
+            }
 
 
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.e(LOG_TAG, t.getMessage());
-                }
-            });
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(LOG_TAG, t.getMessage());
+            }
+        });
 
-         //   Response<ResponseBody> response = service.retrieveSportsDetails("432j9").execute();
-        }
+        //   Response<ResponseBody> response = service.retrieveSportsDetails("432j9").execute();
+    }
 
     private void insertValues(List<SportParcelable> sportParcelables) {
-        for(SportParcelable sportParcelable : sportParcelables) {
+        for (SportParcelable sportParcelable : sportParcelables) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(SportsColumns.SPORTS_NAME, sportParcelable.getName());
             contentValues.put(SportsColumns.OBJECTIVE, sportParcelable.getObjective());
@@ -289,13 +291,13 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                     break;
                 case SportsAsyncTask.SPORTS_INFO_STATUS_INVALID:
                     message = R.string.invalid_information_error;*/
-                 case HttpURLConnection.HTTP_BAD_REQUEST:
+                case HttpURLConnection.HTTP_BAD_REQUEST:
                     message = R.string.empty_sports_list_server_down;
                     break;
                 case HttpURLConnection.HTTP_INTERNAL_ERROR:
                     message = R.string.empty_sports_list_server_error;
                     break;
-                case HttpURLConnection.HTTP_NO_CONTENT :
+                case HttpURLConnection.HTTP_NO_CONTENT:
                     message = R.string.invalid_information_error;
                 default:
                     if (!Utility.checkNetworkState(getActivity())) {

@@ -165,5 +165,6 @@
     <string name="location_image" translatable="false">Search maps for nearby playing locations</string>
     <string name="time_to_play" translatable="false">Time to play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="daily_reminder" translatable="false">Daily playing reminder</string>
+    <string name="directions" translatable="false">Directions</string>
 
 </resources>

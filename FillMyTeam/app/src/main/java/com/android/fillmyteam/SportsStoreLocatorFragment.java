@@ -2,8 +2,6 @@ package com.android.fillmyteam;
 
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +15,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import com.android.fillmyteam.model.LocationResponse;
 import com.android.fillmyteam.model.Photo;
 import com.android.fillmyteam.model.Result;
 import com.android.fillmyteam.model.StoreLocatorParcelable;
+import com.android.fillmyteam.ui.DividerItemDecoration;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.google.android.gms.common.ConnectionResult;
@@ -57,8 +55,8 @@ import retrofit.Retrofit;
  *
  * @author Ruchita_Maheshwary
  */
-public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, AdapterView.OnItemClickListener {
+public class SportsStoreLocatorFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     double mLatitude;
     double mLongitude;
@@ -70,10 +68,11 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
     SportsStoreLocatorFragment mFragment;
 
     String mPlaceId;
-    ListView mListView;
+    //ListView mListView;
+    RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerViewAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
+    StoreLocatorParcelable mStoreLocator;
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
     StoreLocatorAdapter mStoreLocatorAdapter;
     public static final String LOG_TAG = SportsStoreLocatorFragment.class.getSimpleName();
@@ -81,6 +80,11 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
     public static final String SELECTED_ITEM = "selected_item";
     int mIndex;
     TextView emptyList;
+    int mPosition;
+   /* BottomSheetBehavior bottomSheetBehavior;
+    View bottomSheetView;
+*/
+
 
 
     public SportsStoreLocatorFragment() {
@@ -118,18 +122,23 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
         }
         mFragment = this;
         View view = inflater.inflate(R.layout.fragment_sports_store_locator, container, false);
+
         mPlaceDetailsText = (TextView) view.findViewById(R.id.place_details);
         mAutocompleteView = (AutoCompleteTextView) view.
                 findViewById(R.id.autocomplete_places);
 
         emptyList = (TextView) view.findViewById(R.id.listview_store_empty);
-        mListView = (ListView) view.findViewById(R.id.store_locator_list_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.store_locator_list_view);
+
+        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         ImageView imageView = (ImageView) view.findViewById(R.id.powered_by_google);
 
         if (!Utility.checkNetworkState(getActivity())) {
             mAutocompleteView.setVisibility(View.INVISIBLE);
             imageView.setVisibility(View.INVISIBLE);
-            mListView.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
             emptyList.setVisibility(View.VISIBLE);
         } else {
             mAutocompleteView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -144,6 +153,7 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
                     return false;
                 }
             });
+          //  final TextView text1 = (TextView) view.findViewById(R.id.text1);
 
             mAutocompleteView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -167,7 +177,8 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
 
             mLayoutManager = new LinearLayoutManager(getActivity());
             mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
-            mListView.setOnItemClickListener(this);
+           // bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            //     mListView.setOnItemClickListener(this);
         }
 
         if (savedInstanceState != null) {
@@ -241,6 +252,7 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
             final AutocompletePrediction item = mAdapter.getItem(position);
             mPlaceId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
+            mStoreLocatorParcelables=new ArrayList<StoreLocatorParcelable>();
 
             //Log.i(LOG_TAG, "Autocomplete item selected: " + primaryText);
             Utility.hideSoftKeyboard(getActivity());
@@ -274,7 +286,7 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
             }
             // Get the Place object from the buffer.
             emptyList.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
@@ -324,7 +336,7 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
                 StoreLocatorParcelable storeLocatorParcelable = null;
                 for (Result result : resultList) {
                     name = result.getName();
-                    photoReference="";
+                    photoReference = "";
                     address = result.getFormatted_address();
                     latitude = result.getGeometry().getLocation().getLat();
                     longitude = result.getGeometry().getLocation().getLng();
@@ -338,17 +350,27 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
                     storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude, photoReference);
                     mStoreLocatorParcelables.add(storeLocatorParcelable);
                 }
-                mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
-                mListView.setAdapter(mStoreLocatorAdapter);
+                mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), mStoreLocatorParcelables);
+                /* new StoreLocatorAdapter.StoreAdapterOnClickHandler() {
+                    @Override
+                    public void itemClick(StoreLocatorParcelable storeLocatorParcelable, StoreLocatorAdapter.ViewHolder viewHolder) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        mPosition = viewHolder.getAdapterPosition();
+                        mStoreLocator = storeLocatorParcelable;
+                        bottomSheetView.setVisibility(View.VISIBLE);
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+                });*/
+                mRecyclerView.setAdapter(mStoreLocatorAdapter);
                 mStoreLocatorAdapter.notifyDataSetChanged();
 
-                if (mStoreLocatorAdapter != null && mStoreLocatorAdapter.getCount() != 0) {
+             /*   if (mStoreLocatorAdapter != null && mStoreLocatorAdapter.getCount() != 0) {
                     if (mIndex != 0) {
-                        View v = mListView.getChildAt(0);
+                        View v = mRecyclerView.getChildAt(0);
                         int top = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
-                        mListView.setSelectionFromTop(mIndex, top);
+                        mRecyclerView.setSelectionFromTop(mIndex, top);
                     }
-                }
+                }*/
             }
 
             @Override
@@ -389,29 +411,13 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
 
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        StoreLocatorParcelable storeLocatorParcelable = (StoreLocatorParcelable) parent.getItemAtPosition(position);
-        final double latitude = storeLocatorParcelable.getLatitude();
-        final double longitude = storeLocatorParcelable.getLongitude();
-        final String storeName = storeLocatorParcelable.getName();
-        final String address = storeLocatorParcelable.getAddress();
-        String geoLocation = getString(R.string.geo_location, storeName + address);
-
-        Uri geoIntentUri = Uri.parse(geoLocation);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
-        mapIntent.setPackage(Constants.GOOGLE_MAPS_PACKAGE);
-        if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            getActivity().startActivity(mapIntent);
-        }
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mPlaceId != null) {
             outState.putString(SEARCHED_STORE, mPlaceId);
-            mIndex = mListView.getFirstVisiblePosition();
+            //  mIndex = mRecyclerView.getFirstVisiblePosition();
 
             outState.putInt(SELECTED_ITEM, mIndex);
         }
@@ -445,13 +451,13 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
                 break;
 
 
-         //   case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
+            //   case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
             case HttpURLConnection.HTTP_BAD_REQUEST:
                 message = R.string.empty_store_list_server_down;
                 break;
 
-          //  case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
-           case HttpURLConnection.HTTP_INTERNAL_ERROR:
+            //  case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
+            case HttpURLConnection.HTTP_INTERNAL_ERROR:
                 message = R.string.empty_store_list_server_error;
                 break;
             default:
@@ -462,7 +468,7 @@ public class SportsStoreLocatorFragment extends Fragment implements  GoogleApiCl
         }
         if (message != 0) {
             emptyList.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.INVISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
             emptyList.setText(message);
         }
     }

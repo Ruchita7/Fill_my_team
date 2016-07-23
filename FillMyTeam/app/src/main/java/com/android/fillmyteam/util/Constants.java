@@ -152,4 +152,17 @@ public class Constants {
     public static final int ONE_HOUR = 1;
     public static final int TWO_HOUR = 2;
     public static final String ZERO = "0";
+
+    public static final int ACCELERATE_DECELERATE_INTERPOLATOR = 0;
+    public static final int ACCELERATE_INTERPOLATOR = 1;
+    public static final int ANTICIPATE_INTERPOLATOR = 2;
+    public static final int ANTICIPATE_OVERSHOOT_INTERPOLATOR = 3;
+    public static final int BOUNCE_INTERPOLATOR = 4;
+    public static final int DECELERATE_INTERPOLATOR = 5;
+    public static final int FAST_OUT_LINEAR_IN_INTERPOLATOR = 6;
+    public static final int FAST_OUT_SLOW_IN_INTERPOLATOR = 7;
+    public static final int LINEAR_INTERPOLATOR = 8;
+    public static final int LINEAR_OUT_SLOW_IN_INTERPOLATOR = 9;
+    public static final int OVERSHOOT_INTERPOLATOR = 10;
+
 }

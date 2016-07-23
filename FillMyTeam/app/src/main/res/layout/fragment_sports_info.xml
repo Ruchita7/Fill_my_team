@@ -12,6 +12,8 @@
         android:paddingBottom="@dimen/list_item_margin"
         android:layout_marginStart="@dimen/side_margin"
         android:layout_marginEnd="@dimen/side_margin"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:paddingTop="@dimen/list_item_margin"/>
 
     <ProgressBar
