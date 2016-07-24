@@ -15,8 +15,8 @@
     <string name="error_player" translatable="false">There was an error initializing the YouTubePlayer (%1$s)</string>
     <string name="place_details" translatable="false">&lt;b&gt;%1$s&lt;/b&gt;&lt;br/&gt;&lt;i&gt;Place Id: %2$s&lt;/i&gt;&lt;br/&gt;Address: %3$s&lt;br/&gt;Phone: %4$s&lt;br/&gt;Website: %5$s</string>
     <string name="map_key" translatable="false"></string>
-    <string name="geo_api_key" translatable="false">geo_key</string>
-    <string name="sport_goods_query" translatable="false">sports+goods</string>
+    <string name="geo_api_key" translatable="false">geo_api_key</string>
+    <string name="sport_goods_query" translatable="false">sports+goods+in+</string>
 
     <string name="loading" translatable="false">Loading…</string>
     <string name="firebase_status_fmt" translatable="false">Firebase User: %s</string>
@@ -55,7 +55,7 @@
     <string name="basic_rules" translatable="false">Basic Rules</string>
     <string name="video" translatable="false">Video</string>
     <string name="data_unavailable" translatable="false">Sports Data unavailable</string>
-    <string name="autocomplete_hint" translatable="false">Search Sports Stores within 5KM Range</string>
+    <string name="autocomplete_hint" translatable="false">Search for Sports Stores</string>
     <string name="daily_notification" translatable="false">Notify 30 minutes before my playing time</string>
     <string name="google_calendar_notification" translatable="false">Book my calendar</string>
     <string name="settings" translatable="false">Settings</string>
@@ -166,5 +166,7 @@
     <string name="time_to_play" translatable="false">Time to play <xliff:g id="sport">%1$s</xliff:g></string>
     <string name="daily_reminder" translatable="false">Daily playing reminder</string>
     <string name="directions" translatable="false">Directions</string>
+    <string name="navigation_message" translatable="false">Click here to select items from menu</string>
+    <string name="button_message" translatable="false">Click here to search players by sport</string>
 
 </resources>

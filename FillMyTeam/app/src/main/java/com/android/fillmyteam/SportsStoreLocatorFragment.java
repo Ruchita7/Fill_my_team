@@ -290,23 +290,24 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
-            String coordinates = placeLatLng.latitude + "," + placeLatLng.longitude;
+         //   String coordinates = placeLatLng.latitude + "," + placeLatLng.longitude;
         /*    StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getActivity(), mFragment);
             storeLocatorAsyncTask.execute(latitude);*/
-            retrieveStoreResult(coordinates);
+            retrieveStoreResult(placeName);
             //Log.i(LOG_TAG, "Place details received: " + place.getName());
 
             places.release();
         }
     };
 
-    private void retrieveStoreResult(String coordinates) {
+    private void retrieveStoreResult(String placeName) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.STORE_LOCATOR_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RestService service = retrofit.create(RestService.class);
-        Call<LocationResponse> response = service.retrieveSportsStores(this.getString(R.string.sport_goods_query), coordinates, Constants.TEN_KM_RADIUS, Constants.GOOGLE_MAPS_KEY);
+        placeName=placeName.replace(" ","+");
+        Call<LocationResponse> response = service.retrieveSportsStores(this.getString(R.string.sport_goods_query)+placeName, Constants.GOOGLE_MAPS_KEY);
         response.enqueue(new Callback<LocationResponse>() {
             @Override
             public void onResponse(Response<LocationResponse> response, Retrofit retrofit) {

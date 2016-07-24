@@ -18,5 +18,5 @@ public interface RestService {
     Call<SportsResult> retrieveSportsDetails(@Path("key") String urlKey);
 
     @GET("json")
-    Call<LocationResponse> retrieveSportsStores(@Query(Constants.QUERY) String query, @Query(Constants.LOCATION) String location, @Query(Constants.RADIUS) String radius, @Query(Constants.LOCATION_KEY) String mapsKey);
+    Call<LocationResponse> retrieveSportsStores(@Query(Constants.QUERY) String query, @Query(Constants.LOCATION_KEY) String mapsKey);
 }

@@ -27,12 +27,15 @@ import com.android.fillmyteam.api.Callback;
 import com.android.fillmyteam.model.User;
 import com.android.fillmyteam.sync.SportsSyncAdapter;
 import com.android.fillmyteam.ui.CircularImageTransform;
+import com.android.fillmyteam.ui.ViewTargets;
 import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.facebook.stetho.Stetho;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
@@ -126,7 +129,20 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        Stetho.initialize(
+        try {
+            ViewTarget navigationButtonViewTarget = ViewTargets.navigationButtonViewTarget(toolbar);
+            new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setTarget(navigationButtonViewTarget)
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentText(getString(R.string.navigation_message))
+                    .build();
+        } catch (ViewTargets.MissingViewException e) {
+            e.printStackTrace();
+        }
+
+
+    Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(
                                 Stetho.defaultDumperPluginsProvider(this))
@@ -254,6 +270,8 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
+
+
 
         switch (id) {
 

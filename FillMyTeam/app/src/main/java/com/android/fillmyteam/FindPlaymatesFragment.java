@@ -6,8 +6,10 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.text.Layout;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -61,8 +65,8 @@ import butterknife.ButterKnife;
 
 /**
  * Fragment for finding nearby players
- * @author Ruchita_Maheshwary
  *
+ * @author Ruchita_Maheshwary
  */
 public class FindPlaymatesFragment extends Fragment implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, OnMarkerClickListener,
         InfoWindowAdapter, OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener {
@@ -119,6 +123,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     Spinner sportSpinner;
     @BindView(R.id.map_empty)
     TextView emptyMap;
+    ArcMenu arcMenu;
 
     public FindPlaymatesFragment() {
         // Required empty public constructor
@@ -178,12 +183,12 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         mWindow = getActivity().getLayoutInflater().inflate(R.layout.custom_info_window, null);
         mContents = getActivity().getLayoutInflater().inflate(R.layout.custom_info_contents, null);
         ButterKnife.bind(this, view);
-        ArcMenu arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
+        arcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
         initArcMenu(arcMenu, ITEM_DRAWABLES);
         emptyMap.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         arcMenu.setVisibility(View.VISIBLE);
-        if(!Utility.checkNetworkState(getActivity()))   {
+        if (!Utility.checkNetworkState(getActivity())) {
             emptyMap.setVisibility(View.VISIBLE);
             frameLayout.setVisibility(View.INVISIBLE);
             arcMenu.setVisibility(View.INVISIBLE);
@@ -210,6 +215,25 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ShowcaseView showcaseView=  new ShowcaseView.Builder(getActivity())
+                .withMaterialShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setTarget(new ViewTarget(arcMenu))
+                .hideOnTouchOutside()
+               // .setContentText(getString(R.string.button_message))
+                .setContentTitle(getString(R.string.button_message))
+                .build();
+
+
+     //   showcaseView.setDetailTextAlignment(Layout.Alignment.ALIGN_OPPOSITE);
+        showcaseView.hideButton();
+        showcaseView.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
+        showcaseView.forceTextPosition(ShowcaseView.BELOW_SHOWCASE);//    .forceTextPosition(ShowcaseView.ABOVE_SHOWCASE);
+    }
+
 
     @Override
     public void onResume() {
@@ -228,6 +252,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     /**
      * Create floating button menu - sub menu items
+     *
      * @param menu
      * @param itemDrawables
      */
@@ -236,7 +261,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         for (int i = 0; i < itemCount; i++) {
             ImageView item = new ImageView(getActivity());
             item.setImageResource(itemDrawables[i]);
-            item.setContentDescription(getString(R.string.sports_button,SPORTS[i]));
+            item.setContentDescription(getString(R.string.sports_button, SPORTS[i]));
             item.setTag(SPORTS[i]);
             final int position = i;
             menu.addItem(item, new View.OnClickListener() {
@@ -400,6 +425,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                 .position(new LatLng(userObj.getLatitude(), userObj.getLongitude()))
                 .title(userObj.getName())
                 .snippet(time + "-" + userObj.getSport());
+
         markerMap.put(userObj.getEmail(), markerOptions);
         mMap.addMarker(markerOptions);
         userLatLngMap.put(new LatLng(userObj.getLatitude(), userObj.getLongitude()), playerParcelable);
@@ -439,6 +465,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     /**
      * Show player related info on click of marker
+     *
      * @param marker
      * @param view
      */
