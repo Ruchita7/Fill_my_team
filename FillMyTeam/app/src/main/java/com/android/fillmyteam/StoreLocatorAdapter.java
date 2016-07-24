@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -33,10 +34,11 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
 
     List<StoreLocatorParcelable> mStoreLocatorParcelables;
     Context mContext;
-    StoreAdapterOnClickHandler mClickHandler;
-    private SparseBooleanArray expandState = new SparseBooleanArray();
+  private SparseBooleanArray expandState = new SparseBooleanArray();
+    ItemChoiceManager mIcm;
+    View mEmptyView;
 
-    public StoreLocatorAdapter(Context context, List<StoreLocatorParcelable> storeLocatorParcelables) {//, StoreAdapterOnClickHandler clickHandler) {
+    public StoreLocatorAdapter(Context context, List<StoreLocatorParcelable> storeLocatorParcelables, View emptyView, int choiceMode) {//, StoreAdapterOnClickHandler clickHandler) {
         //    super(context, R.layout.store_locator_list_item, mStoreLocatorParcelables);
         this.mStoreLocatorParcelables = storeLocatorParcelables;
         //  mClickHandler = clickHandler;
@@ -44,6 +46,9 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
         for (int i = 0; i < storeLocatorParcelables.size(); i++) {
             expandState.append(i, false);
         }
+        mEmptyView = emptyView;
+        mIcm = new ItemChoiceManager(this);
+        mIcm.setChoiceMode(choiceMode);
     }
 
     @Override
@@ -54,11 +59,11 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder,final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         StoreLocatorParcelable storeLocatorParcelable = mStoreLocatorParcelables.get(position);
         holder.addressTextView.setText(storeLocatorParcelable.getAddress());
         holder.nameTextView.setText(storeLocatorParcelable.getName());
-       // holder.storeNameTextView.setText(storeLocatorParcelable.getName());
+        // holder.storeNameTextView.setText(storeLocatorParcelable.getName());
 
         Uri.Builder builder = Uri.parse(Constants.PHOTO_URL).buildUpon().
                 appendQueryParameter(Constants.MAX_WIDTH, Constants.WIDTH_VALUE).
@@ -95,12 +100,12 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoreLocatorParcelable locatorParcelable =mStoreLocatorParcelables.get(position);
+                StoreLocatorParcelable locatorParcelable = mStoreLocatorParcelables.get(position);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
                 sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, locatorParcelable.getName()+"\n"+locatorParcelable.getAddress());
+                sendIntent.putExtra(Intent.EXTRA_TEXT, locatorParcelable.getName() + "\n" + locatorParcelable.getAddress());
                 mContext.startActivity(sendIntent);
             }
         });
@@ -108,7 +113,7 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
         holder.directionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoreLocatorParcelable locatorParcelable =mStoreLocatorParcelables.get(position);
+                StoreLocatorParcelable locatorParcelable = mStoreLocatorParcelables.get(position);
                 String geoLocation = mContext.getString(R.string.geo_location, locatorParcelable.getName() + locatorParcelable.getAddress());
 
                 Uri geoIntentUri = Uri.parse(geoLocation);
@@ -124,51 +129,52 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
     private void onClickButton(final ExpandableLayout expandableLayout) {
         expandableLayout.toggle();
     }
+
     @Override
     public int getItemCount() {
         if (null == mStoreLocatorParcelables) return 0;
         return mStoreLocatorParcelables.size();
     }
 
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        mIcm.onRestoreInstanceState(savedInstanceState);
+    }
 
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    public void onSaveInstanceState(Bundle outState) {
+        mIcm.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-         TextView addressTextView;
-         TextView nameTextView;
-         RelativeLayout buttonLayout;
-      //  ImageView locatorImageView;
+        TextView addressTextView;
+        TextView nameTextView;
+        RelativeLayout buttonLayout;
+        //  ImageView locatorImageView;
         ImageView storeImageView;
-      //   TextView storeNameTextView;
+        //   TextView storeNameTextView;
         Button directionsButton;
         Button shareButton;
-         ExpandableLinearLayout expandableLayout;
+        ExpandableLinearLayout expandableLayout;
 
         public ViewHolder(View v) {
             super(v);
             addressTextView = (TextView) v.findViewById(R.id.address);
             nameTextView = (TextView) v.findViewById(R.id.name);
             buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
-          //  storeNameTextView = (TextView) v.findViewById(R.id.store_name);
             storeImageView = (ImageView) v.findViewById(R.id.store_image_view);
             expandableLayout = (ExpandableLinearLayout) v.findViewById(R.id.expandableLayout);
-            directionsButton = (Button)v.findViewById(R.id.directions_button);
-            shareButton = (Button)v.findViewById(R.id.share_button);
-          //  v.setOnClickListener(this);
+            directionsButton = (Button) v.findViewById(R.id.directions_button);
+            shareButton = (Button) v.findViewById(R.id.share_button);
+
         }
 
-   /*     @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            //  mCursor.moveToPosition(position);
-            *//*StoreLocatorParcelable storeLocatorParcelable = mStoreLocatorParcelables.get(position);
-            mClickHandler.itemClick(storeLocatorParcelable, this);*//*
-            StoreLocatorParcelable storeLocatorParcelable = mStoreLocatorParcelables.get(position);
-            BottomSheetDialogFragment bottomSheetDialogFragment = new BottomsheetDialog();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("store", storeLocatorParcelable);
-            bottomSheetDialogFragment.setArguments(bundle);
-            bottomSheetDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
-        }*/
     }
 
     public ObjectAnimator createRotateAnimator(final View target, final float from, final float to) {
@@ -177,7 +183,6 @@ public class StoreLocatorAdapter extends RecyclerView.Adapter<StoreLocatorAdapte
         animator.setInterpolator(Utility.createInterpolator(Constants.LINEAR_INTERPOLATOR));
         return animator;
     }
-    public static interface StoreAdapterOnClickHandler {
-        public void itemClick(StoreLocatorParcelable storeLocatorParcelable, ViewHolder viewHolder);
-    }
+
+
 }

@@ -1,17 +1,22 @@
 package com.android.fillmyteam;
 
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -78,13 +83,11 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
     public static final String LOG_TAG = SportsStoreLocatorFragment.class.getSimpleName();
     public static final String SEARCHED_STORE = "searched_store";
     public static final String SELECTED_ITEM = "selected_item";
-    int mIndex;
+    Parcelable mIndex;
     TextView emptyList;
+    private boolean mAutoSelectView;
+    private int mChoiceMode;
     int mPosition;
-   /* BottomSheetBehavior bottomSheetBehavior;
-    View bottomSheetView;
-*/
-
 
 
     public SportsStoreLocatorFragment() {
@@ -110,6 +113,16 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
+    }
+
+    @Override
+    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
+        super.onInflate(activity, attrs, savedInstanceState);
+        TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.SportInfoFragment,
+                +0, 0);
+        mChoiceMode = a.getInt(R.styleable.SportsStoreLocatorFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
+        mAutoSelectView = a.getBoolean(R.styleable.SportsStoreLocatorFragment_storeAutoSelectView, false);
+        a.recycle();
     }
 
     @Override
@@ -153,7 +166,7 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                     return false;
                 }
             });
-          //  final TextView text1 = (TextView) view.findViewById(R.id.text1);
+            //  final TextView text1 = (TextView) view.findViewById(R.id.text1);
 
             mAutocompleteView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -177,8 +190,6 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
 
             mLayoutManager = new LinearLayoutManager(getActivity());
             mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
-           // bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-            //     mListView.setOnItemClickListener(this);
         }
 
         if (savedInstanceState != null) {
@@ -189,7 +200,9 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                             .getPlaceById(mGoogleApiClient, mPlaceId);
                     placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
                     if (savedInstanceState.containsKey(SELECTED_ITEM)) {
-                        mIndex = savedInstanceState.getInt(SELECTED_ITEM);
+                        mIndex = savedInstanceState.getParcelable(SELECTED_ITEM);
+                        //mStoreLocatorAdapter.onRestoreInstanceState(savedInstanceState);
+                        mLayoutManager.onRestoreInstanceState(mIndex);
                     }
                 }
             }
@@ -197,25 +210,6 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
         return view;
     }
 
-    /*@Override
-    public void retrieveStoresList(List<StoreLocatorParcelable> storeLocatorParcelables, int status) {
-        //Log.v(LOG_TAG, "sports list size" + storeLocatorParcelables.size());
-        mStoreLocatorParcelables = storeLocatorParcelables;
-        mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), 0, mStoreLocatorParcelables);
-        mListView.setAdapter(mStoreLocatorAdapter);
-        mStoreLocatorAdapter.notifyDataSetChanged();
-
-        if (mStoreLocatorAdapter != null && mStoreLocatorAdapter.getCount() != 0) {
-            if (mIndex != 0) {
-                View v = mListView.getChildAt(0);
-                int top = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
-                mListView.setSelectionFromTop(mIndex, top);
-            }
-        } else {
-            updateEmptyView(status);
-        }
-    }
-*/
     @Override
     public void onStop() {
         super.onStop();
@@ -247,14 +241,11 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
              The adapter stores each Place suggestion in a AutocompletePrediction from which we
              read the place ID and title.
               */
-            //Log.v(LOG_TAG, "in onItemClick");
             emptyList.setVisibility(View.GONE);
             final AutocompletePrediction item = mAdapter.getItem(position);
             mPlaceId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
-            mStoreLocatorParcelables=new ArrayList<StoreLocatorParcelable>();
-
-            //Log.i(LOG_TAG, "Autocomplete item selected: " + primaryText);
+            mStoreLocatorParcelables = new ArrayList<StoreLocatorParcelable>();
             Utility.hideSoftKeyboard(getActivity());
 
             /*
@@ -277,10 +268,8 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
             = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
-            //Log.v(LOG_TAG, "in on result");
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
-                //Log.e(LOG_TAG, "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
                 return;
             }
@@ -290,12 +279,7 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
             final Place place = places.get(0);
             LatLng placeLatLng = place.getLatLng();
             String placeName = place.getName().toString();
-         //   String coordinates = placeLatLng.latitude + "," + placeLatLng.longitude;
-        /*    StoreLocatorAsyncTask storeLocatorAsyncTask = new StoreLocatorAsyncTask(getActivity(), mFragment);
-            storeLocatorAsyncTask.execute(latitude);*/
             retrieveStoreResult(placeName);
-            //Log.i(LOG_TAG, "Place details received: " + place.getName());
-
             places.release();
         }
     };
@@ -306,8 +290,8 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RestService service = retrofit.create(RestService.class);
-        placeName=placeName.replace(" ","+");
-        Call<LocationResponse> response = service.retrieveSportsStores(this.getString(R.string.sport_goods_query)+placeName, Constants.GOOGLE_MAPS_KEY);
+        placeName = placeName.replace(" ", "+");
+        Call<LocationResponse> response = service.retrieveSportsStores(this.getString(R.string.sport_goods_query) + placeName, Constants.GOOGLE_MAPS_KEY);
         response.enqueue(new Callback<LocationResponse>() {
             @Override
             public void onResponse(Response<LocationResponse> response, Retrofit retrofit) {
@@ -351,27 +335,11 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                     storeLocatorParcelable = new StoreLocatorParcelable(name, address, latitude, longitude, photoReference);
                     mStoreLocatorParcelables.add(storeLocatorParcelable);
                 }
-                mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), mStoreLocatorParcelables);
-                /* new StoreLocatorAdapter.StoreAdapterOnClickHandler() {
-                    @Override
-                    public void itemClick(StoreLocatorParcelable storeLocatorParcelable, StoreLocatorAdapter.ViewHolder viewHolder) {
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                        mPosition = viewHolder.getAdapterPosition();
-                        mStoreLocator = storeLocatorParcelable;
-                        bottomSheetView.setVisibility(View.VISIBLE);
-                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    }
-                });*/
+                mStoreLocatorAdapter = new StoreLocatorAdapter(getActivity(), mStoreLocatorParcelables, emptyList, mChoiceMode);
+
                 mRecyclerView.setAdapter(mStoreLocatorAdapter);
                 mStoreLocatorAdapter.notifyDataSetChanged();
 
-             /*   if (mStoreLocatorAdapter != null && mStoreLocatorAdapter.getCount() != 0) {
-                    if (mIndex != 0) {
-                        View v = mRecyclerView.getChildAt(0);
-                        int top = (v == null) ? 0 : (v.getTop() - mListView.getPaddingTop());
-                        mRecyclerView.setSelectionFromTop(mIndex, top);
-                    }
-                }*/
             }
 
             @Override
@@ -379,6 +347,8 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
 
             }
         });
+
+
     }
 
     /**
@@ -418,9 +388,7 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
         super.onSaveInstanceState(outState);
         if (mPlaceId != null) {
             outState.putString(SEARCHED_STORE, mPlaceId);
-            //  mIndex = mRecyclerView.getFirstVisiblePosition();
-
-            outState.putInt(SELECTED_ITEM, mIndex);
+            outState.putParcelable(SELECTED_ITEM, mLayoutManager.onSaveInstanceState());
         }
     }
 
@@ -446,18 +414,15 @@ public class SportsStoreLocatorFragment extends Fragment implements GoogleApiCli
                 message = R.string.no_location_found;
                 break;
 
-            //case StoreLocatorAsyncTask.STORE_STATUS_INVALID:
             case HttpURLConnection.HTTP_NO_CONTENT:
                 message = R.string.invalid_request_error;
                 break;
 
-
-            //   case StoreLocatorAsyncTask.STORE_STATUS_SERVER_DOWN:
             case HttpURLConnection.HTTP_BAD_REQUEST:
                 message = R.string.empty_store_list_server_down;
                 break;
 
-            //  case StoreLocatorAsyncTask.STORE_STATUS_SERVER_INVALID:
+
             case HttpURLConnection.HTTP_INTERNAL_ERROR:
                 message = R.string.empty_store_list_server_error;
                 break;

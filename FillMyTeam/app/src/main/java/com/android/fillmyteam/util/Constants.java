@@ -164,5 +164,5 @@ public class Constants {
     public static final int LINEAR_INTERPOLATOR = 8;
     public static final int LINEAR_OUT_SLOW_IN_INTERPOLATOR = 9;
     public static final int OVERSHOOT_INTERPOLATOR = 10;
-
+    public static final String ACCESS_COUNT="access_count";
 }

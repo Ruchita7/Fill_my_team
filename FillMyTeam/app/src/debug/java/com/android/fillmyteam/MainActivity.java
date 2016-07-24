@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     Activity mActivity;
     List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,19 +129,23 @@ public class MainActivity extends AppCompatActivity
         };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        try {
-            ViewTarget navigationButtonViewTarget = ViewTargets.navigationButtonViewTarget(toolbar);
-            new ShowcaseView.Builder(this)
-                    .withMaterialShowcase()
-                    .setTarget(navigationButtonViewTarget)
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setContentText(getString(R.string.navigation_message))
-                    .build();
-        } catch (ViewTargets.MissingViewException e) {
-            e.printStackTrace();
+        int menuHelpCount = sharedPreferences.getInt(Constants.ACCESS_COUNT,0);
+        if(menuHelpCount==0) {
+            try {
+                ViewTarget navigationButtonViewTarget = ViewTargets.navigationButtonViewTarget(toolbar);
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setTarget(navigationButtonViewTarget)
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setContentText(getString(R.string.navigation_message))
+                        .build();
+            } catch (ViewTargets.MissingViewException e) {
+                e.printStackTrace();
+            }
+            editor = sharedPreferences.edit();
+            editor.putInt(Constants.ACCESS_COUNT, ++menuHelpCount);
+            editor.commit();
         }
-
 
     Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
