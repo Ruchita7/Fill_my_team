@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     tools:text="10 Downing Street London"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_weight="3"
+                    android:layout_weight="4"
                    />
             </LinearLayout>
         </LinearLayout>

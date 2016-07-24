@@ -34,6 +34,7 @@ import com.android.fillmyteam.util.Constants;
 import com.android.fillmyteam.util.Utility;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -199,10 +200,20 @@ public class SportsDetailFragment extends Fragment implements LoaderManager.Load
             mRulesTextView.setText(rules);
             Picasso.with(getActivity()).load(mImageUrl).into(mSportsImageView);
             mSportsImageView.setContentDescription(sportsName);
-            Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView);
-            if (Utility.checkNetworkState(getActivity())) {
-                mVideoPlayImageView.setVisibility(View.VISIBLE);
-            }
+            Picasso.with(getActivity()).load(mThumbnailUrl).into(mThumbnailImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if (Utility.checkNetworkState(getActivity())) {
+                        mVideoPlayImageView.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createSharedIntent());
             }
