@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.android.fillmyteam.ui.AspectRatioImageViewer
+        <com.sample.android.fillmyteam.ui.AspectRatioImageViewer
             android:id="@+id/sports_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

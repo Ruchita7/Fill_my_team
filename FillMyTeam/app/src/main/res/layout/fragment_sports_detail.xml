@@ -21,7 +21,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
-            <com.android.fillmyteam.ui.AspectRatioImageViewer
+            <com.sample.android.fillmyteam.ui.AspectRatioImageViewer
                 android:id="@+id/sport_poster"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

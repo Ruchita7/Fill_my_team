@@ -38,7 +38,7 @@
     </RelativeLayout>
 
 
-    <com.android.fillmyteam.ui.ExpandableLinearLayout
+    <com.sample.android.fillmyteam.ui.ExpandableLinearLayout
         android:id="@+id/expandableLayout"
         android:layout_width="match_parent"
         android:layout_height="700dp"
@@ -114,5 +114,5 @@
                 />
         </LinearLayout>
 
-    </com.android.fillmyteam.ui.ExpandableLinearLayout>
+    </com.sample.android.fillmyteam.ui.ExpandableLinearLayout>
 </RelativeLayout>

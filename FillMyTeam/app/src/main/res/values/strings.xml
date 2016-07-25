@@ -104,8 +104,8 @@
     <string name="title_widget_detail" translatable="false">Upcoming Match Details</string>
     <string name="appwidget_text" translatable="false">EXAMPLE</string>
     <string name="add_widget" translatable="false">Add widget</string>
-    <string name="content_authority" translatable="false">com.android.fillmyteam.SportsProvider</string>
-    <string name="sync_account_type" translatable="false">fillmyteam.android.com</string>
+    <string name="content_authority" translatable="false">com.sample.android.fillmyteam.SportsProvider</string>
+    <string name="sync_account_type" translatable="false">fillmyteam.android.sample.com</string>
     <string name="network_status_key" translatable="false">sync_status</string>
     <string name="match_id" translatable="false">match_id</string>
     <string name="learn_to_play" translatable="false">Learn to play <xliff:g id="sport">%1$s</xliff:g></string>
