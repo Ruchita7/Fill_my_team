@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sample.android;
+package com.sample.android.fillmyteam.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -32,6 +32,8 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.sample.android.fillmyteam.R;
 
 /**
  * A custom view that looks like the menu in <a href="https://path.com">Path
@@ -57,8 +59,8 @@ public class ArcMenu extends RelativeLayout {
     }
 
     private void init(Context context) {
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        li.inflate(R.layout.arc_menu, this);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.arc_menu, this);
 
         mArcLayout = (ArcLayout) findViewById(R.id.item_layout);
 

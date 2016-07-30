@@ -32,8 +32,8 @@ android {
         applicationId "com.sample.android.fillmyteam"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -71,7 +71,6 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'joda-time:joda-time:2.3'
-    compile project(':library')
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:design:23.4.0'

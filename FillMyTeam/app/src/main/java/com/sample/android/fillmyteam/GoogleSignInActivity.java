@@ -1,35 +1,24 @@
 package com.sample.android.fillmyteam;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sample.android.fillmyteam.model.User;
-import com.sample.android.fillmyteam.ui.ScrimUtil;
-import com.sample.android.fillmyteam.util.Constants;
-import com.sample.android.fillmyteam.util.Utility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.client.Firebase;
 import com.firebase.geofire.GeoFire;
@@ -40,10 +29,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -56,6 +51,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sample.android.fillmyteam.model.User;
+import com.sample.android.fillmyteam.ui.ScrimUtil;
+import com.sample.android.fillmyteam.util.Constants;
+import com.sample.android.fillmyteam.util.Utility;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -70,7 +69,7 @@ import java.util.Map;
 public class GoogleSignInActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
-        View.OnClickListener {
+        View.OnClickListener,LocationListener {
 
     private static final String LOG_TAG = GoogleSignInActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
@@ -88,6 +87,8 @@ public class GoogleSignInActivity extends BaseActivity implements
     Typeface mSouthernAire;
     private LocationRequest mLocationRequest;
 
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,12 +100,13 @@ public class GoogleSignInActivity extends BaseActivity implements
 
         }*/
 
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
+   /*     int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if(permissionCheck!= PackageManager.PERMISSION_GRANTED) {
          retrieveLocation();
         }
 
+     */
         mSouthernAire=  Typeface.createFromAsset(getAssets(),"SouthernAire_Personal_Use_Only.ttf");
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -119,7 +121,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                 .addApi(LocationServices.API)
                 .build();
 
-
+        checkLocationSettings();
         boolean isLogout = false;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -162,7 +164,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     }
 
-    private void retrieveLocation() {
+ /*   private void retrieveLocation() {
 
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -226,6 +228,84 @@ public class GoogleSignInActivity extends BaseActivity implements
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+
+    }
+*/
+
+    /**
+     * Prompt user to enable GPS and Location Services
+     */
+    public  void checkLocationSettings() {
+        mLocationRequest  = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(30 * 1000);
+        mLocationRequest.setFastestInterval(5 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        builder.setAlwaysShow(true);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        startLocationUpdates();
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    GoogleSignInActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLatitude=location.getLatitude();
+        mLongitude=location.getLongitude();
+    }
+
+    /*   @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        startLocationUpdates();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
+        }
+    }*/
+
+  protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
+                mLocationRequest,
+                this
+        );
 
     }
 
@@ -350,6 +430,17 @@ public class GoogleSignInActivity extends BaseActivity implements
                 updateUI(null);
             }
         }
+        else if(requestCode==REQUEST_CHECK_SETTINGS)    {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                   // Log.i(TAG, "User agreed to make required location settings changes.");
+                    startLocationUpdates();
+                    break;
+                case Activity.RESULT_CANCELED:
+                  //  Log.i(TAG, "User chose not to make required location settings changes.");
+                    break;
+            }
+        }
     }
 
 
@@ -452,9 +543,9 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
-            mLocationRequest = LocationRequest.create();
+            /*mLocationRequest = LocationRequest.create();
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            mLocationRequest.setInterval(10); // Update location every second
+            mLocationRequest.setInterval(10);*/ // Update location every second
 
        //     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 

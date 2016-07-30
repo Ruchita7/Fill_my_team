@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android;
+package com.sample.android.fillmyteam.ui;
 
 import android.view.animation.Animation;
 import android.view.animation.Transformation;

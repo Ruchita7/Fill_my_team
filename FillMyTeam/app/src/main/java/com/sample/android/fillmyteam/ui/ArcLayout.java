@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sample.android;
+package com.sample.android.fillmyteam.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -31,7 +31,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
 
-import com.android.RotateAndTranslateAnimation;
+import com.sample.android.fillmyteam.R;
 
 /**
  * A Layout that arranges its children around its center. The arc can be set by
