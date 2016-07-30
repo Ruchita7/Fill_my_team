@@ -125,6 +125,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     TextView emptyMap;
     ArcMenu arcMenu;
 
+
     public FindPlaymatesFragment() {
         // Required empty public constructor
     }
@@ -241,6 +242,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
     }
+
+
 
 
     @Override

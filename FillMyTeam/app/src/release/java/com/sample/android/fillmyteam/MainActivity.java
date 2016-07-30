@@ -6,11 +6,16 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,23 +27,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sample.android.fillmyteam.api.Callback;
 import com.sample.android.fillmyteam.model.User;
 import com.sample.android.fillmyteam.sync.SportsSyncAdapter;
 import com.sample.android.fillmyteam.ui.CircularImageTransform;
+import com.sample.android.fillmyteam.ui.ViewTargets;
 import com.sample.android.fillmyteam.util.Constants;
 import com.sample.android.fillmyteam.util.Utility;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 //import com.facebook.stetho.Stetho;
 
@@ -48,7 +66,8 @@ import java.util.List;
  *         Main Activity launched after login. It will be first screen if the user is already logged in
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Callback {
+        implements NavigationView.OnNavigationItemSelectedListener, Callback,GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,LocationListener {
 
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
     String mAddressOutput = "";
@@ -57,10 +76,12 @@ public class MainActivity extends AppCompatActivity
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     boolean isDrawerLocked;
     View navigationHeader;
-
-
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
     Activity mActivity;
-    List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
+    double mLongitude;
+    double mLatitude;
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +95,13 @@ public class MainActivity extends AppCompatActivity
         mActivity = this;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
@@ -127,6 +155,24 @@ public class MainActivity extends AppCompatActivity
         };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
+        int menuHelpCount = sharedPreferences.getInt(Constants.ACCESS_COUNT,0);
+        if(menuHelpCount==0) {
+            try {
+                ViewTarget navigationButtonViewTarget = ViewTargets.navigationButtonViewTarget(toolbar);
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setTarget(navigationButtonViewTarget)
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setContentText(getString(R.string.navigation_message))
+                        .build();
+            } catch (ViewTargets.MissingViewException e) {
+                e.printStackTrace();
+            }
+            editor = sharedPreferences.edit();
+            editor.putInt(Constants.ACCESS_COUNT, ++menuHelpCount);
+            editor.commit();
+        }
 
         /*Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
@@ -263,6 +309,9 @@ public class MainActivity extends AppCompatActivity
                 fragment = (SportsInfoFragment) SportsInfoFragment.newInstance(mUser.getLatitude(), mUser.getLongitude());
                 break;
             case R.id.find_playmates:
+                checkLocationSettings();
+                mUser.setLongitude(mLongitude);
+                mUser.setLongitude(mLongitude);
                 fragment = (FindPlaymatesFragment) FindPlaymatesFragment.newInstance(mUser);
                 break;
             case R.id.edit_profile:
@@ -318,6 +367,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
+        editor.putString(Constants.EMAIL,"");
+        editor.putString(Constants.USER_INFO,"");
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
         intent.putExtra(Constants.LOGOUT, true);
@@ -350,5 +401,114 @@ public class MainActivity extends AppCompatActivity
         return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==GoogleSignInActivity.REQUEST_CHECK_SETTINGS)    {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // Log.i(TAG, "User agreed to make required location settings changes.");
+                    startLocationUpdates();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    //  Log.i(TAG, "User chose not to make required location settings changes.");
+                    break;
+            }
+        }
+    }
 
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
+                mLocationRequest,
+                this
+        );
+
+    }
+
+    /**
+     * Prompt user to enable GPS and Location Services
+     */
+    public  void checkLocationSettings() {
+        mLocationRequest  = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(30 * 1000);
+        mLocationRequest.setFastestInterval(5 * 1000);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        builder.setAlwaysShow(true);
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        startLocationUpdates();
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    MainActivity.this, GoogleSignInActivity.REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLatitude=location.getLatitude();
+        mLongitude=location.getLongitude();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+
+            if (mLastLocation != null) {
+                // Determine whether a Geocoder is available.
+                mLatitude = mLastLocation.getLatitude();
+                mLongitude = mLastLocation.getLongitude();
+                if (!Geocoder.isPresent()) {
+                    Toast.makeText(this, getString(R.string.no_geocoder),
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

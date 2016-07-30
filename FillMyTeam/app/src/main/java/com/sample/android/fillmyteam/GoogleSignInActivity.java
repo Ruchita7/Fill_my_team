@@ -93,20 +93,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-     /* final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            buildAlertMessageNoGps();
-
-        }*/
-
-   /*     int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        if(permissionCheck!= PackageManager.PERMISSION_GRANTED) {
-         retrieveLocation();
-        }
-
-     */
         mSouthernAire=  Typeface.createFromAsset(getAssets(),"SouthernAire_Personal_Use_Only.ttf");
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -164,73 +151,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     }
 
- /*   private void retrieveLocation() {
 
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION);
-
-        String zip = null;
-        Location location = null;
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-
-            public void onLocationChanged(Location location) {
-                mLatitude = location.getLatitude();
-                mLatitude = location.getLongitude();
-
-                Log.i("updated lat", String.valueOf(mLatitude));
-                Log.i("updated lng", String.valueOf(mLatitude));
-            }
-
-
-        };
-
-        try {
-            if (PackageManager.PERMISSION_GRANTED == permissionCheck) {
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0l, 0f, locationListener);
-            }
-
-        } catch (SecurityException e){
-            e.printStackTrace();
-        }
-
-
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog,  final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-
-    }
-*/
 
     /**
      * Prompt user to enable GPS and Location Services
@@ -282,23 +203,9 @@ public class GoogleSignInActivity extends BaseActivity implements
     public void onLocationChanged(Location location) {
         mLatitude=location.getLatitude();
         mLongitude=location.getLongitude();
+        getLocation();
     }
 
-    /*   @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        startLocationUpdates();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        break;
-                }
-                break;
-        }
-    }*/
 
   protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
@@ -327,6 +234,14 @@ public class GoogleSignInActivity extends BaseActivity implements
                             mAuthenticatedUser = dataSnapshot.getValue(User.class);
                             if (mAuthenticatedUser != null) {
                                 //do nothing
+                       /*         mAuthenticatedUser.setLongitude(mLongitude);
+                                mAuthenticatedUser.setLatitude(mLatitude);
+                                mAuthenticatedUser.setPlayingPlace(mPlayingLocation);
+                                mAuthenticatedUser.setPhotoUrl(user.getPhotoUrl().toString());*/
+                                ref.child(Constants.LATITUDE).setValue(mLatitude);
+                                ref.child(Constants.LONGITUDE).setValue(mLongitude);
+                                ref.child(Constants.PLAYING_PLACE).setValue(mPlayingLocation);
+                                ref.child(Constants.PHOTO_URL_VAL).setValue(user.getPhotoUrl().toString());
                             } else {
                                 HashMap<String, Object> userAndUidMapping = new HashMap<String, Object>();
                                 GregorianCalendar gcalendar = new GregorianCalendar();
@@ -543,11 +458,6 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
-            /*mLocationRequest = LocationRequest.create();
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            mLocationRequest.setInterval(10);*/ // Update location every second
-
-       //     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
@@ -556,46 +466,53 @@ public class GoogleSignInActivity extends BaseActivity implements
                 // Determine whether a Geocoder is available.
                 mLatitude = mLastLocation.getLatitude();
                 mLongitude = mLastLocation.getLongitude();
+                getLocation();
                 if (!Geocoder.isPresent()) {
                     Toast.makeText(this, getString(R.string.no_geocoder),
                             Toast.LENGTH_LONG).show();
                     return;
                 } else {
-                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                    List<Address> addresses = geocoder.getFromLocation(mLatitude, mLongitude, 1);
-                    String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                    if (address != null) {
-                        mPlayingLocation = mPlayingLocation.concat(" ").concat(address);
-                    }
-                    String city = addresses.get(0).getLocality();
-                    if (city != null) {
-                        mPlayingLocation = mPlayingLocation.concat(" ").concat(city);
-                    }
-                    String state = addresses.get(0).getAdminArea();
-                    if (state != null) {
-                        mPlayingLocation = mPlayingLocation.concat(" ").concat(state);
-                    }
-                    String country = addresses.get(0).getCountryName();
-                    if (country != null) {
-                        mPlayingLocation = mPlayingLocation.concat(" ").concat(country);
-                    }
-                    String postalCode = addresses.get(0).getPostalCode();
-                    if (postalCode != null) {
-                        mPlayingLocation = mPlayingLocation.concat(" ").concat(postalCode);
-                    }
-
+                    getLocation();
                 }
             }
         } catch (SecurityException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        }
+    }
+
+    private void getLocation()    {
+        try {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(mLatitude, mLongitude, 1);
+        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        if (address != null) {
+            mPlayingLocation = mPlayingLocation.concat(" ").concat(address);
+        }
+        String city = addresses.get(0).getLocality();
+        if (city != null) {
+            mPlayingLocation = mPlayingLocation.concat(" ").concat(city);
+        }
+        String state = addresses.get(0).getAdminArea();
+        if (state != null) {
+            mPlayingLocation = mPlayingLocation.concat(" ").concat(state);
+        }
+        String country = addresses.get(0).getCountryName();
+        if (country != null) {
+            mPlayingLocation = mPlayingLocation.concat(" ").concat(country);
+        }
+        String postalCode = addresses.get(0).getPostalCode();
+        if (postalCode != null) {
+            mPlayingLocation = mPlayingLocation.concat(" ").concat(postalCode);
+        }
+
+    }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
