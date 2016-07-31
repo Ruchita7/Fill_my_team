@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
+            if(mLatitude!=0 &&mLongitude!=0)    {
+                mUser.setLatitude(mLatitude);
+                mUser.setLongitude(mLongitude);
+            }
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(Constants.EMAIL, mUser.getEmail());
             editor.commit();
@@ -129,6 +133,10 @@ public class MainActivity extends AppCompatActivity
             if (userJson != null && !userJson.isEmpty()) {
                 try {
                     mUser = new ObjectMapper().readValue(userJson, User.class);
+                    if(mLatitude!=0 &&mLongitude!=0)    {
+                        mUser.setLatitude(mLatitude);
+                        mUser.setLongitude(mLongitude);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
