@@ -2,9 +2,12 @@ package com.sample.android.fillmyteam;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -21,6 +24,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -102,6 +106,10 @@ public class MainActivity extends AppCompatActivity
                 .addApi(LocationServices.API)
                 .build();
         checkLocationSettings();
+        if (!Utility.checkNetworkState(this)) {
+            DialogFragment dialogFragment = new NetworkConnectionDialogFragment();
+            dialogFragment.show(getFragmentManager(), getString(R.string.login_network_unavailable));
+        }
         //When User is first time logging in, updated SharedPreferences with his credentials and load his details in navigation drawer
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
@@ -307,6 +315,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Class fragmentClass = null;
         Utility.hideSoftKeyboard(this);
+        if (!Utility.checkNetworkState(this)) {
+            DialogFragment dialogFragment = new NetworkConnectionDialogFragment();
+            dialogFragment.show(getFragmentManager(), getString(R.string.login_network_unavailable));
+        }
         FragmentManager fragmentManager = getFragmentManager();
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -517,6 +529,25 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static class NetworkConnectionDialogFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.no_network_header);
+            builder.setMessage(R.string.no_network)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NetworkConnectionDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            return builder.create();
         }
     }
 }

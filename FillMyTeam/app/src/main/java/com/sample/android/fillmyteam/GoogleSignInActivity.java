@@ -1,6 +1,9 @@
 package com.sample.android.fillmyteam;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -13,6 +16,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -69,7 +73,7 @@ import java.util.Map;
 public class GoogleSignInActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
-        View.OnClickListener,LocationListener {
+        View.OnClickListener, LocationListener {
 
     private static final String LOG_TAG = GoogleSignInActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
@@ -94,7 +98,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
 
 
-        mSouthernAire=  Typeface.createFromAsset(getAssets(),"SouthernAire_Personal_Use_Only.ttf");
+        mSouthernAire = Typeface.createFromAsset(getAssets(), "SouthernAire_Personal_Use_Only.ttf");
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -133,18 +137,18 @@ public class GoogleSignInActivity extends BaseActivity implements
 
             startActivity(intent);
             finish();
-        }  else {
+        } else {
             mGoogleApiClient.connect();
 
             setContentView(R.layout.activity_google_sign_in);
-            TextView appTitleTextView = (TextView)findViewById(R.id.app_title);
+            TextView appTitleTextView = (TextView) findViewById(R.id.app_title);
             appTitleTextView.setTypeface(mSouthernAire);
 
             View scrimView = findViewById(R.id.scrim_view);
             scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
                     0xaa000000, 8, Gravity.BOTTOM));
 
-           findViewById(R.id.sign_in_button).setOnClickListener(this);
+            findViewById(R.id.sign_in_button).setOnClickListener(this);
 
             initiateAuthentication(); // for new user or returning user
         }
@@ -152,12 +156,11 @@ public class GoogleSignInActivity extends BaseActivity implements
     }
 
 
-
     /**
      * Prompt user to enable GPS and Location Services
      */
-    public  void checkLocationSettings() {
-        mLocationRequest  = LocationRequest.create();
+    public void checkLocationSettings() {
+        mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(30 * 1000);
         mLocationRequest.setFastestInterval(5 * 1000);
@@ -201,13 +204,13 @@ public class GoogleSignInActivity extends BaseActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mLatitude=location.getLatitude();
-        mLongitude=location.getLongitude();
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
         getLocation();
     }
 
 
-  protected void startLocationUpdates() {
+    protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient,
                 mLocationRequest,
@@ -234,25 +237,23 @@ public class GoogleSignInActivity extends BaseActivity implements
                             mAuthenticatedUser = dataSnapshot.getValue(User.class);
                             if (mAuthenticatedUser != null) {
                                 //do nothing
-                       /*         mAuthenticatedUser.setLongitude(mLongitude);
-                                mAuthenticatedUser.setLatitude(mLatitude);
-                                mAuthenticatedUser.setPlayingPlace(mPlayingLocation);
-                                mAuthenticatedUser.setPhotoUrl(user.getPhotoUrl().toString());*/
+                                ref.child(Constants.SPORT).setValue(Constants.TENNIS);
                                 ref.child(Constants.LATITUDE).setValue(mLatitude);
                                 ref.child(Constants.LONGITUDE).setValue(mLongitude);
                                 ref.child(Constants.PLAYING_PLACE).setValue(mPlayingLocation);
-                                ref.child(Constants.PHOTO_URL_VAL).setValue(user.getPhotoUrl().toString());
+                                if (user.getPhotoUrl() != null) {
+                                    ref.child(Constants.PHOTO_URL_VAL).setValue(user.getPhotoUrl().toString());
+                                }
                             } else {
                                 HashMap<String, Object> userAndUidMapping = new HashMap<String, Object>();
                                 GregorianCalendar gcalendar = new GregorianCalendar();
                                 String playingTime = Utility.getCurrentTime(gcalendar);
-                               //Log.v(LOG_TAG,"user details :"+user.getDisplayName()+" "+userEmailAddress+" "+mLatitude+" "+mLongitude+" "+playingTime+" "+user.getPhotoUrl()+" "+mPlayingLocation);
-                                String photoUrl="";
-                                if(user.getPhotoUrl()!=null)
-                                {
-                                    photoUrl= user.getPhotoUrl().toString();
+                                //Log.v(LOG_TAG,"user details :"+user.getDisplayName()+" "+userEmailAddress+" "+mLatitude+" "+mLongitude+" "+playingTime+" "+user.getPhotoUrl()+" "+mPlayingLocation);
+                                String photoUrl = "";
+                                if (user.getPhotoUrl() != null) {
+                                    photoUrl = user.getPhotoUrl().toString();
                                 }
-                                mAuthenticatedUser = new User(user.getDisplayName(), userEmailAddress, "", mLatitude, mLongitude, playingTime,photoUrl , mPlayingLocation);
+                                mAuthenticatedUser = new User(user.getDisplayName(), userEmailAddress, Constants.TENNIS, mLatitude, mLongitude, playingTime, photoUrl, mPlayingLocation);
                                 HashMap<String, Object> newUserMap = (HashMap<String, Object>)
                                         new ObjectMapper().convertValue(mAuthenticatedUser, Map.class);
                                 userAndUidMapping.put("/" + Constants.LOCATION_USERS + "/" + Utility.encodeEmail(userEmailAddress),
@@ -262,7 +263,7 @@ public class GoogleSignInActivity extends BaseActivity implements
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                         if (databaseError != null) {
-                                                   Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), getString(R.string.api_not_connected), Toast.LENGTH_SHORT).show();
                                         } else {
                                             mGeoFire.setLocation(Utility.encodeEmail(mAuthenticatedUser.getEmail()), new GeoLocation(mAuthenticatedUser.getLatitude(), mAuthenticatedUser.getLongitude()));
                                         }
@@ -284,7 +285,7 @@ public class GoogleSignInActivity extends BaseActivity implements
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                          Toast.makeText(getApplicationContext(),getString(R.string.api_not_connected),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.api_not_connected), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -344,15 +345,14 @@ public class GoogleSignInActivity extends BaseActivity implements
                 // Google Sign In failed, update UI appropriately
                 updateUI(null);
             }
-        }
-        else if(requestCode==REQUEST_CHECK_SETTINGS)    {
+        } else if (requestCode == REQUEST_CHECK_SETTINGS) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
-                   // Log.i(TAG, "User agreed to make required location settings changes.");
+                    // Log.i(TAG, "User agreed to make required location settings changes.");
                     startLocationUpdates();
                     break;
                 case Activity.RESULT_CANCELED:
-                  //  Log.i(TAG, "User chose not to make required location settings changes.");
+                    //  Log.i(TAG, "User chose not to make required location settings changes.");
                     break;
             }
         }
@@ -447,7 +447,9 @@ public class GoogleSignInActivity extends BaseActivity implements
             if (Utility.checkNetworkState(this)) {
                 signIn();
             } else {
-                Toast.makeText(this, getString(R.string.login_network_unavailable), Toast.LENGTH_SHORT).show();
+                DialogFragment dialogFragment = new NetworkDialogFragment();
+                dialogFragment.show(getFragmentManager(), getString(R.string.login_network_unavailable));
+                //   Toast.makeText(this, getString(R.string.login_network_unavailable), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -480,33 +482,33 @@ public class GoogleSignInActivity extends BaseActivity implements
         }
     }
 
-    private void getLocation()    {
+    private void getLocation() {
         try {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = geocoder.getFromLocation(mLatitude, mLongitude, 1);
-        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        if (address != null) {
-            mPlayingLocation = mPlayingLocation.concat(" ").concat(address);
-        }
-        String city = addresses.get(0).getLocality();
-        if (city != null) {
-            mPlayingLocation = mPlayingLocation.concat(" ").concat(city);
-        }
-        String state = addresses.get(0).getAdminArea();
-        if (state != null) {
-            mPlayingLocation = mPlayingLocation.concat(" ").concat(state);
-        }
-        String country = addresses.get(0).getCountryName();
-        if (country != null) {
-            mPlayingLocation = mPlayingLocation.concat(" ").concat(country);
-        }
-        String postalCode = addresses.get(0).getPostalCode();
-        if (postalCode != null) {
-            mPlayingLocation = mPlayingLocation.concat(" ").concat(postalCode);
-        }
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(mLatitude, mLongitude, 1);
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            mPlayingLocation = "";
+            if (address != null) {
+                mPlayingLocation = mPlayingLocation.concat(" ").concat(address);
+            }
+            String city = addresses.get(0).getLocality();
+            if (city != null) {
+                mPlayingLocation = mPlayingLocation.concat(" ").concat(city);
+            }
+            String state = addresses.get(0).getAdminArea();
+            if (state != null) {
+                mPlayingLocation = mPlayingLocation.concat(" ").concat(state);
+            }
+            String country = addresses.get(0).getCountryName();
+            if (country != null) {
+                mPlayingLocation = mPlayingLocation.concat(" ").concat(country);
+            }
+            String postalCode = addresses.get(0).getPostalCode();
+            if (postalCode != null) {
+                mPlayingLocation = mPlayingLocation.concat(" ").concat(postalCode);
+            }
 
-    }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -516,5 +518,22 @@ public class GoogleSignInActivity extends BaseActivity implements
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
+    public static class NetworkDialogFragment extends DialogFragment {
 
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.no_network_header);
+            builder.setMessage(R.string.no_network)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NetworkDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
 }

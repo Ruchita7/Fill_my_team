@@ -43,12 +43,14 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.location.Geocoder;
 import android.location.Location;
 import android.widget.Toast;
-
+import android.support.v7.app.AlertDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -107,7 +109,11 @@ public class MainActivity extends AppCompatActivity
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
+        checkLocationSettings();
+        if (!Utility.checkNetworkState(this)) {
+            DialogFragment dialogFragment = new NetworkConnectionDialogFragment();
+            dialogFragment.show(getFragmentManager(), getString(R.string.login_network_unavailable));
+        }
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
@@ -315,7 +321,10 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
-
+        if (!Utility.checkNetworkState(this)) {
+            DialogFragment dialogFragment = new NetworkConnectionDialogFragment();
+            dialogFragment.show(getFragmentManager(), getString(R.string.login_network_unavailable));
+        }
 
         switch (id) {
 
@@ -525,5 +534,22 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+    public static class NetworkConnectionDialogFragment extends DialogFragment {
 
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.no_network_header);
+            builder.setMessage(R.string.no_network)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            NetworkConnectionDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
 }

@@ -90,7 +90,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     String mPlayingTime;
     GeoFire mGeoFire;
     DatabaseReference mUrlRef;
-   PlayerParcelable mPlayerParcelable;
+    PlayerParcelable mPlayerParcelable;
     ArrayList<PlayerParcelable> mPlayerParcelables;
     private GoogleMap mMap;
     MarkerOptions markerOptions;
@@ -116,7 +116,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     User mUser;
 
     private RadioGroup mOptions;
-    String mSport="";
+    String mSport = "";
     GeoQuery geoQuery;
 
     MapFragment mapFragment;
@@ -205,7 +205,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                 mSport = savedInstanceState.getString(SELECTED_SPORT);
                 if (savedInstanceState.containsKey(PLAYERS_NEARBY)) {
                     mPlayerParcelables = savedInstanceState.getParcelableArrayList(PLAYERS_NEARBY);
-                   User user = null;
+                    User user = null;
                     for (PlayerParcelable playerParcelable : mPlayerParcelables) {
                         user = playerParcelable.getUser();
                         userLatLngMap.put(new LatLng(user.getLatitude(), user.getLongitude()), playerParcelable);
@@ -219,17 +219,17 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ShowcaseView showcaseView=  new ShowcaseView.Builder(getActivity())
+        ShowcaseView showcaseView = new ShowcaseView.Builder(getActivity())
                 .withMaterialShowcase()
                 .setStyle(R.style.CustomShowcaseTheme)
                 .setTarget(new ViewTarget(arcMenu))
                 .hideOnTouchOutside()
-               // .setContentText(getString(R.string.button_message))
+                // .setContentText(getString(R.string.button_message))
                 .setContentTitle(getString(R.string.button_message))
                 .build();
 
 
-     //   showcaseView.setDetailTextAlignment(Layout.Alignment.ALIGN_OPPOSITE);
+        //   showcaseView.setDetailTextAlignment(Layout.Alignment.ALIGN_OPPOSITE);
         showcaseView.hideButton();
         showcaseView.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
         showcaseView.forceTextPosition(ShowcaseView.BELOW_SHOWCASE);//    .forceTextPosition(ShowcaseView.ABOVE_SHOWCASE);
@@ -242,8 +242,6 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
         final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
     }
-
-
 
 
     @Override
@@ -411,7 +409,7 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-       User userObj = dataSnapshot.getValue(User.class);
+        User userObj = dataSnapshot.getValue(User.class);
         if (mSport != null && !mSport.isEmpty()) {
             if (!mSport.equalsIgnoreCase(userObj.getSport())) {
                 playerFoundCount--;
@@ -513,8 +511,8 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
                     public void onClick(View view) {
 
                         LatLng markerLatLng = marker.getPosition();
-                       PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
-                       User user = playerParcelable.getUser();
+                        PlayerParcelable playerParcelable = userLatLngMap.get(markerLatLng);
+                        User user = playerParcelable.getUser();
 
                         ((Callback) getActivity()).onInviteClick(mUser, user);
 
