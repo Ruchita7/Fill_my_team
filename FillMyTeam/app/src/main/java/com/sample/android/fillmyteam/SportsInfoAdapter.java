@@ -2,6 +2,7 @@ package com.sample.android.fillmyteam;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -69,8 +70,9 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
 
         );
         holder.sportsName.setText(mCursor.getString(SportsInfoFragment.COL_SPORT_NAME));
-        holder.sportsImage.setTransitionName("iconView"+position);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.sportsImage.setTransitionName("iconView" + position);
+        }
         ViewCompat.setTransitionName(holder.sportsImage, Constants.ICON_VIEW + position);
         mIcm.onBindViewHolder(holder, position);
     }

@@ -30,10 +30,10 @@ android {
 
     defaultConfig {
         applicationId "com.sample.android.fillmyteam"
-        minSdkVersion 21
+        minSdkVersion 17
         targetSdkVersion 22
-        versionCode 4
-        versionName "1.2.1"
+        versionCode 6
+        versionName "1.2.3"
         multiDexEnabled true
     }
     buildTypes {

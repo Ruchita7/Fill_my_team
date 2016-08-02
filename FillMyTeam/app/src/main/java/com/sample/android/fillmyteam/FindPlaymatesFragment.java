@@ -4,8 +4,10 @@ package com.sample.android.fillmyteam;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -219,20 +221,22 @@ public class FindPlaymatesFragment extends Fragment implements GeoQueryEventList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ShowcaseView showcaseView = new ShowcaseView.Builder(getActivity())
-                .withMaterialShowcase()
-                .setStyle(R.style.CustomShowcaseTheme)
-                .setTarget(new ViewTarget(arcMenu))
-                .hideOnTouchOutside()
-                // .setContentText(getString(R.string.button_message))
-                .setContentTitle(getString(R.string.button_message))
-                .build();
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        int menuHelpCount = sharedPreferences.getInt(Constants.ACCESS_COUNT, 0);
+        if (menuHelpCount == 0) {
+            ShowcaseView showcaseView = new ShowcaseView.Builder(getActivity())
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setTarget(new ViewTarget(arcMenu))
+                    .hideOnTouchOutside()
+                    .setContentTitle(getString(R.string.button_message))
+                    .build();
 
-
-        //   showcaseView.setDetailTextAlignment(Layout.Alignment.ALIGN_OPPOSITE);
-        showcaseView.hideButton();
-        showcaseView.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
-        showcaseView.forceTextPosition(ShowcaseView.BELOW_SHOWCASE);//    .forceTextPosition(ShowcaseView.ABOVE_SHOWCASE);
+            showcaseView.hideButton();
+            showcaseView.setTitleTextAlignment(Layout.Alignment.ALIGN_CENTER);
+            showcaseView.forceTextPosition(ShowcaseView.BELOW_SHOWCASE);
+        }
     }
 
 
