@@ -17,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -56,7 +55,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sample.android.fillmyteam.model.User;
-import com.sample.android.fillmyteam.ui.ScrimUtil;
 import com.sample.android.fillmyteam.util.Constants;
 import com.sample.android.fillmyteam.util.Utility;
 
@@ -96,8 +94,12 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN, false);
+        if(isUserLoggedIn)  {
+            findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+        }
         mSouthernAire = Typeface.createFromAsset(getAssets(), "SouthernAire_Personal_Use_Only.ttf");
         Firebase.setAndroidContext(this);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -114,8 +116,8 @@ public class GoogleSignInActivity extends BaseActivity implements
 
         checkLocationSettings();
         boolean isLogout = false;
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
+        mGoogleApiClient.connect();
+
         String userEmailId = sharedPreferences.getString(Constants.EMAIL, "");
         mUrlRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Constants.APP_URL);
@@ -130,7 +132,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         }
         mGeoFire = new GeoFire(new Firebase(Constants.APP_PLAYERS_NEAR_URL));
 
-        boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN, false);
+
         if (isUserLoggedIn) {       //user already logged in
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra(Constants.LOGGED_IN_USER_EMAIL, userEmailId);
@@ -138,15 +140,15 @@ public class GoogleSignInActivity extends BaseActivity implements
             startActivity(intent);
             finish();
         } else {
-            mGoogleApiClient.connect();
+
 
             setContentView(R.layout.activity_google_sign_in);
             TextView appTitleTextView = (TextView) findViewById(R.id.app_title);
             appTitleTextView.setTypeface(mSouthernAire);
 
-            View scrimView = findViewById(R.id.scrim_view);
+          /*  View scrimView = findViewById(R.id.scrim_view);
             scrimView.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
-                    0xaa000000, 8, Gravity.BOTTOM));
+                    0xaa000000, 8, Gravity.BOTTOM));*/
 
             findViewById(R.id.sign_in_button).setOnClickListener(this);
 
