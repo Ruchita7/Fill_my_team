@@ -1,24 +1,19 @@
 package com.sample.android.fillmyteam;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.TransitionInflater;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +49,7 @@ import retrofit.Retrofit;
  * @author Ruchita_Maheshwary
  *         This Fragment provides listing of Sports
  */
-public class SportsInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SportsInfoFragment extends android.support.v4.app.Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -151,7 +146,7 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
             @Override
             public void itemClick(String sportId, SportsInfoAdapter.InfoViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
-                Fragment nextFrag = SportsDetailFragment.newInstance(sportId, mPosition);
+               /* Fragment nextFrag = SportsDetailFragment.newInstance(sportId, mPosition);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
                    setExitTransition(new Fade());
@@ -174,8 +169,12 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
                             .addToBackStack(nextFrag.getClass().getSimpleName())
                             .commit();
                 }
+*/
 
-
+                Intent intent = new Intent(getContext(),SportsDetailActivity.class);
+                intent.putExtra(SportsDetailActivity.POSITION,mPosition);
+                intent.putExtra(Constants.SPORT_ID,sportId);
+                startActivity(intent);
 
             }
         }, textView, mProgressBar, mChoiceMode);
@@ -189,13 +188,13 @@ public class SportsInfoFragment extends Fragment implements LoaderManager.Loader
         return view;
     }
 
-    @Override
+/*    @Override
     public void onResume() {
         super.onResume();
-        final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
+       final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
         ab.show();
 
-    }
+    }*/
 
 
     @Override

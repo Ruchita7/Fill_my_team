@@ -47,4 +47,5 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="store_list_item_margin">48dp</dimen>
     <dimen name="login_margin">32dp</dimen>
+
 </resources>

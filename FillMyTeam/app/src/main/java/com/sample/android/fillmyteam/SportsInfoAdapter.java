@@ -19,10 +19,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
- *
  * @author Ruchita_Maheshwary
- * Adapter for SportsInfoFragment
- *
+ *         Adapter for SportsInfoFragment
  */
 public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.InfoViewHolder> {
 
@@ -33,13 +31,13 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
     final View mEmptyView;
     ProgressBar mProgressBar;
 
-    public SportsInfoAdapter(Context context,SportsAdapterOnClickHandler adapterClickHandler,View emptyView,ProgressBar progressBar, int choiceMode)  {
-        mContext=context;
-        mClickHandler=adapterClickHandler;
-        mEmptyView=emptyView;
+    public SportsInfoAdapter(Context context, SportsAdapterOnClickHandler adapterClickHandler, View emptyView, ProgressBar progressBar, int choiceMode) {
+        mContext = context;
+        mClickHandler = adapterClickHandler;
+        mEmptyView = emptyView;
         mIcm = new ItemChoiceManager(this);
         mIcm.setChoiceMode(choiceMode);
-        mProgressBar=progressBar;
+        mProgressBar = progressBar;
 
     }
 
@@ -55,18 +53,18 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
         mCursor.moveToPosition(position);
         String url = mCursor.getString(SportsInfoFragment.COL_SPORT_POSTER_IMAGE);
         Picasso.with(mContext).load(url).into(holder.sportsImage, new Callback() {
-            @Override
-            public void onSuccess() {
-                if(mProgressBar!=null)  {
-                    mProgressBar.setVisibility(View.GONE);
+                    @Override
+                    public void onSuccess() {
+                        if (mProgressBar != null) {
+                            mProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
                 }
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        }
 
         );
         holder.sportsName.setText(mCursor.getString(SportsInfoFragment.COL_SPORT_NAME));
@@ -94,19 +92,19 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
 
     @Override
     public int getItemCount() {
-        if ( null == mCursor ) return 0;
+        if (null == mCursor) return 0;
         return mCursor.getCount();
     }
 
     public class InfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-     
+
         public final AspectRatioImageViewer sportsImage;
         public final TextView sportsName;
 
         public InfoViewHolder(View itemView) {
             super(itemView);
-           sportsImage = (AspectRatioImageViewer) itemView.findViewById(R.id.sports_image);
+            sportsImage = (AspectRatioImageViewer) itemView.findViewById(R.id.sports_image);
             sportsName = (TextView) itemView.findViewById(R.id.sport_name);
             itemView.setOnClickListener(this);
         }
@@ -116,15 +114,15 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
             int sportId = mCursor.getColumnIndex(SportsColumns._ID);
-            mClickHandler.itemClick(mCursor.getString(sportId),this);
+            mClickHandler.itemClick(mCursor.getString(sportId), this);
             mIcm.onClick(this);
         }
     }
 
 
     public void selectView(RecyclerView.ViewHolder viewHolder) {
-        if ( viewHolder instanceof InfoViewHolder ) {
-            InfoViewHolder vfh = (InfoViewHolder)viewHolder;
+        if (viewHolder instanceof InfoViewHolder) {
+            InfoViewHolder vfh = (InfoViewHolder) viewHolder;
             vfh.onClick(vfh.itemView);
         }
     }
@@ -135,7 +133,7 @@ public class SportsInfoAdapter extends RecyclerView.Adapter<SportsInfoAdapter.In
         mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    public static  interface SportsAdapterOnClickHandler    {
+    public static interface SportsAdapterOnClickHandler {
         public void itemClick(String id, InfoViewHolder viewHolder);
     }
 

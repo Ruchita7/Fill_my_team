@@ -94,6 +94,7 @@ public class GoogleSignInActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_google_sign_in);
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         boolean isUserLoggedIn = sharedPreferences.getBoolean(Constants.IS_USER_LOGGED_IN, false);
@@ -122,7 +123,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         mUrlRef = FirebaseDatabase.getInstance()
                 .getReferenceFromUrl(Constants.APP_URL);
         mAuth = FirebaseAuth.getInstance();
-        if (Build.VERSION.SDK_INT < 16) {
+       if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
@@ -142,7 +143,7 @@ public class GoogleSignInActivity extends BaseActivity implements
         } else {
 
 
-            setContentView(R.layout.activity_google_sign_in);
+
             TextView appTitleTextView = (TextView) findViewById(R.id.app_title);
             appTitleTextView.setTypeface(mSouthernAire);
 

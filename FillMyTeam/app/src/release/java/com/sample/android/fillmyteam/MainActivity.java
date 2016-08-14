@@ -4,9 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,25 +16,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -54,11 +43,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.sample.android.fillmyteam.api.Callback;
 import com.sample.android.fillmyteam.model.User;
 import com.sample.android.fillmyteam.sync.SportsSyncAdapter;
-import com.sample.android.fillmyteam.ui.CircularImageTransform;
-import com.sample.android.fillmyteam.ui.ViewTargets;
 import com.sample.android.fillmyteam.util.Constants;
 import com.sample.android.fillmyteam.util.Utility;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
@@ -70,7 +56,7 @@ import java.io.IOException;
  *         Main Activity launched after login. It will be first screen if the user is already logged in
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Callback,GoogleApiClient.OnConnectionFailedListener,
+        implements  Callback,GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,LocationListener {
 
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
@@ -86,16 +72,18 @@ public class MainActivity extends AppCompatActivity
     double mLongitude;
     double mLatitude;
     Location mLastLocation;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      /*  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
         Utility.hideSoftKeyboard(this);
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        /*final ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);*/
         mActivity = this;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -152,7 +140,15 @@ public class MainActivity extends AppCompatActivity
         editor.commit();
         SportsSyncAdapter.initializeSyncAdapter(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),mUser);
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager);
+
+      /*  NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
         updateNavigationViewHeader();
@@ -189,7 +185,7 @@ public class MainActivity extends AppCompatActivity
             editor.putInt(Constants.ACCESS_COUNT, ++menuHelpCount);
             editor.commit();
         }
-
+*/
         /*Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(
@@ -198,12 +194,12 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 */
-        if (savedInstanceState == null) {
+       /* if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
                     .commit();
         }
-
+*/
     }
 
 
@@ -221,7 +217,7 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
-            updateNavigationViewHeader();
+         //   updateNavigationViewHeader();
         }
         //Log.v(LOG_TAG, "mUser" + sharedPreferences.getString(Constants.USER_INFO, null));
     }
@@ -230,7 +226,7 @@ public class MainActivity extends AppCompatActivity
      * Update navigation drawer header
      */
 
-    private void updateNavigationViewHeader() {
+  /*  private void updateNavigationViewHeader() {
         if (mUser != null) {
             TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
             TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
@@ -242,7 +238,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-    }
+    }*/
 
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
@@ -250,7 +246,7 @@ public class MainActivity extends AppCompatActivity
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    @Override
+  /*  @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() < 1) {
             finish();
@@ -288,7 +284,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
+*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -306,10 +302,10 @@ public class MainActivity extends AppCompatActivity
     /**
      * Handle navigation view item clicks here to call corresponding fragments for each navigation item
      *
-     * @param item
+     * @param
      * @return
      */
-    @SuppressWarnings("StatementWithEmptyBody")
+   /* @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -368,7 +364,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+*/
 
     @Override
     protected void onStop() {

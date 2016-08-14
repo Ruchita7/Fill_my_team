@@ -34,6 +34,7 @@ import java.util.Map;
 
 /**
  * Utility class
+ *
  * @author Ruchita
  */
 public class Utility {
@@ -298,7 +299,7 @@ public class Utility {
     static public
     @SportsSyncAdapter.MatchStatus
     int getNetworkState(Context context) {
-         String syncStatus = context.getString(R.string.network_status_key);
+        String syncStatus = context.getString(R.string.network_status_key);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(syncStatus, SportsSyncAdapter.STATUS_UNKNOWN);
 
@@ -320,13 +321,16 @@ public class Utility {
                 break;
             case Constants.FIND_PLAYMATES_FRAGMENT:
             case Constants.INVITE_PLAY_FRAGMENT:
-                title = context.getString(R.string.find_playmates);;
+                title = context.getString(R.string.find_playmates);
+                ;
                 break;
             case Constants.STORE_LOCATOR_FRAGMENT:
-                title = context.getString(R.string.sports_store_locator);;
+                title = context.getString(R.string.sports_store_locator);
+                ;
                 break;
             case Constants.SETTINGS_FRAGMENT:
-                title = context.getString(R.string.settings);;
+                title = context.getString(R.string.settings);
+                ;
                 break;
             default:
                 title = context.getString(R.string.upcoming_matches);
@@ -368,5 +372,24 @@ public class Utility {
             default:
                 return new LinearInterpolator();
         }
+    }
+
+    public static int retrieveMenuIcon(int position) {
+        int icon = 0;
+        switch (position) {
+            case 0:
+                icon = R.drawable.ic_search;
+                break;
+            case 1:
+                icon = R.drawable.ic_calendar;
+                break;
+            case 2:
+                icon = R.drawable.ic_store_mall_directory;
+                break;
+            case 3:
+                icon = R.drawable.ic_reading;
+                break;
+        }
+        return icon;
     }
 }

@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.sample.android.fillmyteam.PlayFragment"
+    android:background="@drawable/img_football_footwork">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/play_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="@dimen/side_margin"
+        android:layout_marginEnd="@dimen/side_margin"
+        android:layout_marginLeft="@dimen/side_margin"
+        android:layout_marginRight="@dimen/side_margin"
+        android:paddingTop="@dimen/list_item_margin"/>
+
+
+    <!--android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:columnCount="3"
+        app:rowCount="2"
+        android:fitsSystemWindows="true"
+        android:stretchMode="columnWidth"
+        >
+
+        <Button
+            android:id="@+id/find_playmates"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:maxLines="2"
+            app:layout_row="0"
+            app:layout_column="0"
+            app:layout_columnSpan="1"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="Find\n Playmates"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/upcoming_matches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_row="0"
+            app:layout_column="1"
+            app:layout_columnSpan="1"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="Upcoming\n Matches"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/store_locator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_row="0"
+            app:layout_column="2"
+            app:layout_columnSpan="1"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="Store\n Locator"
+            android:textColor="@color/white" />
+
+
+        <Button
+            android:id="@+id/learn_to_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_row="1"
+            app:layout_column="0"
+            app:layout_columnSpan="1"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="Learn To\n Play"
+            android:textColor="@color/white" />
+
+    </android.support.v7.widget.GridLayout-->
+
+
+</LinearLayout>

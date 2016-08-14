@@ -22,7 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import com.sample.android.fillmyteam.api.Callback;
 import com.sample.android.fillmyteam.model.User;
 import com.sample.android.fillmyteam.sync.SportsSyncAdapter;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -51,6 +53,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.widget.Toast;
 import android.support.v7.app.AlertDialog;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -72,9 +75,9 @@ import android.support.annotation.Nullable;
  *         Main Activity launched after login. It will be first screen if the user is already logged in
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Callback, GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks,LocationListener {
-
+        implements Callback, GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks, LocationListener {
+    //NavigationView.OnNavigationItemSelectedListener,
     public static final String SENT_TOKEN_TO_SERVER = "SENT_TOKEN_TO_SERVER";
     String mAddressOutput = "";
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -88,16 +91,18 @@ public class MainActivity extends AppCompatActivity
     Activity mActivity;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    /*    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
         Utility.hideSoftKeyboard(this);
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+      /*  final ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);*/
         mActivity = this;
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         if (getIntent().hasExtra(Constants.USER_CREDENTIALS)) {
 
             mUser = (User) getIntent().getSerializableExtra(Constants.USER_CREDENTIALS);
-            if(mLatitude!=0 &&mLongitude!=0)    {
+            if (mLatitude != 0 && mLongitude != 0) {
                 mUser.setLatitude(mLatitude);
                 mUser.setLongitude(mLongitude);
             }
@@ -139,7 +144,7 @@ public class MainActivity extends AppCompatActivity
             if (userJson != null && !userJson.isEmpty()) {
                 try {
                     mUser = new ObjectMapper().readValue(userJson, User.class);
-                    if(mLatitude!=0 &&mLongitude!=0)    {
+                    if (mLatitude != 0 && mLongitude != 0) {
                         mUser.setLatitude(mLatitude);
                         mUser.setLongitude(mLongitude);
                     }
@@ -155,7 +160,15 @@ public class MainActivity extends AppCompatActivity
         editor.commit();
         SportsSyncAdapter.initializeSyncAdapter(this);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),mUser);
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(mViewPager);
+
+   /*     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationHeader = navigationView.inflateHeaderView(R.layout.nav_header_main);
         updateNavigationViewHeader();
@@ -173,9 +186,9 @@ public class MainActivity extends AppCompatActivity
             }
         };
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        int menuHelpCount = sharedPreferences.getInt(Constants.ACCESS_COUNT,0);
-        if(menuHelpCount==0) {
+        toggle.syncState();*/
+        int menuHelpCount = sharedPreferences.getInt(Constants.ACCESS_COUNT, 0);
+ /*       if(menuHelpCount==0) {
             try {
                 ViewTarget navigationButtonViewTarget = ViewTargets.navigationButtonViewTarget(toolbar);
                 new ShowcaseView.Builder(this)
@@ -190,9 +203,9 @@ public class MainActivity extends AppCompatActivity
             editor = sharedPreferences.edit();
             editor.putInt(Constants.ACCESS_COUNT, ++menuHelpCount);
             editor.commit();
-        }
+        }*/
 
-    Stetho.initialize(
+        Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(
                                 Stetho.defaultDumperPluginsProvider(this))
@@ -200,12 +213,12 @@ public class MainActivity extends AppCompatActivity
                                 Stetho.defaultInspectorModulesProvider(this))
                         .build());
 
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, MatchesFragment.newInstance(mUser))
                     .commit();
         }
-
+*/
     }
 
 
@@ -223,7 +236,7 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
-            updateNavigationViewHeader();
+            //  updateNavigationViewHeader();
         }
         //Log.v(LOG_TAG, "mUser" + sharedPreferences.getString(Constants.USER_INFO, null));
     }
@@ -232,7 +245,7 @@ public class MainActivity extends AppCompatActivity
      * Update navigation drawer header
      */
 
-    private void updateNavigationViewHeader() {
+/*    private void updateNavigationViewHeader() {
         if (mUser != null) {
             TextView userTextView = (TextView) navigationHeader.findViewById(R.id.userNameTextView);
             TextView emailTextView = (TextView) navigationHeader.findViewById(R.id.emailTextView);
@@ -244,15 +257,14 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-    }
-
+    }*/
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    @Override
+  /*  @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() < 1) {
             finish();
@@ -290,7 +302,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
+*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -312,7 +324,7 @@ public class MainActivity extends AppCompatActivity
      * @return
      */
     @SuppressWarnings("StatementWithEmptyBody")
-    @Override
+ /*   @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         Class fragmentClass = null;
@@ -371,7 +383,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
+*/
 
     @Override
     protected void onStop() {
@@ -390,8 +402,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
-        editor.putString(Constants.EMAIL,"");
-        editor.putString(Constants.USER_INFO,"");
+        editor.putString(Constants.EMAIL, "");
+        editor.putString(Constants.USER_INFO, "");
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
         intent.putExtra(Constants.LOGOUT, true);
@@ -427,7 +439,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==GoogleSignInActivity.REQUEST_CHECK_SETTINGS)    {
+        if (requestCode == GoogleSignInActivity.REQUEST_CHECK_SETTINGS) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     // Log.i(TAG, "User agreed to make required location settings changes.");
@@ -452,8 +464,8 @@ public class MainActivity extends AppCompatActivity
     /**
      * Prompt user to enable GPS and Location Services
      */
-    public  void checkLocationSettings() {
-        mLocationRequest  = LocationRequest.create();
+    public void checkLocationSettings() {
+        mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(30 * 1000);
         mLocationRequest.setFastestInterval(5 * 1000);
@@ -502,8 +514,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        mLatitude=location.getLatitude();
-        mLongitude=location.getLongitude();
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
     }
 
     @Override
@@ -534,6 +546,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
     public static class NetworkConnectionDialogFragment extends DialogFragment {
 
         @Override
