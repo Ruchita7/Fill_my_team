@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -52,7 +51,7 @@ import butterknife.ButterKnife;
 
 
 
-public class InviteToPlayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class InviteToPlayActivity extends BaseOptionsActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     public static final String LOG_TAG = InviteToPlayActivity.class.getSimpleName();
     public static final String CURRENT_USER = "current_user";

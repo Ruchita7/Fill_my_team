@@ -7,10 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sample.android.fillmyteam.model.User;
-import com.sample.android.fillmyteam.ui.GridItemDecoration;
+import com.sample.android.fillmyteam.ui.DividerItemDecoration;
 import com.sample.android.fillmyteam.util.Constants;
 
 import java.util.Arrays;
@@ -55,14 +54,15 @@ public class PlayFragment extends android.support.v4.app.Fragment {
             }
         }
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.play_recycler_view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
-        final String[] playItems = {"Teammates\n in my Area", "Upcoming\nMatches", "Store\nLocator", "Learn to\nPlay"};
+     //   final String[] playItems = {"Teammates in my Area", "Upcoming Matches", "Store Locator", "Learn to Play"};
+        final String[] playItems = {"Team mates", "Matches", "Locate", "Learn"};
         mPlayItemsListMenu = Arrays.asList(playItems);
         PlayTabAdapter playTabAdapter = new PlayTabAdapter(getActivity(), mPlayItemsListMenu, new PlayTabAdapter.PlayAdapterOnClickHandler() {
             @Override
             public void itemClick(int position, PlayTabAdapter.PlayViewHolder viewHolder) {
-                Toast.makeText(getActivity(), mPlayItemsListMenu.get(position), Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(getActivity(), mPlayItemsListMenu.get(position), Toast.LENGTH_SHORT).show();
                 Intent intent;
                 switch (position) {
                     case 0:
@@ -90,9 +90,9 @@ public class PlayFragment extends android.support.v4.app.Fragment {
             }
         });
         recyclerView.setAdapter(playTabAdapter);
-        recyclerView.addItemDecoration(new GridItemDecoration(
-                getActivity(), R.dimen.list_margin));
-
+      /* recyclerView.addItemDecoration(new GridItemDecoration(
+                getActivity(), R.dimen.list_margin));*/
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
 
         return rootView;
     }

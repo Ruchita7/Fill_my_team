@@ -11,8 +11,9 @@ import com.sample.android.fillmyteam.model.User;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private String tabTitles[] = new String[]{"Play", "Profile"};
-User mUser;
-    public SectionsPagerAdapter(FragmentManager fm,User user) {
+    User mUser;
+
+    public SectionsPagerAdapter(FragmentManager fm, User user) {
         super(fm);
         mUser = user;
     }
@@ -21,12 +22,11 @@ User mUser;
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-    //    return PlaceholderFragment.newInstance(position + 1);
-        if(position==0) {
-            return PlayFragment.newInstance(position + 1,mUser);
-        }
-        else    {
-            return ProfileFragment.newInstance(position + 1,mUser);
+        //    return PlaceholderFragment.newInstance(position + 1);
+        if (position == 0) {
+            return PlayFragment.newInstance(position + 1, mUser);
+        } else {
+            return ProfileFragment.newInstance(position + 1, mUser);
         }
     }
 

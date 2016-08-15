@@ -27,9 +27,9 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".GoogleSignInActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
 
-            <!-- android:theme="@style/AppTheme.NoActionBar" -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -94,7 +94,11 @@
             android:name=".InviteToPlayActivity"
             android:label="@string/invite_player" />
         <activity android:name=".MatchesActivity" />
-        <activity android:name=".StoreLocatorActivity"></activity>
+        <activity android:name=".StoreLocatorActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

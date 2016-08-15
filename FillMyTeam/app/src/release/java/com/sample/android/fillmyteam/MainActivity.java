@@ -19,8 +19,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,7 +37,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.firebase.auth.FirebaseAuth;
 import com.sample.android.fillmyteam.api.Callback;
 import com.sample.android.fillmyteam.model.User;
 import com.sample.android.fillmyteam.sync.SportsSyncAdapter;
@@ -55,7 +52,7 @@ import java.io.IOException;
  * @author Ruchita_Maheshwary
  *         Main Activity launched after login. It will be first screen if the user is already logged in
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseOptionsActivity
         implements  Callback,GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,LocationListener {
 
@@ -81,6 +78,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
       /*  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
+  /*      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);*/
+
+       /* ActionBar actionBar = getActionBar();
+        actionBar.show();*/
         Utility.hideSoftKeyboard(this);
         /*final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);*/
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         }
 
 
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(Constants.IS_USER_LOGGED_IN, true);
         editor.commit();
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
+
 
       /*  NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -201,6 +205,14 @@ public class MainActivity extends AppCompatActivity
         }
 */
     }
+/*
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+*/
 
 
     @Override
@@ -286,19 +298,23 @@ public class MainActivity extends AppCompatActivity
     }
 */
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.share_action) {
+       *//* if (id == R.id.share_action) {
+            return true;
+        }*//*
+        if(id==R.id.logout) {
+            logoutUser();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
+*/
     /**
      * Handle navigation view item clicks here to call corresponding fragments for each navigation item
      *
@@ -377,7 +393,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
     }
 
-    private void logoutUser() {
+  /*  private void logoutUser() {
 
         FirebaseAuth.getInstance().signOut();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -390,7 +406,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(Constants.LOGOUT, true);
         startActivity(intent);
     }
-
+*/
 
     /**
      * Called when user needs to be invited to play from FindPlaymatesFragment

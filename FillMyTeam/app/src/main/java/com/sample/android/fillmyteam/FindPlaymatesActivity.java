@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -56,7 +55,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FindPlaymatesActivity extends AppCompatActivity implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+public class FindPlaymatesActivity extends BaseOptionsActivity implements GeoQueryEventListener, ChildEventListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowLongClickListener {
 
 

@@ -41,6 +41,7 @@ public class PlayTabAdapter extends RecyclerView.Adapter<PlayTabAdapter.PlayView
         holder.textView.setText(item);
         int iconRes = Utility.retrieveMenuIcon(position);
         holder.imageView.setImageResource(iconRes);
+        holder.descriptionTextView.setText(Utility.retrieveItemDescription(position));
     }
 
     @Override
@@ -58,11 +59,13 @@ public class PlayTabAdapter extends RecyclerView.Adapter<PlayTabAdapter.PlayView
 
         TextView textView;
         ImageView imageView;
+        TextView descriptionTextView;
 
         public PlayViewHolder(View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.item_name);
             imageView = (ImageView) itemView.findViewById(R.id.item_icon);
+            descriptionTextView = (TextView) itemView.findViewById(R.id.item_description);
             itemView.setOnClickListener(this);
         }
 

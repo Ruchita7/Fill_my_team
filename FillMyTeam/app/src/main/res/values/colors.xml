@@ -18,4 +18,5 @@
     <color name="blue_100">#BBDEFB</color>
     <color name="teal700">#00796B</color>
     <color name="teal500">#009688</color>
+    <color name="light_gray">#EEEEEE</color>
 </resources>

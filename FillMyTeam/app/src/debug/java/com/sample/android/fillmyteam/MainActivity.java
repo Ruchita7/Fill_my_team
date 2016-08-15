@@ -44,7 +44,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -74,7 +75,7 @@ import android.support.annotation.Nullable;
  * @author Ruchita_Maheshwary
  *         Main Activity launched after login. It will be first screen if the user is already logged in
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseOptionsActivity
         implements Callback, GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks, LocationListener {
     //NavigationView.OnNavigationItemSelectedListener,
@@ -222,6 +223,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -304,18 +307,6 @@ public class MainActivity extends AppCompatActivity
     }
 */
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.share_action) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * Handle navigation view item clicks here to call corresponding fragments for each navigation item
@@ -396,19 +387,6 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
     }
 
-    private void logoutUser() {
-
-        FirebaseAuth.getInstance().signOut();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
-        editor.putString(Constants.EMAIL, "");
-        editor.putString(Constants.USER_INFO, "");
-        editor.commit();
-        Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
-        intent.putExtra(Constants.LOGOUT, true);
-        startActivity(intent);
-    }
 
 
     /**

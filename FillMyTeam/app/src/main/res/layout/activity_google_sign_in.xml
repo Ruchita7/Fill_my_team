@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_login_screen_blur" />
+        android:src="@drawable/background_login_screen" />
 
     <View
         android:id="@+id/scrim_view"

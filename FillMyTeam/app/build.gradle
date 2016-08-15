@@ -17,10 +17,10 @@ android {
     signingConfigs {
         config {
             try {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
             }
             catch (ex) {
                 throw new InvalidUserDataException("You should define keyPassword and storePassword in keystore.properties.")
@@ -32,8 +32,8 @@ android {
         applicationId "com.sample.android.fillmyteam"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 6
-        versionName "1.2.3"
+        versionCode 7
+        versionName "1.2.4"
         multiDexEnabled true
     }
     buildTypes {

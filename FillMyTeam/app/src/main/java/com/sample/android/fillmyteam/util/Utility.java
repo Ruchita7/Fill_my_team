@@ -378,18 +378,45 @@ public class Utility {
         int icon = 0;
         switch (position) {
             case 0:
-                icon = R.drawable.ic_search;
+             //   icon = R.drawable.ic_search;
+                icon = R.drawable.ic_search_white;
                 break;
             case 1:
-                icon = R.drawable.ic_calendar;
+              //  icon = R.drawable.ic_calendar;
+                icon = R.drawable.ic_event_note_white;
                 break;
             case 2:
-                icon = R.drawable.ic_store_mall_directory;
+               // icon = R.drawable.ic_store_mall_directory;
+                icon = R.drawable.ic_store_mall_directory_white;
                 break;
             case 3:
-                icon = R.drawable.ic_reading;
+           //     icon = R.drawable.ic_reading;
+                icon = R.drawable.ic_school_white;
                 break;
         }
         return icon;
+    }
+
+    public static String retrieveItemDescription(int position)  {
+        String description="";
+        switch (position) {
+            case 0:
+                //   icon = R.drawable.ic_search;
+                description = "Find Teammates in my area";
+                break;
+            case 1:
+                //  icon = R.drawable.ic_calendar;
+                description = "Track my upcoming matches";
+                break;
+            case 2:
+                // icon = R.drawable.ic_store_mall_directory;
+                description = "Locate sports stores";
+                break;
+            case 3:
+                //     icon = R.drawable.ic_reading;
+                description = "Learn to play a sport";
+                break;
+        }
+        return description;
     }
 }

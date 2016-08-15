@@ -126,7 +126,7 @@ public class SportsDetailActivity extends AppCompatActivity implements LoaderMan
           //  toolbar.setNavigationContentDescription(getString(R.string.back_button));
             Menu menu = toolbar.getMenu();
             if (null != menu) menu.clear();
-            toolbar.inflateMenu(R.menu.main);
+            toolbar.inflateMenu(R.menu.sports_info_menu);
             MenuItem menuItem = menu.findItem(R.id.share_action);
 
             mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
@@ -179,6 +179,7 @@ public class SportsDetailActivity extends AppCompatActivity implements LoaderMan
         return null;
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) {
@@ -226,6 +227,47 @@ public class SportsDetailActivity extends AppCompatActivity implements LoaderMan
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+/*
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.sports_info_menu,menu);
+        return true;
+    }
+*/
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+     if (id == R.id.share_action) {
+            return true;
+        }
+       /* if(id==R.id.logout) {
+            logoutUser();
+            return true;
+        }
+*/
+        return super.onOptionsItemSelected(item);
+    }
+
+ /*   private void logoutUser() {
+
+        FirebaseAuth.getInstance().signOut();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.IS_USER_LOGGED_IN, false);
+        editor.putString(Constants.EMAIL, "");
+        editor.putString(Constants.USER_INFO, "");
+        editor.commit();
+        Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+        intent.putExtra(Constants.LOGOUT, true);
+        startActivity(intent);
+    }
+*/
 
     private Intent createSharedIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);

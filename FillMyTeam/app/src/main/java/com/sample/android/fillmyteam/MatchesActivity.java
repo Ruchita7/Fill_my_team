@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -27,7 +26,7 @@ import com.sample.android.fillmyteam.util.Utility;
 
 import java.util.List;
 
-public class MatchesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MatchesActivity extends BaseOptionsActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     User mUser;
     RecyclerView mRecyclerView;

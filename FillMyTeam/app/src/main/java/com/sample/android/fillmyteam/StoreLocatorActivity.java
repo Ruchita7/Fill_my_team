@@ -3,7 +3,6 @@ package com.sample.android.fillmyteam;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,7 +47,7 @@ import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class StoreLocatorActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+public class StoreLocatorActivity extends BaseOptionsActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
     double mLatitude;

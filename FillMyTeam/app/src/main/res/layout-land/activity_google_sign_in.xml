@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_login_screen_land_blur" />
+        android:src="@drawable/background_login_screen_land" />
 
 
     <View
@@ -27,7 +27,7 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/login_margin"
-        android:gravity="center_horizontal|center_vertical"
+        android:gravity="top|center_horizontal"
         android:orientation="horizontal"
         >
 

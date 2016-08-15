@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <!--item
         android:id="@+id/share_action"
         android:title="@string/share"
         app:showAsAction="always"
         android:icon="@drawable/ic_share"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/-->
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/logout"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+
 </menu>
