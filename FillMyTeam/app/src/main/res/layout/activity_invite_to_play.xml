@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--android.support.design.widget.AppBarLayout
+        android:id="@+id/invite_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/invite_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="@dimen/toolbar_elevation"
+            app:layout_collapseMode="pin">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/invite_player"
+                android:textColor="@android:color/white" />
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/invite_play"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_marginStart="@dimen/side_margin"
+        android:layout_marginTop="@dimen/side_margin"
+        android:fontFamily="sans-serif"
+        />
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:columnCount="2"
+        android:layout_margin="@dimen/side_margin"
+        tools:context=".InviteToPlayFragment">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:fontFamily="sans-serif"
+            android:text="@string/when"
+            />
+
+        <EditText
+            android:id="@+id/invite_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:fontFamily="sans-serif"
+            android:focusableInTouchMode="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:fontFamily="sans-serif"
+            android:text="@string/time"  />
+
+        <EditText
+            android:id="@+id/invite_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:fontFamily="sans-serif"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/where"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:fontFamily="sans-serif"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/invite_place_text_view"
+                android:layout_width="0dp"
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:fontFamily="sans-serif"
+                android:paddingStart="@dimen/list_margin"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:lines="5" />
+
+            <ImageView
+                android:id="@+id/invite_picker_image_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ic_marker"
+                android:contentDescription="@string/location_image"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:fontFamily="sans-serif"
+            android:text="@string/sport"/>
+
+        <Spinner
+            android:id="@+id/invite_sports_list_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+
+    </android.support.v7.widget.GridLayout>
+
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/calendar_notify"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:fontFamily="sans-serif"
+        android:layout_marginBottom="@dimen/side_margin"
+        android:layout_marginStart="@dimen/side_margin"
+        android:text="@string/google_calendar_notification"/>
+
+    <Button
+        android:id="@+id/invite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/invite"
+        android:layout_gravity="center_horizontal"/>
+
+
+</LinearLayout>
+

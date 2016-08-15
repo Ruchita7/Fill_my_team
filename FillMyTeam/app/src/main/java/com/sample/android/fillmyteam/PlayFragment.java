@@ -24,9 +24,10 @@ public class PlayFragment extends android.support.v4.app.Fragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-     User mUser;
+    User mUser;
     private static final String ARG_SECTION_NUMBER = "section_number";
     List<String> mPlayItemsListMenu;
+
     public PlayFragment() {
     }
 
@@ -34,9 +35,9 @@ public class PlayFragment extends android.support.v4.app.Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static PlayFragment newInstance(int sectionNumber,User user) {
+    public static PlayFragment newInstance(int sectionNumber, User user) {
         PlayFragment fragment = new PlayFragment();
-      //  mUser = user;
+        //  mUser = user;
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putSerializable(Constants.USER_DETAILS, user);
@@ -48,9 +49,9 @@ public class PlayFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_play, container, false);
-        if(getArguments()!=null)    {
-            if(getArguments().containsKey(Constants.USER_DETAILS))    {
-                    mUser = (User)getArguments().get(Constants.USER_DETAILS);
+        if (getArguments() != null) {
+            if (getArguments().containsKey(Constants.USER_DETAILS)) {
+                mUser = (User) getArguments().get(Constants.USER_DETAILS);
             }
         }
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.play_recycler_view);
@@ -61,44 +62,37 @@ public class PlayFragment extends android.support.v4.app.Fragment {
         PlayTabAdapter playTabAdapter = new PlayTabAdapter(getActivity(), mPlayItemsListMenu, new PlayTabAdapter.PlayAdapterOnClickHandler() {
             @Override
             public void itemClick(int position, PlayTabAdapter.PlayViewHolder viewHolder) {
-                Toast.makeText(getActivity(),mPlayItemsListMenu.get(position),Toast.LENGTH_SHORT).show();
-                if(position==3)    {
-                   // SportsInfoFragment.newInstance(mUser.getLatitude(),mUser.getLongitude());
-                    Intent intent = new Intent(getContext(),SportsInfoActivity.class);
-                    //intent.putExtra()
-                    startActivity(intent);
+                Toast.makeText(getActivity(), mPlayItemsListMenu.get(position), Toast.LENGTH_SHORT).show();
+                Intent intent;
+                switch (position) {
+                    case 0:
+                        intent = new Intent(getContext(), FindPlaymatesActivity.class);
+                        intent.putExtra(Constants.USER_DETAILS, mUser);
+                        startActivity(intent);
+                        break;
+
+                    case 1:
+                        intent = new Intent(getContext(), MatchesActivity.class);
+                        intent.putExtra(Constants.USER_DETAILS, mUser);
+                        startActivity(intent);
+                        break;
+                    case 2:
+                        intent = new Intent(getContext(), StoreLocatorActivity.class);
+                        intent.putExtra(Constants.USER_DETAILS, mUser);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        // SportsInfoFragment.newInstance(mUser.getLatitude(),mUser.getLongitude());
+                        intent = new Intent(getContext(), SportsInfoActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });
         recyclerView.setAdapter(playTabAdapter);
-        /*recyclerView.addItemDecoration(new GridItemDecoration(
-                getActivity(),GridItemDecoration.GRID));*/
         recyclerView.addItemDecoration(new GridItemDecoration(
-                getActivity(),R.dimen.list_margin));
+                getActivity(), R.dimen.list_margin));
 
-        // int view_height=screen_height/number of rows;   //height for imageview
-
-       /* TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));*/
-
-     /*   Button btn1 = (Button)rootView.findViewById(R.id.find_playmates);
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),FindPlaymatesActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        Button btn2 = (Button)rootView.findViewById(R.id.upcoming_matches);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(),UpcomingMatchesActivity.class);
-                startActivity(intent);
-            }
-        });
-*/
 
         return rootView;
     }

@@ -3,22 +3,17 @@ package com.sample.android.fillmyteam;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.format.DateFormat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,10 +26,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.sample.android.fillmyteam.model.PlayerParcelable;
-import com.sample.android.fillmyteam.model.User;
-import com.sample.android.fillmyteam.util.Constants;
-import com.sample.android.fillmyteam.util.Utility;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -43,6 +34,10 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sample.android.fillmyteam.model.PlayerParcelable;
+import com.sample.android.fillmyteam.model.User;
+import com.sample.android.fillmyteam.util.Constants;
+import com.sample.android.fillmyteam.util.Utility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,13 +51,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-/**
- * Invite players to play fragment
- *
- * @author Ruchita_Maheshwary
- */
-public class InviteToPlayFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    public static final String LOG_TAG = InviteToPlayFragment.class.getSimpleName();
+
+public class InviteToPlayActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+
+    public static final String LOG_TAG = InviteToPlayActivity.class.getSimpleName();
     public static final String CURRENT_USER = "current_user";
 
     public static final String TO_PLAY_WITH_USER = "play_with_user";
@@ -89,40 +81,20 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
     static TextView mDateTextView;
     static boolean isDateEarlier;
 
-    public static final String PLAY_WITH_USER="play_with_user_user";
-
-    public static InviteToPlayFragment newInstance(User currentUser, User playWithUser) {
-
-        Bundle args = new Bundle();
-        args.putSerializable(CURRENT_USER, currentUser);
-        args.putSerializable(TO_PLAY_WITH_USER, playWithUser);
-        InviteToPlayFragment fragment = new InviteToPlayFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mPlayWithUser = (User) getArguments().get(TO_PLAY_WITH_USER);
-            mUser = (User) getArguments().get(CURRENT_USER);
+        setContentView(R.layout.activity_invite_to_play);
+        if(getIntent()!=null)   {
+            if(getIntent().hasExtra(CURRENT_USER))  {
+                mUser = (User) getIntent().getSerializableExtra(CURRENT_USER);
+            }
+            if(getIntent().hasExtra(TO_PLAY_WITH_USER))  {
+                mPlayWithUser = (User) getIntent().getSerializableExtra(TO_PLAY_WITH_USER);
+            }
         }
         matchRef = FirebaseDatabase.getInstance().getReferenceFromUrl(Constants.PLAYERS_MATCHES);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        final ActionBar ab = ((MainActivity) getActivity()).getSupportActionBar();
-        ab.hide();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_invite_user, container, false);
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(this);
         if (savedInstanceState != null) {
             if (savedInstanceState.getParcelable(CURRENT_PLAYER) != null) {
                 mUser = ((PlayerParcelable) savedInstanceState.getParcelable(CURRENT_PLAYER)).getUser();
@@ -132,7 +104,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
             }
         }
 
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.invite_toolbar_layout);
+     /*   final Toolbar toolbar = (Toolbar) findViewById(R.id.invite_toolbar_layout);
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.ic_action_ic_arrow_back);
             toolbar.setNavigationContentDescription(getString(R.string.back_button));
@@ -142,29 +114,31 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     getFragmentManager().popBackStackImmediate();
                 }
             });
-        }
+        }*/
         invitePlayTextView.setText(getString(R.string.invite_play, mPlayWithUser.getName()));
         GregorianCalendar gcalendar = new GregorianCalendar();
-        mPlayTimeEditText = (EditText) view.findViewById(R.id.invite_time);
+        mPlayTimeEditText = (EditText) findViewById(R.id.invite_time);
 
         mPlayTimeEditText.setText(Utility.getCurrentTime(gcalendar));
-        mDateTextView = (TextView) view.findViewById(R.id.invite_date);
+        mDateTextView = (TextView) findViewById(R.id.invite_date);
 
         isDateEarlier = false;
         mDateTextView.setText(Utility.getCurrentDate(gcalendar));
-        String playingPlace = mUser.getPlayingPlace().replace(",,", ", <br/>");
-        String place = Html.fromHtml(playingPlace).toString();
+        String place="";
+        if(mUser.getPlayingPlace()!=null) {
+            String playingPlace = mUser.getPlayingPlace().replace(",,", ", <br/>");
+             place = Html.fromHtml(playingPlace).toString();
+        }
         mPlaceTextView.setText(place);
         mInviteButton.setOnClickListener(this);
         mPlaceImageView.setOnClickListener(this);
         mPlayTimeEditText.setOnClickListener(this);
         mDateTextView.setOnClickListener(this);
-        mAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sports_list, android.R.layout.simple_spinner_item);
+        mAdapter = ArrayAdapter.createFromResource(this, R.array.sports_list, android.R.layout.simple_spinner_item);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSportsListSpinner.setAdapter(mAdapter);
         mSportsListSpinner.setSelection(mAdapter.getPosition(mUser.getSport()));
         mSportsListSpinner.setOnItemSelectedListener(this);
-        return view;
     }
 
     @Override
@@ -181,31 +155,31 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
         switch (v.getId()) {
             case R.id.invite_time:
                 newFragment = new TimePickerFragment();
-                newFragment.show(getActivity().getFragmentManager(), Constants.TIME_PICKER);
+                newFragment.show(getSupportFragmentManager(), Constants.TIME_PICKER);
                 break;
             case R.id.invite_picker_image_view:
-                if (!Utility.checkNetworkState(getActivity())) {
+                if (!Utility.checkNetworkState(this)) {
                     EditProfileFragment.NetworkMessageDialogFragment msgFragment = new EditProfileFragment.NetworkMessageDialogFragment();
                     msgFragment.show(getFragmentManager(), getString(R.string.no_network));
                     return;
                 }
                 try {
                     PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
-                    Intent intent = intentBuilder.build(getActivity());
+                    Intent intent = intentBuilder.build(this);
                     // Start the Intent by requesting a result, identified by a request code.
                     startActivityForResult(intent, EditProfileFragment.REQUEST_PLACE_PICKER);
 
                 } catch (GooglePlayServicesRepairableException e) {
                     GooglePlayServicesUtil
-                            .getErrorDialog(e.getConnectionStatusCode(), getActivity(), 0);
+                            .getErrorDialog(e.getConnectionStatusCode(), this, 0);
                 } catch (GooglePlayServicesNotAvailableException e) {
-                    Toast.makeText(getActivity(), getString(R.string.google_services_unavailable),
+                    Toast.makeText(this, getString(R.string.google_services_unavailable),
                             Toast.LENGTH_LONG)
                             .show();
                 }
                 break;
             case R.id.invite_button:
-                if (!Utility.checkNetworkState(getActivity())) {
+                if (!Utility.checkNetworkState(this)) {
                     EditProfileFragment.NetworkMessageDialogFragment msgFragment = new EditProfileFragment.NetworkMessageDialogFragment();
                     msgFragment.show(getFragmentManager(), getString(R.string.no_network));
                     return;
@@ -226,7 +200,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                 }
                 if (beginTime.before(currentDate)) {
                     DialogFragment dialogFragment = new MessageDialogFragment();
-                    dialogFragment.show(getFragmentManager(), getString(R.string.invalid_date_chosen));
+                    dialogFragment.show(getSupportFragmentManager(), getString(R.string.invalid_date_chosen));
                 } else {
                     endTime.add(Calendar.HOUR, 1);
 
@@ -257,7 +231,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                     playingUserMap.put(Constants.PLAYER_EMAIL, mUser.getEmail());
                     ref.push().setValue(playingUserMap);
 
-                    CheckBox checkBoxView = (CheckBox) getView().findViewById(R.id.calendar_notify);
+                    CheckBox checkBoxView = (CheckBox) findViewById(R.id.calendar_notify);
                     if (checkBoxView.isChecked()) {
                         Intent intent = new Intent(Intent.ACTION_INSERT)
                                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -270,13 +244,13 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                                 .putExtra(Intent.EXTRA_EMAIL, mUser.getEmail() + "," + mPlayWithUser.getEmail());
                         startActivity(intent);
                     }
-                    Toast.makeText(getActivity(), getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.invited_to_play, mPlayWithUser.getName()), Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case R.id.invite_date:
                 newFragment = new DatePickerFragment();
-                newFragment.show(getActivity().getFragmentManager(), "datePicker");
+                newFragment.show(getSupportFragmentManager(), "datePicker");
                 break;
 
         }
@@ -366,7 +340,7 @@ public class InviteToPlayFragment extends Fragment implements View.OnClickListen
                    Data is extracted from the returned intent by retrieving a Place object from
                    the PlacePicker.
                  */
-                final Place place = PlacePicker.getPlace(data, getActivity());
+                final Place place = PlacePicker.getPlace(data, this);
                 String location = place.getAddress().toString();
                 //Log.v(LOG_TAG, "location chosen" + location);
                 mPlaceTextView.setText(location);

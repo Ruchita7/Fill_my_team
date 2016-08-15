@@ -169,5 +169,7 @@
     <string name="navigation_message" translatable="false">Click here to select items from menu</string>
     <string name="button_message" translatable="false">Click here to search players by sport</string>
     <string name="search_button">Find Players based on sport</string>
-    <string name="title_activity_sports_info">SportsInfoActivity</string>
+    <string name="title_activity_invite_to_play">InviteToPlayActivity</string>
+    <string name="title_activity_activity_invite_to_play">ActivityInviteToPlay</string>
+
 </resources>

@@ -1,25 +1,18 @@
 package com.sample.android.fillmyteam;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
+
 import android.content.Intent;
-import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,22 +25,16 @@ import com.sample.android.fillmyteam.sync.SportsSyncAdapter;
 import com.sample.android.fillmyteam.util.Constants;
 import com.sample.android.fillmyteam.util.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Upcoming matches fragment
- * @author Ruchita_Maheshwary
- *
- */
-public class MatchesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MatchesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     User mUser;
     RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     DatabaseReference mRef;
     List<Match> mUserMatches;
-    public static final String LOG_TAG = MatchesFragment.class.getSimpleName();
+    public static final String LOG_TAG = MatchesActivity.class.getSimpleName();
     MatchAdapter matchAdapter;
     private int mChoiceMode;
     public static final int MATCH_LOADER_ID = 0;
@@ -64,57 +51,32 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     public static final int COL_PLAYING_SPORT = 7;
     public static final String SELECTED_MATCH = "selected_match";
 
-    public static MatchesFragment newInstance(User user) {
-        MatchesFragment fragment = new MatchesFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(Constants.USER_DETAILS, user);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mUser = (User) getArguments().getSerializable(Constants.USER_DETAILS);
+        setContentView(R.layout.activity_matches);
+        if (getIntent() != null) {
+            mUser = (User) getIntent().getSerializableExtra(Constants.USER_DETAILS);
         }
-    }
-
-    @Override
-    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
-        super.onInflate(activity, attrs, savedInstanceState);
-        TypedArray a = activity.obtainStyledAttributes(attrs, R.styleable.SportInfoFragment,
+     /*  TypedArray a = obtainStyledAttributes(this.getTheme().obtainStyledAttributes(), R.styleable.SportInfoFragment,
                 +0, 0);
         mChoiceMode = a.getInt(R.styleable.MatchFragment_android_choiceMode, AbsListView.CHOICE_MODE_NONE);
-        a.recycle();
-    }
+        a.recycle();*/
 
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(MATCH_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(MATCH_LOADER_ID, null, this);
+        TextView emptyTextView = (TextView) findViewById(R.id.recyclerview_empty_matches);
+        SportsSyncAdapter.syncImmediately(this);
 
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mUserMatches = new ArrayList<>();
-        View view = inflater.inflate(R.layout.match_fragment, container, false);
-        TextView emptyTextView = (TextView) view.findViewById(R.id.recyclerview_empty_matches);
-        SportsSyncAdapter.syncImmediately(getActivity());
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.matches_recycler_view);
-        matchAdapter = new MatchAdapter(getActivity(), mUserMatches, new MatchAdapter.MatchAdapterOnClickHandler() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.matches_recycler_view);
+        matchAdapter = new MatchAdapter(this, mUserMatches, new MatchAdapter.MatchAdapterOnClickHandler() {
             @Override
             public void itemClick(String location, MatchAdapter.ViewHolder viewHolder) {
                 mPosition = viewHolder.getAdapterPosition();
-               launchMap(location);
+                launchMap(location);
             }
         }, emptyTextView, mChoiceMode);
-        mLayoutManager = new GridLayoutManager(getActivity(), 1);
+        mLayoutManager = new GridLayoutManager(this, 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(matchAdapter);
         if (savedInstanceState != null) {
@@ -124,7 +86,7 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
             }
             matchAdapter.onRestoreInstanceState(savedInstanceState);
         }
-        return view;
+
     }
 
     @Override
@@ -141,7 +103,7 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = PlayerMatchesColumns.PLAYING_TIME + Constants.ASC_ORDER;
-        return new CursorLoader(getActivity(),
+        return new CursorLoader(this,
                 SportsProvider.UpcomingMatches.CONTENT_URI,
                 null,
                 null,
@@ -161,24 +123,24 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void launchMap(String matchLocation) {
-        if (!Utility.checkNetworkState(getActivity())) {
-            Toast.makeText(getActivity(),R.string.no_network,Toast.LENGTH_SHORT).show();
+        if (!Utility.checkNetworkState(this)) {
+            Toast.makeText(this, R.string.no_network, Toast.LENGTH_SHORT).show();
         } else {
             String geoLocation = getString(R.string.geo_location, matchLocation);
             Uri geoIntentUri = Uri.parse(geoLocation);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, geoIntentUri);
             mapIntent.setPackage(Constants.GOOGLE_MAPS_PACKAGE);
-            if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                getActivity().startActivity(mapIntent);
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
             }
         }
     }
 
     private void updateEmptyView() {
         if (matchAdapter.getItemCount() == 0) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            @SportsSyncAdapter.MatchStatus int state = Utility.getNetworkState(getActivity());
-            TextView textView = (TextView) getView().findViewById(R.id.recyclerview_empty_matches);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            @SportsSyncAdapter.MatchStatus int state = Utility.getNetworkState(this);
+            TextView textView = (TextView) findViewById(R.id.recyclerview_empty_matches);
             if (null != textView) {
                 int message = R.string.list_unavailable;
                 switch (state) {
@@ -191,7 +153,7 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
                     case SportsSyncAdapter.MATCH_STATUS_INVALID:
                         message = R.string.match_invalid_request_error;
                     default:
-                        if (!Utility.checkNetworkState(getActivity())) {
+                        if (!Utility.checkNetworkState(this)) {
                             message = R.string.network_unavailable_match;
                         }
                         break;
@@ -200,4 +162,4 @@ public class MatchesFragment extends Fragment implements LoaderManager.LoaderCal
             }
         }
     }
-   }
+}

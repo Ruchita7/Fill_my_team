@@ -36,13 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".SportsInfoActivity"
-            android:label="@string/learn_to_play_title"/>
-
-        <activity android:name=".SportsDetailActivity"/>
+            android:label="@string/learn_to_play_title" />
+        <activity android:name=".SportsDetailActivity" />
+        <activity
+            android:name=".FindPlaymatesActivity"
+            android:label="@string/find_playmates" />
 
         <receiver android:name=".DailyAlarmReceiver" />
 
@@ -90,6 +90,11 @@
             android:name=".widget.DetailWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <activity
+            android:name=".InviteToPlayActivity"
+            android:label="@string/invite_player" />
+        <activity android:name=".MatchesActivity" />
+        <activity android:name=".StoreLocatorActivity"></activity>
     </application>
 
 </manifest>

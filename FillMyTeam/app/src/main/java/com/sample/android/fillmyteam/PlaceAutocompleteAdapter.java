@@ -74,15 +74,17 @@ public class PlaceAutocompleteAdapter
 
    
  
-    SportsStoreLocatorFragment mFragment;
+    StoreLocatorActivity mActivity;
     int mErrorCode;
+
  
     public PlaceAutocompleteAdapter(Context context, GoogleApiClient googleApiClient,
-                                    AutocompleteFilter filter, SportsStoreLocatorFragment fragment) {
+                                    AutocompleteFilter filter,StoreLocatorActivity activity) {
         super(context, android.R.layout.simple_expandable_list_item_2, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
-        mFragment=fragment;
+     mActivity=activity;
         mPlaceFilter = filter;
+
     }
 
  
@@ -154,7 +156,7 @@ public class PlaceAutocompleteAdapter
                 } else {
                     // The API did not return any results, invalidate the data set.
                     notifyDataSetInvalidated();
-                    mFragment.updateEmptyView(mErrorCode);
+                    mActivity.updateEmptyView(mErrorCode);
                 }
             }
 
