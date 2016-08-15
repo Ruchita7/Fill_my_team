@@ -3,18 +3,12 @@
 
 Sports lovers are generally for the look out for sports enthusiasts like them so that they can meet up and bond over a game of sport. **Find Players near me** feature of the app helps to locate players playing a game of sport of their liking on google maps and then send notifications to them as well. **Learn to play** helps newbies to learn to play a sport of their interest.If you are looking for sports equipments, **Find sports store** in the app lists down and provide navigation to sports store in your area as well.
 
-![device-2016-08-15-170707](https://cloud.githubusercontent.com/assets/15085932/17664041/c5df7900-630e-11e6-8077-68e93811f7e2.png)
-
-![device-2016-08-15-170758](https://cloud.githubusercontent.com/assets/15085932/17664036/bfdd7548-630e-11e6-8181-2ad40812a593.png)
-
-![device-2016-08-15-170818](https://cloud.githubusercontent.com/assets/15085932/17664032/bc542296-630e-11e6-8e8f-8ac910deaee9.png)
-
-![screenshot_2016-07-26-23-29-37](https://cloud.githubusercontent.com/assets/15085932/17200976/99dc52c6-54a7-11e6-8235-c8b0fb63a52f.png)
-
-![screenshot_2016-07-26-23-30-26](https://cloud.githubusercontent.com/assets/15085932/17200948/4cc5ad66-54a7-11e6-993c-66e4e1ddad5e.png)
-
-![screenshot_2016-07-27-09-34-30](https://cloud.githubusercontent.com/assets/15085932/17200882/9f25e18a-54a6-11e6-90b9-131f5b7ae379.png)
-
+![device-2016-08-15-170707](https://cloud.githubusercontent.com/assets/15085932/17664210/26ceba0e-6310-11e6-9c40-d01be6e87da5.png)
+![device-2016-08-15-170758](https://cloud.githubusercontent.com/assets/15085932/17664214/2c9c488e-6310-11e6-89ea-cc62c252f942.png)
+![device-2016-07-25-182735](https://cloud.githubusercontent.com/assets/15085932/17664216/30616d28-6310-11e6-82d1-e3f512db4e31.png)
+![device-2016-08-15-170818](https://cloud.githubusercontent.com/assets/15085932/17664220/33c5a3bc-6310-11e6-96c6-539600b4f9c7.png)
+![screenshot_2016-07-26-23-30-26](https://cloud.githubusercontent.com/assets/15085932/17664224/39ee5f68-6310-11e6-9f1a-ce178e03fa2c.png)
+![screenshot_2016-07-26-23-29-37](https://cloud.githubusercontent.com/assets/15085932/17664225/3a2ae5fa-6310-11e6-8b2e-0a728cb87056.png)
 
 **Installation instructions**
 
